@@ -1,0 +1,199 @@
+%%
+%% Copyright 2019-2024 Elsevier Ltd
+%%
+%% This file is part of the 'CAS Bundle'.
+%% --------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.3c of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'CAS Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for cas-dc documentclass for
+%% double column output.
+
+\documentclass[a4paper,fleqn]{cas-dc}
+
+% If the frontmatter runs over more than one page
+% use the longmktitle option.
+
+%\documentclass[a4paper,fleqn,longmktitle]{cas-dc}
+
+%\usepackage[numbers]{natbib}
+%\usepackage[authoryear]{natbib}
+\usepackage[authoryear,longnamesfirst]{natbib}
+
+%%%Author macros
+\def\tsc#1{\csdef{#1}{\textsc{\lowercase{#1}}\xspace}}
+\tsc{WGM}
+\tsc{QE}
+%%%
+
+% Uncomment and use as if needed
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newdefinition{rmk}{Remark}
+%\newproof{pf}{Proof}
+%\newproof{pot}{Proof of Theorem \ref{thm}}
+
+\begin{document}
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{.001}
+
+% Short title
+\shorttitle{Physics-informed LSTM and BiGRU for satellite trajectory prediction}
+
+% Short author
+\shortauthors{aaa \emph{et~al.}}
+
+% Main title of the paper
+\title [mode = title]{Physics-informed LSTM and BiGRU-based approach for \\
+maneuverable satellite cluster trajectory prediction and intention recognition}
+
+% Title footnote mark
+\tnotemark[1]
+
+% Title footnote 1.
+\tnotetext[1]{Submitted to \emph{Aerospace Science and Technology}.}
+
+% First author
+\author[1]{aaa}[
+    orcid=0000-0000-0000-0000,
+]
+
+% Corresponding author indication
+\cormark[1]
+
+% Footnote of the first author
+\fnmark[1]
+
+% Email id of the first author
+\ead{aaa@example.edu}
+
+% Credit authorship
+\credit{Conceptualization, Methodology, Software, Writing -- original draft}
+
+% Address/affiliation
+\affiliation[1]{organization={School of Astronautics, Example University},
+            addressline={No.~100 University Road},
+            city={Beijing},
+            postcode={100000},
+            state={},
+            country={China}}
+
+% Second author
+\author[1]{bbb}[
+    orcid=0000-0000-0000-0001,
+]
+
+\fnmark[1]
+
+\ead{bbb@example.edu}
+
+\credit{Formal analysis, Validation, Writing -- review \& editing}
+
+% Third author
+\author[2]{ccc}[
+    orcid=0000-0000-0000-0002,
+]
+
+\fnmark[1]
+
+\ead{ccc@example.edu}
+
+\credit{Data curation, Investigation, Visualization}
+
+\affiliation[2]{organization={Institute of Aerospace Engineering, Example Academy},
+            addressline={No.~200 Science Avenue},
+            city={Shanghai},
+            postcode={200000},
+            state={},
+            country={China}}
+
+% Corresponding author text
+\cortext[1]{Corresponding author.}
+
+% Footnote text
+\fntext[1]{These authors contributed equally to this work.}
+
+% For a title note without a number/mark
+%\nonumnote{}
+
+% Here goes the abstract
+\begin{abstract}
+This paper proposes a novel approach combining physics-informed long short-term
+memory (LSTM) networks and bidirectional gated recurrent units (BiGRU) for
+maneuverable satellite cluster trajectory prediction and intention recognition.
+The physics-informed framework incorporates orbital dynamics constraints into the
+learning process, while the BiGRU-based architecture captures temporal
+dependencies from both forward and backward directions for intention recognition.
+The proposed method is validated through comprehensive numerical simulations.
+
+\nocite{*}%% Remove this line from your manuscript.
+\end{abstract}
+
+% Use if graphical abstract is present
+%\begin{graphicalabstract}
+%\includegraphics{}
+%\end{graphicalabstract}
+
+% Research highlights
+\begin{highlights}
+\item Physics-informed deep learning framework for satellite trajectory prediction
+\item BiGRU-based architecture for maneuver intention recognition
+\item Integration of orbital dynamics constraints with data-driven models
+\end{highlights}
+
+% Keywords
+% Each keyword is seperated by \sep
+\begin{keywords}
+Satellite cluster \sep Trajectory prediction \sep Intention recognition \sep
+Physics-informed neural network \sep LSTM \sep BiGRU
+\end{keywords}
+
+\maketitle
+
+% Main text
+
+\section{Introduction}\label{sec:intro}
+
+\section{Problem statement}\label{sec:problem}
+
+\section{Physics-informed LSTM trajectory prediction}\label{sec:trajectory}
+
+\section{BiGRU-based intention recognition}\label{sec:intention}
+
+\section{Simulations and analysis}\label{sec:simulations}
+
+\section{Conclusions}\label{sec:conclusions}
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+
+% To print the credit authorship contribution details
+\printcredits
+
+%% Loading bibliography style file
+%\bibliographystyle{model1-num-names}
+\bibliographystyle{cas-model2-names}
+
+% Loading bibliography database
+\bibliography{cas-refs}
+
+% Biography
+%\bio{}
+% Here goes the biography details.
+%\endbio
+
+%\bio{pic1}
+% Here goes the biography details.
+%\endbio
+
+\end{document}

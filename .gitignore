@@ -1,0 +1,31 @@
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.brf
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.dvi
+*.ps
+*.abs
+*.spl
+*.gls
+*.glo
+*.glg
+*.idx
+*.ilg
+*.ind
+*.ist
+*.nlo
+*.nls
+*.run.xml
+*-blx.bib
+
+# Temp scripts
+*.ps1
