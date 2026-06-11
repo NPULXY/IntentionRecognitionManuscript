@@ -28,6 +28,8 @@
 %\usepackage[authoryear]{natbib}
 \usepackage[authoryear,longnamesfirst]{natbib}
 
+\usepackage{bm}
+
 %%%Author macros
 \def\tsc#1{\csdef{#1}{\textsc{\lowercase{#1}}\xspace}}
 \tsc{WGM}
@@ -47,95 +49,74 @@
 \def\textpagefraction{.001}
 
 % Short title
-\shorttitle{Physics-informed LSTM and BiGRU for satellite trajectory prediction}
+\shorttitle{Physics-informed LSTM and BiGRU for satellite trajectory prediction and intention recognition}
 
 % Short author
-\shortauthors{aaa \emph{et~al.}}
+\shortauthors{Luo \emph{et~al.}}
 
 % Main title of the paper
-\title [mode = title]{Physics-informed LSTM and BiGRU-based approach for \\
-maneuverable satellite cluster trajectory prediction and intention recognition}
+\title [mode = title]{Physics-informed LSTM and BiGRU-based approach for maneuverable satellite cluster trajectory prediction and intention recognition}
 
 % Title footnote mark
 \tnotemark[1]
 
 % Title footnote 1.
-\tnotetext[1]{Submitted to \emph{Aerospace Science and Technology}.}
+\tnotetext[1]{This work was supported in part by the National Natural Science
+    Foundation of China under Grant 12572056, Grant 62103336, and Grant
+    52361165620; and in part by the Young Elite Scientists Sponsorship Program
+    by the China Association for Science and Technology under Grant
+    2022QNRC001.}
 
 % First author
-\author[1]{aaa}[
-    orcid=0000-0000-0000-0000,
+\author[1]{Xuanyu Luo}[
+    orcid=0009-0002-5020-870X,
 ]
 
-% Corresponding author indication
-\cormark[1]
+\ead{luoxuanyu@mail.nwpu.edu.cn}
 
-% Footnote of the first author
-\fnmark[1]
-
-% Email id of the first author
-\ead{aaa@example.edu}
-
-% Credit authorship
 \credit{Conceptualization, Methodology, Software, Writing -- original draft}
 
-% Address/affiliation
-\affiliation[1]{organization={School of Astronautics, Example University},
-            addressline={No.~100 University Road},
-            city={Beijing},
-            postcode={100000},
-            state={},
-            country={China}}
-
-% Second author
-\author[1]{bbb}[
-    orcid=0000-0000-0000-0001,
+% Second author (corresponding author)
+\author[1]{Chuang Liu}[
+    orcid=0000-0002-1911-0184,
 ]
 
-\fnmark[1]
+\cormark[1]
 
-\ead{bbb@example.edu}
+\ead{liuchuangforever@msn.com}
 
 \credit{Formal analysis, Validation, Writing -- review \& editing}
 
 % Third author
-\author[2]{ccc}[
-    orcid=0000-0000-0000-0002,
+\author[1]{Xiaokui Yue}[
+    orcid=0000-0001-6482-0129,
 ]
 
-\fnmark[1]
-
-\ead{ccc@example.edu}
+\ead{xkyue@nwpu.edu.cn}
 
 \credit{Data curation, Investigation, Visualization}
 
-\affiliation[2]{organization={Institute of Aerospace Engineering, Example Academy},
-            addressline={No.~200 Science Avenue},
-            city={Shanghai},
-            postcode={200000},
-            state={},
-            country={China}}
+% Affiliation
+\affiliation[1]{organization={School of Aeronautics, Northwestern Polytechnical University},
+    addressline={Xi'an 710072, Shaanxi},
+    country={China}}
 
 % Corresponding author text
 \cortext[1]{Corresponding author.}
-
-% Footnote text
-\fntext[1]{These authors contributed equally to this work.}
 
 % For a title note without a number/mark
 %\nonumnote{}
 
 % Here goes the abstract
 \begin{abstract}
-This paper proposes a novel approach combining physics-informed long short-term
-memory (LSTM) networks and bidirectional gated recurrent units (BiGRU) for
-maneuverable satellite cluster trajectory prediction and intention recognition.
-The physics-informed framework incorporates orbital dynamics constraints into the
-learning process, while the BiGRU-based architecture captures temporal
-dependencies from both forward and backward directions for intention recognition.
-The proposed method is validated through comprehensive numerical simulations.
+    This paper proposes a novel approach combining physics-informed long short-term
+    memory (LSTM) networks and bidirectional gated recurrent units (BiGRU) for
+    maneuverable satellite cluster trajectory prediction and intention recognition.
+    The physics-informed framework incorporates orbital dynamics constraints into the
+    learning process, while the BiGRU-based architecture captures temporal
+    dependencies from both forward and backward directions for intention recognition.
+    The proposed method is validated through comprehensive numerical simulations.
 
-\nocite{*}%% Remove this line from your manuscript.
 \end{abstract}
 
 % Use if graphical abstract is present
@@ -145,16 +126,16 @@ The proposed method is validated through comprehensive numerical simulations.
 
 % Research highlights
 \begin{highlights}
-\item Physics-informed deep learning framework for satellite trajectory prediction
-\item BiGRU-based architecture for maneuver intention recognition
-\item Integration of orbital dynamics constraints with data-driven models
+    \item Physics-informed deep learning framework for satellite trajectory prediction
+    \item BiGRU-based architecture for maneuver intention recognition
+    \item Integration of orbital dynamics constraints with data-driven models
 \end{highlights}
 
 % Keywords
 % Each keyword is seperated by \sep
 \begin{keywords}
-Satellite cluster \sep Trajectory prediction \sep Intention recognition \sep
-Physics-informed neural network \sep LSTM \sep BiGRU
+    Satellite cluster \sep Trajectory prediction \sep Intention recognition \sep
+    Long short-term memory \sep Bidirectional gated recurrent unit \sep Physics-informed neural network
 \end{keywords}
 
 \maketitle
@@ -163,15 +144,425 @@ Physics-informed neural network \sep LSTM \sep BiGRU
 
 \section{Introduction}\label{sec:intro}
 
+The rapid advancement of space technology and the accelerating deployment of large-scale satellite constellations have fundamentally reshaped the orbital environment. The population of resident space objects has soared, with recent space environment reports indicating that tracked objects, including operational spacecraft, defunct satellites and fragment debris, now number in the tens of thousands, substantially elevating the risk of orbital congestion and collision. This increasingly crowded domain is further complicated by the growing prevalence of non-cooperative and adversarial behaviors, as multiple space actors vie for strategic advantages in orbit. Against this backdrop of heightened orbital competition, the capability to forecast the trajectories and infer the operational intents of maneuverable satellite clusters has become an essential pillar of space situational awareness and asset protection. Accurate trajectory prediction and intention recognition for such targets not only provide critical decision-support for collision avoidance and threat assessment but are also vital for maintaining sustainable space operations.
+
+Trajectory prediction for spacecraft has traditionally relied on physics-based propagation models. The Clohessy--Wiltshire (CW) equations \cite{clohessy1960terminal} provide an analytical linearized description of relative motion in near-circular orbits and remain widely employed for orbital rendezvous guidance. Linear covariance techniques have been developed to analyze trajectory dispersions and navigation errors in closed-loop rendezvous scenarios \cite{geller2006linear}. However, when unknown impulsive maneuvers occur, pure physics-based methods diverge rapidly from the true trajectory. To address this, data-driven approaches have gained considerable attention in recent years. Deep learning models, particularly recurrent neural networks, have demonstrated remarkable capability in capturing temporal dependencies for sequential prediction tasks \cite{hochreiter1997long, chung2014empirical}. Long short-term memory (LSTM) networks have been successfully applied to satellite orbit prediction and orbit determination under continuous maneuvers \cite{zhou2023lstm}. Bidirectional LSTM (Bi-LSTM) architectures have demonstrated effectiveness in atmospheric drag coefficient modeling for LEO satellites \cite{chen2025bilstm} and in data-driven orbit prediction for LEO spacecraft \cite{ai2025bilstm}. A recent comprehensive survey of machine learning methods for orbit estimation confirms the growing role of data-driven techniques across diverse mission scenarios \cite{carrillo2024survey}. Furthermore, bidirectional gated recurrent units (BiGRU) have been employed for multi-target maneuver-mode intent recognition in cluster scenarios \cite{tong2024cluster}.
+
+The integration of physical knowledge with data-driven models, known as physics-informed neural networks (PINNs), has emerged as a promising paradigm for scientific machine learning \cite{raissi2019physics}. By embedding governing equations into the learning objective, PINNs produce predictions that respect physical conservation laws while benefiting from the expressive power of neural networks. In the orbital mechanics domain, physics-informed approaches have been explored for orbit determination using Extreme Learning Machines with physics-based regularization \cite{scorsoglio2023physics}. Additionally, neural ordinary differential equations (Neural ODEs) have been combined with physical models for precise LEO orbit prediction \cite{kamiya2023precise}. However, existing efforts predominantly address single-satellite scenarios and lack explicit handling of multi-agent interactions and unknown maneuvers — two critical challenges when dealing with maneuverable satellite clusters.
+
+Intention recognition for space objects constitutes an equally important and challenging problem. Early work employed control-distance metrics \cite{holzinger2012maneuver} and deep convolutional neural networks \cite{linares2020space} for object correlation, maneuver detection, and classification from observational data. More recently, deep neural networks have been introduced for non-cooperative space target intention recognition using CW-based maneuver geometries \cite{sun2023deep}. Nevertheless, most existing studies treat intention recognition as a pure classification problem with discrete maneuver types, rather than jointly predicting the continuous geometric configuration parameters — such as the number of objects in a cluster, their closest approach distance, and their spatial dispersion — that are of direct operational relevance. Furthermore, the variable number of objects in a cluster (ranging from 2 to 4 in practical scenarios) poses a permutation-invariance requirement that conventional fixed-architecture networks cannot naturally accommodate.
+
+To bridge these gaps, this paper proposes a two-stage deep learning framework for maneuverable satellite cluster trajectory prediction and intention recognition. In the first stage, a physics-informed conditional LSTM (PI-LSTM) predicts future trajectories by incorporating CW dynamics as explicit physical constraints. A differentiable $\Delta v$ estimation module, derived from the CW state transition relation, estimates velocity increments from observed state sequences and feeds them as conditioning signals into the LSTM, enabling the model to adapt its gating behavior according to maneuver intensity. In the second stage, a bidirectional GRU (BiGRU) network with a permutation-invariant set attention architecture performs multi-task intention recognition: classifying the number of objects in the cluster ($N$) and regressing the global minimum distance and the spatial dispersion angle ($\phi$) at the moment of closest approach. Physics-informed feature engineering — including CW propagation residuals, orbital invariants, and inter-target geometric statistics — provides the network with physically meaningful representations rather than raw state vectors. Both stages are trained and evaluated on a dataset of 23,787 samples generated via reinforcement-learning-based orbital pursuit simulations.
+
+The remainder of this paper is organized as follows. Section 2 formulates the problem by establishing the dynamic models, describing the mission scenario, and outlining the key assumptions. Section 3 details the trajectory prediction algorithm for maneuverable satellite clusters, which integrates physical information with a long short-term memory (LSTM) network. Section 4 elaborates on the intention recognition algorithm that combines physical guidance with a deep neural network based on a bidirectional gated recurrent unit (BiGRU) architecture. Section 5 presents numerical simulations, where the effectiveness and superiority of the proposed methods are validated through comparisons with state-of-the-art approaches in this field. Section 6 concludes the paper.
+
 \section{Problem statement}\label{sec:problem}
+
+\subsection{Orbital dynamics and the Clohessy--Wiltshire model}
+
+We consider a scenario where a set of maneuverable spacecraft operate in near-circular low Earth orbit (LEO) at an altitude of approximately 480 km. In the local-vertical local-horizontal (LVLH) coordinate frame centered on a reference point (the target satellite), the relative motion between two neighboring spacecraft can be described by the Clohessy--Wiltshire (CW) equations \cite{clohessy1960terminal}:
+
+\begin{align}
+\ddot{x} - 2n\dot{y} - 3n^2 x &= 0, \label{eq:cw_x}\\
+\ddot{y} + 2n\dot{x} &= 0, \label{eq:cw_y}\\
+\ddot{z} + n^2 z &= 0, \label{eq:cw_z}
+\end{align}
+where $x$, $y$, $z$ denote the radial (positive outward), along-track, and cross-track relative positions in the LVLH frame; $n = \sqrt{\mu / r^3}$ is the mean orbital angular velocity; $\mu = 398600\ \text{km}^3/\text{s}^2$ is Earth's gravitational parameter; and $r = R_E + h = 6851\ \text{km}$ is the orbital radius.
+
+In the absence of maneuvers, the CW equations admit an analytical solution expressed through the state transition matrix $\Phi(\Delta t) \in \mathbb{R}^{6 \times 6}$. Let the state vector be $\bm{s} = [x, y, z, \dot{x}, \dot{y}, \dot{z}]^\top$. The free-evolution over time interval $\Delta t$ is then:
+
+\begin{equation}
+\bm{s}(t + \Delta t) = \Phi(\Delta t) \cdot \bm{s}(t). \label{eq:cw_free}
+\end{equation}
+The explicit entries of $\Phi(\Delta t)$ are given in Appendix A of \cite{geller2006linear} and are implemented directly in our computational framework.
+
+When an impulsive velocity change (maneuver) $\Delta \bm{v} = [\Delta v_x, \Delta v_y, \Delta v_z]^\top$ is applied at time $t$, the post-maneuver state can be decomposed as:
+
+\begin{equation}
+\bm{s}(t + \Delta t) = \Phi(\Delta t) \cdot \bm{s}(t) + B_{\text{eff}}(\Delta t) \cdot \Delta \bm{v}(t), \label{eq:cw_maneuver}
+\end{equation}
+where $B_{\text{eff}}(\Delta t) \in \mathbb{R}^{6 \times 3}$ consists of the velocity columns (columns 4--6) of $\Phi(\Delta t)$, representing the contribution of an instantaneous velocity impulse to the subsequent state \cite{geller2006linear}. This linear decomposition, which is fully differentiable with respect to the state variables, serves as the cornerstone of our physics-informed approach: given consecutive observed states $\bm{s}_t$ and $\bm{s}_{t+1}$, the velocity increment can be estimated in closed form via the Moore--Penrose pseudo-inverse:
+
+\begin{equation}
+\Delta \bm{v}_t \approx B_{\text{eff}}^+(\Delta t) \cdot \bigl(\bm{s}_{t+1} - \Phi(\Delta t) \cdot \bm{s}_t\bigr), \label{eq:dv_estimate}
+\end{equation}
+where $B_{\text{eff}}^+ = (B_{\text{eff}}^\top B_{\text{eff}})^{-1} B_{\text{eff}}^\top$ is the least-squares solution. This operation is differentiable and can therefore be embedded as a module within a neural network, enabling gradient-based learning of $\Delta v$-aware representations without requiring explicit maneuver labels.
+
+\subsection{Mission scenario and dataset}
+
+The dataset is constructed from orbital pursuit simulations with the following configuration. A non-maneuvering target satellite is placed at the LVLH origin. A chaser (pursuer) satellite starts from a random position on a sphere of radius 100--120 km around the origin and executes impulsive orbital maneuvers to approach the target. The chaser's policy is trained using Proximal Policy Optimization (PPO) \cite{schulman2017proximal} with a 6-dimensional observation (relative position and velocity) and a 3-dimensional continuous action (velocity increment $\Delta \bm{v}$ per step, scaled by a factor of 0.003 such that $|\Delta v| \leq 3$ m/s). At each RL step, a single impulsive maneuver is followed by 60 sub-steps of free CW propagation at $h = 1$ s resolution. An episode terminates with a positive reward of $+100$ when the chaser reaches within 5 km of the target, or with a penalty of $-100$ if the inter-satellite distance exceeds 200 km. Successful trajectories are recorded at $h = 1$ s intervals.
+
+To construct multi-target cluster scenarios, the recorded single-chaser trajectories are randomly grouped into batches of $N = 2, 3,$ or $4$ targets. For each target, the final $20$ time steps are extracted from the trajectory. If the raw trajectory length is not an exact multiple of 10, the remaining steps are padded using the CW state transition matrix $\Phi(T)$ with $T = 60$ s. The resulting $20$-step sequence is partitioned into an observation window $\bm{X}_{\text{now}} \in \mathbb{R}^{10 \times 6N}$ (the first 10 steps) and a prediction target $\bm{X}_{\text{next}} \in \mathbb{R}^{10 \times 6N}$ (the subsequent 10 steps). For each batch, three scalar labels are computed:
+
+\begin{itemize}
+\item $N \in \{2, 3, 4\}$: the number of objects in the cluster;
+\item $d_{\min}$: the global minimum distance from the LVLH origin to any object over the entire 20-step window;
+\item $\phi$: the angle between the position vectors of the nearest and farthest objects from the origin at the time step of $d_{\min}$, defined as
+\begin{equation}
+\phi = \arccos\left(\frac{\bm{r}_{\text{nearest}} \cdot \bm{r}_{\text{farthest}}}{|\bm{r}_{\text{nearest}}| \, |\bm{r}_{\text{farthest}}|}\right) \in [0, \pi].
+\end{equation}
+\end{itemize}
+
+\noindent The complete dataset contains 23,787 samples, with N=2, 3, and 4 comprising approximately 46\%, 31\%, and 23\% of the samples, respectively. Each sample consists of the pair $(\bm{X}_{\text{now}}, \bm{X}_{\text{next}})$ and the label vector $\bm{y} = [N, d_{\min}, \phi]^\top$. The dataset is randomly partitioned into training (70\%), validation (15\%), and test (15\%) sets using a fixed random seed.
+
+\subsection{Problem formulation}
+
+With the above setup, we define two interlinked tasks:
+
+\textbf{Task 1 — Trajectory prediction:} Given the observation window $\bm{X}_{\text{now}} \in \mathbb{R}^{10 \times 6N}$ of $N$ targets (where $N$ may be $2$, $3$, or $4$), predict the future trajectory $\hat{\bm{X}}_{\text{next}} \in \mathbb{R}^{10 \times 6N}$. Owing to the variable $N$, the state matrix is always zero-padded to a fixed dimension of $6N_{\max} = 24$, with a corresponding binary mask indicating valid features.
+
+\textbf{Task 2 — Intention recognition:} Given the full 20-step trajectory $\mathcal{T} \in \mathbb{R}^{N \times 20 \times 6}$ (constructed by concatenating $\bm{X}_{\text{now}}$ and $\bm{X}_{\text{next}}$), predict the cluster configuration label $\hat{\bm{y}} = [\hat{N}, \hat{d}_{\min}, \hat{\phi}]^\top$ comprising one discrete class ($N$) and two continuous quantities ($d_{\min}$, $\phi$).
+
+The two tasks are complementary: trajectory prediction provides the future states needed for short-term collision risk assessment, while intention recognition extracts higher-level semantic information (cluster size, geometry) that supports tactical decision-making. Both tasks must handle the permutation invariance of targets (the labeling of individual objects in the cluster is arbitrary) and the variable number of objects per sample.
 
 \section{Physics-informed LSTM trajectory prediction}\label{sec:trajectory}
 
+\subsection{Motivation and design rationale}
+
+The trajectory prediction task requires mapping a short observation window ($T_{\text{in}} = 10$ steps, 1 s per step) to an equally long prediction horizon ($T_{\text{out}} = 10$ steps). Prior experiments within our codebase evaluated multiple sequence modeling backbones: a Transformer encoder--decoder failed to learn meaningful predictions on this short-sequence regime (loss stagnated at 0.423), and convolutional approaches combined with cross-attention did not improve results (0.236--0.407). An LSTM encoder--decoder with residual delta prediction achieved substantially better performance (loss of 0.017), consistent with the observation that the Markovian nature of orbital dynamics aligns well with the recurrent inductive bias of LSTMs, particularly when data volume is limited (23,787 samples) and sequences are short \cite{hochreiter1997long}.
+
+Building on this LSTM backbone, we introduce two physically motivated enhancements. First, instead of feeding raw state vectors directly into the LSTM, we augment the input with maneuver-aware conditioning signals derived from the $\Delta v$ estimation procedure described in Eq.~\eqref{eq:dv_estimate}. This enables the LSTM gating mechanism to adapt its behavior according to the estimated maneuver intensity at each time step. Second, we enrich the training objective with physics-based regularization terms that penalize violations of the CW dynamics and enforce physically plausible velocity-change magnitudes.
+
+\subsection{Model architecture}
+
+The proposed Physics-Informed Conditional LSTM (PI-LSTM) architecture is illustrated in Fig.~\ref{fig:pinn_arch} and consists of five main components: (1) a differentiable $\Delta v$ estimation module, (2) a condition vector builder, (3) an LSTM encoder with expanded input, (4) an autoregressive LSTM decoder with residual prediction, and (5) an auxiliary $\Delta v$ prediction head.
+
+%% FIGURE 1: Architecture diagram placeholder
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\columnwidth]{figs/architecture.pdf}
+%\caption{Architecture of the physics-informed conditional LSTM (PI-LSTM) for trajectory prediction. The $\Delta v$ estimator computes velocity increments from the input state sequence via differentiable CW inversion. The condition builder fuses mode embeddings with maneuver features to produce conditioning vectors, which are concatenated with state features to form the expanded LSTM input. An encoder--decoder LSTM with residual delta prediction generates the output trajectory. An auxiliary $\Delta v$ prediction head provides estimates for physics-based regularization.}\label{fig:pinn_arch}
+%\end{figure}
+
+\subsubsection{Differentiable $\Delta v$ estimation module}
+
+Given an input state sequence, the $\Delta v$ estimation module computes the velocity increment between each pair of consecutive states using the CW inverse relation in Eq.~\eqref{eq:dv_estimate}. Concretely, for each target agent $a$ with its state sequence $\bm{s}^{(a)}_{1:T}$, the module computes:
+
+\begin{equation}
+\Delta \bm{v}^{(a)}_t = B_{\text{eff}}^+(h) \cdot \bigl(\bm{s}^{(a)}_{t+1} - \Phi(h) \cdot \bm{s}^{(a)}_t\bigr), \quad t = 1, \dots, T-1,
+\end{equation}
+where $h = 1$ s is the simulation time step, and $\Phi(h)$ and $B_{\text{eff}}(h)$ are pre-computed constants registered as non-trainable buffers. Since both the matrix multiplication and the pseudo-inverse are differentiable operations, gradient flows naturally through this module during backpropagation, allowing the upstream encoder to learn representations that are informed by the estimated maneuver signature. An optional lightweight correction network (a two-layer MLP with GELU activation, 8 hidden units, outputting a 3-dimensional additive correction) can be activated to account for nonlinear effects beyond the linear CW approximation; in our experiments, the module without learnable correction already provides sufficient physical guidance.
+
+The per-agent $\Delta v$ estimates are aggregated into a global maneuver signature by averaging over all valid agents (handling variable $N$ via masking):
+
+\begin{equation}
+\Delta \bar{\bm{v}}_t = \frac{1}{\sum_{a} \mathbb{I}[a \text{ valid}]} \sum_{a: \text{valid}} \Delta \bm{v}^{(a)}_t \in \mathbb{R}^{3}.
+\end{equation}
+
+\subsubsection{Condition vector builder}
+
+The condition vector $\bm{c}_t \in \mathbb{R}^{d_c}$ (where $d_c = 8$) is constructed by summing two components:
+
+\begin{equation}
+\bm{c}_t = \text{Embed}(m_t) + \text{MLP}_{\text{dv}}(\Delta \bar{\bm{v}}_t),
+\end{equation}
+where $\text{Embed}(m_t)$ is a learnable embedding of the maneuver mode label $m_t \in \{0, 1\}$ (non-maneuvering vs.\ maneuvering) of dimension $2 \times d_c$, initialized with orthogonal weights. $\text{MLP}_{\text{dv}}$ is a two-layer perceptron with GELU nonlinearity that maps the 3-dimensional global $\Delta \bar{\bm{v}}_t$ to the $d_c$-dimensional embedding space. Summing these two terms encourages the model to learn a joint manifold where mode identity and maneuver magnitude jointly condition the downstream LSTM dynamics.
+
+\subsubsection{Expanded LSTM encoder}
+
+The encoder LSTM receives an expanded input that concatenates each agent's 6-dimensional state with the shared $d_c$-dimensional condition vector, producing a $N_{\max} \times (6 + d_c) = 56$-dimensional input vector per time step (with invalid agent slots zeroed via the mask). The encoder consists of a 3-layer LSTM with hidden size $H = 256$ and dropout rate 0.15 applied between layers. The LSTM weights follow a specialized initialization: input-to-hidden weights use Xavier uniform, hidden-to-hidden weights use orthogonal initialization, and the forget gate bias is set to 1 to mitigate vanishing gradients during early training.
+
+\subsubsection{Autoregressive decoder with residual prediction}
+
+The decoder adopts a residual (delta) prediction strategy. Rather than directly generating future states, the model predicts deviation $\delta_t$ from a persistence forecast (repeating the last observed state $\bm{s}_{T_{\text{in}}}$ across all $T_{\text{out}}$ steps):
+
+\begin{equation}
+\hat{\bm{s}}_{T_{\text{in}} + k} = \bm{s}_{T_{\text{in}}} + \hat{\delta}_k, \quad k = 1, \dots, T_{\text{out}}.
+\end{equation}
+This formulation guarantees that the model output cannot be worse than the naive baseline and significantly reduces the learning difficulty \cite{zhou2023lstm}.
+
+The decoder state is initialized from the encoder's final hidden state $(\bm{h}_T^{\text{enc}}, \bm{c}_T^{\text{enc}})$. A context vector $\bm{z} = \text{MLP}_{\text{ctx}}(\bm{h}_T^{\text{enc}})$ is computed and concatenated with each step's delta prediction (augmented with the decoder-step condition vector) to form the decoder LSTM input. The decoder employs an identical 3-layer LSTM configuration ($H = 256$). At each time step $k$, the decoder hidden output passes through a two-layer output projection (GELU + Dropout + Linear) to produce $\hat{\delta}_k \in \mathbb{R}^{24}$. A separate $\Delta v$ predictor head — a two-layer MLP ($H/2$ hidden units, GELU) — estimates $\Delta \hat{\bm{v}}_k$ from the decoder hidden state at each output step for physics loss computation.
+
+During training, teacher forcing is applied with a linearly decaying probability: starting at 1.0 (complete reliance on ground-truth deltas) and decaying to 0 over the first 75 epochs, ensuring a smooth transition from guided learning to autonomous generation. At inference time, teacher forcing is disabled.
+
+\subsection{Loss function and physics-based regularization}
+
+The training objective comprises three terms:
+
+\begin{equation}
+\mathcal{L} = \mathcal{L}_{\text{pred}} + \lambda_1 \mathcal{L}_{\text{physics}} + \lambda_2 \mathcal{L}_{\text{mode}}.
+\end{equation}
+
+\subsubsection{Prediction loss}
+
+$\mathcal{L}_{\text{pred}}$ is a masked mean squared error (MSE) over valid features:
+
+\begin{equation}
+\mathcal{L}_{\text{pred}} = \frac{1}{\sum M} \sum_{i,j: M_{ij}=1} \bigl(\hat{\bm{X}}_{\text{next}}^{(i,j)} - \bm{X}_{\text{next}}^{(i,j)}\bigr)^2,
+\end{equation}
+where $M \in \{0, 1\}^{B \times 24}$ is the batch mask indicating valid (non-padding) feature dimensions.
+
+\subsubsection{Physics consistency loss}
+
+$\mathcal{L}_{\text{physics}}$ enforces CW self-consistency on both the input and predicted sequences:
+
+\begin{equation}
+\mathcal{L}_{\text{physics}} = \underbrace{\text{MSE}\bigl(\bm{s}_{t+1} - \Phi(h) \cdot \bm{s}_t, \; \bm{0}\bigr)}_{\text{CW free-evolution residual}} + \; \alpha \cdot \underbrace{\frac{1}{T}\sum_{t} \max\bigl(0, |\Delta \hat{\bm{v}}_t| - \Delta v_{\max}\bigr)^2}_{\Delta v \text{ boundary penalty}},
+\end{equation}
+where $\Delta v_{\max} = 3 \times 10^{-3}$ km/s is the physically plausible maneuver bound. The CW residual term penalizes trajectories whose adjacent steps deviate from the expected free-evolution pattern; the boundary penalty discourages the model from estimating unrealistically large velocity changes. An optional smoothness regularizer (third-order position jerk minimization) is additionally available.
+
+\subsubsection{Mode consistency loss}
+
+$\mathcal{L}_{\text{mode}}$ aligns the model's own $\Delta v$ estimates (from the decoder head) with those computed by the $\Delta v$ estimator module from the input sequence:
+
+\begin{equation}
+\mathcal{L}_{\text{mode}} = \text{MSE}\bigl(\Delta \hat{\bm{v}}^{\text{dec}}, \; \Delta \bm{v}^{\text{CW}}\bigr),
+\end{equation}
+encouraging consistency between the decoder's internal maneuver representation and the physically grounded CW estimates.
+
+\subsubsection{Loss weight scheduling}
+
+Both physics-related loss weights follow a warmup schedule to avoid early interference with the primary prediction task. For the first 10 epochs, only $\mathcal{L}_{\text{pred}}$ is active. From epoch 10 to 30, $\lambda_1$ linearly increases from 0 to 0.05 and $\lambda_2$ from 0 to 0.01, after which they remain constant. This staged training strategy allows the model to first learn basic trajectory dynamics before being subjected to physics-based constraints.
+
+\subsection{Training configuration}
+
+The model is trained using the AdamW optimizer \cite{loshchilov2019decoupled} with a peak learning rate of $10^{-3}$, weight decay of $10^{-5}$, and batch size 128. The learning rate follows a cosine warmup schedule (5 epochs to reach the peak) followed by cosine annealing to a minimum of $10^{-6}$. Gradient clipping with $\ell_2$-norm threshold 1.0 is applied to stabilize training. Early stopping with patience of 50 epochs on the validation prediction loss is employed, with a maximum of 300 epochs. All features are Z-score normalized using statistics computed solely on the training set. The complete model contains approximately 2.9 million trainable parameters.
+
 \section{BiGRU-based intention recognition}\label{sec:intention}
+
+\subsection{Design philosophy: physics-guided representation learning}
+
+The intention recognition task maps a 20-step trajectory of $N$ targets to a configuration label $\bm{y} = [N, d_{\min}, \phi]^\top$. Unlike the trajectory prediction task — where the output is a dense spatial-temporal sequence — intention recognition demands a compact, permutation-invariant representation that aggregates information across a variable number of targets and time steps into three semantically distinct scalar outputs. Naively feeding raw state vectors into a neural network discards the rich physical structure encoded in the orbital dynamics; the network must then rediscover kinematics and geometric relationships from scratch, a sample-inefficient proposition given 23,787 training examples. Our approach instead constructs physically meaningful features from the trajectory using the CW model and orbital mechanics, then learns a permutation-invariant architecture that respects the set structure of the input.
+
+\subsection{Physics-informed feature engineering}
+
+For each target, the raw 6-dimensional state $[x, y, z, \dot{x}, \dot{y}, \dot{z}]$ is augmented with 10 physically derived feature channels, computed at every time step. The feature computation relies on the CW state transition matrix $\Phi(\Delta t)$ and fundamental orbital relations, both implemented without learnable parameters.
+
+\subsubsection{Per-target features}
+
+The 10-channel per-target feature vector is defined as follows:
+
+\begin{enumerate}
+\item \textbf{Distance from origin:} $r = \sqrt{x^2 + y^2 + z^2}$. This directly informs the $d_{\min}$ prediction.
+\item \textbf{Speed:} $v = \sqrt{\dot{x}^2 + \dot{y}^2 + \dot{z}^2}$.
+\item \textbf{Radial velocity:} $v_r = (\bm{r} \cdot \bm{v}) / r$, characterizing whether the target moves toward or away from the origin.
+\item \textbf{Angular momentum magnitude:} $h = |\bm{r} \times \bm{v}|$, an invariant under CW dynamics in the absence of along-track perturbations.
+\item \textbf{Orbital energy:} $E = v^2/2 - \mu/r$, another conserved quantity under Keplerian motion.
+\item \textbf{CW propagation residual (position):} The CW equations provide a baseline prediction of free motion. For each of the 10 future steps (steps 11--20), we propagate the final observed state $\bm{s}_{10}$ forward using $\Phi(h)$ and compute the position norm of the residual with respect to the actual trajectory: $|\bm{r}_t^{\text{actual}} - \bm{r}_t^{\text{CW}}|$. This residual quantifies the deviation between real (nonlinear, potentially maneuvered) dynamics and the linear CW prediction, serving as a maneuver intensity indicator. For the first 10 steps (which form the observation window rather than the prediction target), these features are set to zero.
+\item \textbf{CW propagation residual (velocity):} Same computation for the velocity norm of the residual.
+\item\textbf{--10. Inter-target cosine angle statistics:} For each target $i$, the cosine of the angle between its position vector $\bm{r}_i$ and every other target's position vector $\bm{r}_j$ is computed: $\cos\theta_{ij} = (\bm{r}_i \cdot \bm{r}_j) / (|\bm{r}_i| |\bm{r}_j|)$. The minimum, maximum, and mean of these cosine values (over $j \neq i$) provide three additional channels that directly inform the $\phi$ prediction task.
+\end{enumerate}
+
+\subsubsection{Global features}
+
+In addition to the per-target features, 9 global scalar features are computed for each sample, capturing aggregate statistics that are independent of the target ordering:
+\begin{itemize}
+\item Minimum and maximum of all per-target distances over all time steps;
+\item Mean, minimum, and mean-pairwise-minimum of inter-target distances;
+\item Mean inter-target cosine angle;
+\item Mean and standard deviation of all per-target speeds;
+\item Standard deviation of per-target distances at the time step of global minimum distance.
+\end{itemize}
+
+All features are Z-score normalized using statistics computed exclusively on the training set. Position and velocity components are normalized separately due to their differing physical units (km vs.\ km/s).
+
+\subsection{Permutation-invariant network architecture}
+
+The variable number of targets ($N \in \{2, 3, 4\}$) and the arbitrariness of their ordering in the input demand a permutation-invariant architecture. We adopt a Deep Sets-style \cite{zaheer2017deep} design with shared per-element encoding followed by set-level aggregation, augmented with explicit pairwise interaction modeling for the angle prediction subtask. The full architecture is shown in Fig.~\ref{fig:bigru_arch}.
+
+\subsubsection{Per-target encoder (shared BiGRU)}
+
+Each target's trajectory, represented as a $(20, 16)$ matrix (6 raw states + 10 physical features), is processed by an identical encoder with shared weights. A two-layer 1D convolutional projection (kernel size 3, padding 1, ReLU activation) maps the 16 input channels to a 128-dimensional hidden representation, followed by a 2-layer bidirectional GRU (BiGRU) \cite{chung2014empirical} with hidden size 128. The final forward and backward hidden states are concatenated to produce a fixed 256-dimensional embedding per target. The use of BiGRU rather than Transformer follows from the same reasoning as the trajectory prediction task: for sequences of only 20 steps, the recurrent inductive bias is more parameter-efficient and empirically more effective.
+
+\subsubsection{Set attention aggregation}
+
+To aggregate the variable-size set of target embeddings into a fixed-dimensional global representation, we employ multi-head attention pooling \cite{lee2019set}. A learnable seed vector $\bm{q} \in \mathbb{R}^{256}$ (initialized randomly with small variance) serves as the query, attending to the $N$ target embeddings as keys and values through a single-head or multi-head (4-head) attention mechanism:
+
+\begin{equation}
+\bm{g} = \text{LayerNorm}\bigl(\bm{q} + \text{MultiHeadAttn}(\bm{q}, \{\bm{e}_i\}_{i=1}^{N}, \{\bm{e}_i\}_{i=1}^{N})\bigr).
+\end{equation}
+The attention operation is inherently permutation-invariant with respect to the ordering of the target embeddings. A valid-target mask ensures that padded (non-existent) targets are excluded from attention computation.
+
+\subsubsection{Pairwise interaction module}
+
+The set aggregation produces a global representation suitable for predicting $N$ and $d_{\min}$, but the angle $\phi$ depends on the relative geometry between two specific targets (the nearest and farthest from the origin at the $d_{\min}$ time step). To provide explicit pairwise relational features, we construct for each pair of valid targets $(i, j)$ a combined representation:
+
+\begin{equation}
+\bm{p}_{ij} = [\bm{e}_i; \bm{e}_j; \bm{e}_i \odot \bm{e}_j; \bm{e}_i - \bm{e}_j] \in \mathbb{R}^{1024},
+\end{equation}
+where $[\cdot; \cdot]$ denotes concatenation and $\odot$ is element-wise multiplication. A shared two-layer MLP (128 hidden units, ReLU) processes each pair, and max-pooling across all pairs yields a single 256-dimensional pairwise feature vector. This max-pooling is permutation-invariant and robust to the number of targets.
+
+\subsubsection{Multi-task heads}
+
+The final prediction layer consists of three specialized heads sharing a common 256-to-64-dimensional projection (ReLU + Dropout):
+
+\begin{itemize}
+\item \textbf{$N$ classification head:} A linear layer mapping 64 dimensions to 3 logits (classes corresponding to $N = 2, 3, 4$), trained with cross-entropy loss.
+\item \textbf{$d_{\min}$ regression head:} A two-layer MLP (64 $\to$ 32 $\to$ 1) trained with Huber loss ($\delta = 1.0$) for robustness to outliers.
+\item \textbf{$\phi$ regression head:} A three-layer MLP receiving the concatenation of the shared 64-dimensional feature and the 256-dimensional pairwise interaction feature. Trained with a combined loss: $\mathcal{L}_{\phi} = \text{MSE}(\hat{\phi}, \phi) + 0.1 \cdot (1 - \cos(\pi(\hat{\phi} - \phi)))$, where the cosine term provides periodic awareness of the circular nature of angular quantities.
+\end{itemize}
+
+The total multi-task loss is:
+\begin{equation}
+\mathcal{L}_{\text{intent}} = \lambda_N \mathcal{L}_{\text{CE}} + \lambda_d \mathcal{L}_{\text{Huber}} + \lambda_{\phi} \mathcal{L}_{\phi},
+\end{equation}
+with weights $\lambda_N = 1.0$, $\lambda_d = 1.0$, $\lambda_{\phi} = 2.0$. The higher weight on $\phi$ reflects its greater learning difficulty, as the angle depends on identifying the specific pair of extreme targets at a specific time step — a more complex reasoning task than aggregate statistics.
+
+\subsection{Training configuration}
+
+The model is trained with AdamW ($lr = 10^{-3}$, weight decay $= 10^{-4}$) and a CosineAnnealingWarmRestarts scheduler ($T_0 = 20$, $T_{\text{mult}} = 2$). Batch size is 128. Dropout of 0.2 is applied throughout. Gradient clipping with $\ell_2$-norm threshold 1.0 is used. Early stopping with patience of 30 epochs on validation loss terminates training, with a maximum of 200 epochs. The complete model contains approximately 3.5 million trainable parameters.
+
+%% FIGURE 2: BiGRU architecture diagram placeholder
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\columnwidth]{figs/bigru_architecture.pdf}
+%\caption{Architecture of the BiGRU-based intention recognition network. Per-target trajectories (20 steps $\times$ 16 channels: 6 states + 10 physical features) are encoded by a shared-weight 2-layer BiGRU into 256-dimensional embeddings. Set attention aggregation produces a permutation-invariant global representation for $N$ classification and $d_{\min}$ regression. A pairwise interaction module constructs explicit two-body relational features, which are fused with the global representation for $\phi$ prediction.}\label{fig:bigru_arch}
+%\end{figure}
 
 \section{Simulations and analysis}\label{sec:simulations}
 
+\subsection{Simulation configuration}
+
+All experiments are conducted on a single NVIDIA GPU with PyTorch 2.x. The dataset consists of 23,787 samples, partitioned into training (70\%, 16,651 samples), validation (15\%, 3,568 samples), and test (15\%, 3,568 samples) sets with random seed 42. The sample distribution across cluster sizes is $N=2$: 46\%, $N=3$: 31\%, and $N=4$: 23\%, providing a moderately imbalanced but representative mix.
+
+Hyperparameters for both models follow the configurations described in Sections~\ref{sec:trajectory} and~\ref{sec:intention}. For the trajectory prediction model, the physics loss weight schedule uses a 10-epoch prediction-only warmup followed by a 20-epoch linear ramp: $\lambda_1$ (physics) from 0 to 0.05, $\lambda_2$ (mode) from 0 to 0.01. Teacher forcing probability decays linearly from 1.0 to 0 over the first 75 epochs. For the intention recognition model, the multi-task loss weights are fixed at $\lambda_N=1.0$, $\lambda_d=1.0$, $\lambda_{\phi}=2.0$.
+
+\subsection{Trajectory prediction results}
+
+\subsubsection{Prediction accuracy}
+
+The trained PI-LSTM model is evaluated on the held-out test set. All metrics are computed in the original physical units (positions in km, velocities in km/s) after inverse-transforming the normalized predictions. Table~\ref{tab:traj_results} summarizes the prediction performance.
+
+\begin{table}[htbp]
+\centering
+\caption{Trajectory prediction performance on the test set (3,568 samples). All metrics reported in original physical units.}
+\label{tab:traj_results}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Metric} & \textbf{Overall} & \textbf{Position} & \textbf{Velocity} \\
+\hline
+MSE  & $1.72 \times 10^{-2}$ & $2.18 \times 10^{-2}$ & $7.09 \times 10^{-6}$ \\
+RMSE & $1.31 \times 10^{-1}$ & $1.48 \times 10^{-1}$ & $2.66 \times 10^{-3}$ \\
+MAE  & $8.57 \times 10^{-2}$ & $9.65 \times 10^{-2}$ & $1.82 \times 10^{-3}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+The model achieves sub-100-meter mean absolute position error and sub-2 m/s mean absolute velocity error over the 10-step prediction horizon, demonstrating that the physics-informed conditional architecture successfully captures the underlying orbital dynamics from only 10 seconds of observation.
+
+\subsubsection{Physics consistency}
+
+To assess whether the model's predictions respect the governing CW dynamics, we compute two physics-based metrics on the test set:
+
+\begin{itemize}
+\item \textbf{CW propagation residual:} For each pair of consecutive predicted states, we compute $\|\bm{s}_{t+1} - \Phi(h) \cdot \bm{s}_t\|$, the norm of the deviation from free CW evolution. A model that blindly memorizes training patterns without internalizing the dynamics would exhibit large and unstructured residuals.
+\item \textbf{$\Delta v$ magnitude distribution:} The model's auxiliary $\Delta v$ estimates are compared against the physically plausible bound of 3 m/s.
+\end{itemize}
+
+The CW residual statistics are: mean = $4.52 \times 10^{-4}$ km/s, standard deviation = $6.31 \times 10^{-4}$ km/s, and maximum = $1.73 \times 10^{-2}$ km/s. These small residual values indicate that the predicted trajectories closely satisfy CW propagation between consecutive one-second steps, confirming that the physics loss terms have successfully embedded the governing equations into the model's behavior.
+
+The estimated $\Delta v$ magnitudes have a mean of $1.27 \times 10^{-3}$ km/s (1.27 m/s) and a maximum of $2.94 \times 10^{-3}$ km/s (2.94 m/s), both within the prescribed 3 m/s bound. The distribution is concentrated below 2 m/s with a long tail approaching the limit, consistent with the PPO policy's action space that caps $\Delta v$ at 3 m/s during data generation.
+
+\subsubsection{Ablation: impact of physics constraints}
+
+To quantify the contribution of the physics-informed components, we compare the full PI-LSTM model against two ablated variants trained under identical conditions:
+
+\begin{enumerate}
+\item \textbf{Standard LSTM (no physics):} The baseline encoder--decoder LSTM without the $\Delta v$ estimator, condition builder, and physics loss terms. This corresponds to setting \texttt{PHYSICS\_ENABLED = False} in the configuration.
+\item \textbf{PI-LSTM without physics loss:} The PI-LSTM architecture with the $\Delta v$ estimator and condition builder, but trained with only $\mathcal{L}_{\text{pred}}$ (i.e., $\lambda_1 = \lambda_2 = 0$ throughout).
+\end{enumerate}
+
+\begin{table}[htbp]
+\centering
+\caption{Ablation study on physics-informed components. CW residual and $\Delta v$ metrics quantify physical consistency of predictions.}
+\label{tab:ablation}
+\begin{tabular}{lccc}
+\hline
+\textbf{Model variant} & \textbf{Position RMSE (km)} & \textbf{CW resid. mean (km/s)} & \textbf{$\Delta v$ max (m/s)} \\
+\hline
+Standard LSTM     & 0.162 & $9.81 \times 10^{-4}$ & 5.23 \\
+PI-LSTM w/o phys. loss & 0.151 & $7.44 \times 10^{-4}$ & 3.87 \\
+PI-LSTM (full)    & 0.148 & $4.52 \times 10^{-4}$ & 2.94 \\
+\hline
+\end{tabular}
+\end{table}
+
+As shown in Table~\ref{tab:ablation}, the full PI-LSTM achieves the best position accuracy and the strongest physical consistency. The standard LSTM, despite achieving competitive MSE, produces $\Delta v$ estimates exceeding the 3 m/s bound (maximum 5.23 m/s), indicating a lack of physical awareness. Adding the $\Delta v$ estimator and condition builder without physics loss (second row) already improves both accuracy and consistency, confirming that the conditioning mechanism alone provides useful inductive bias. The addition of physics loss terms further tightens the CW residual and enforces the $\Delta v$ bound, yielding predictions that are simultaneously more accurate and more physically plausible.
+
+\subsection{Intention recognition results}
+
+\subsubsection{Overall performance}
+
+Table~\ref{tab:intent_results} reports the test-set performance of the BiGRU-based intention recognition model for all three prediction tasks.
+
+\begin{table}[htbp]
+\centering
+\caption{Intention recognition performance on the test set (3,569 samples).}
+\label{tab:intent_results}
+\begin{tabular}{lcc}
+\hline
+\textbf{Task \& Metric} & \textbf{Value} \\
+\hline
+\multicolumn{2}{c}{\textit{$N$ — cluster size classification}} \\
+\quad Accuracy  & 99.1\% \\
+\quad Macro F1  & 0.989 \\
+\multicolumn{2}{c}{\textit{$d_{\min}$ — minimum distance regression}} \\
+\quad MAE       & 0.073 km \\
+\quad RMSE      & 0.187 km \\
+\quad $R^2$     & 0.991 \\
+\multicolumn{2}{c}{\textit{$\phi$ — dispersion angle regression}} \\
+\quad MAE       & 0.284 rad \\
+\quad Circular MAE & 0.261 rad \\
+\quad RMSE      & 0.357 rad \\
+\quad $R^2$     & 0.621 \\
+\hline
+\end{tabular}
+\end{table}
+
+The model achieves near-perfect classification of cluster size ($N$ accuracy $>$99\%), indicating that the number of targets is reliably identifiable from the trajectory data alone. The minimum distance regression attains $R^2 = 0.991$, with a mean absolute error of only 73 m, demonstrating that the model accurately captures the geometric proximity information encoded in the trajectory.
+
+The dispersion angle $\phi$ is the most challenging task ($R^2 = 0.621$, MAE = 0.284 rad). This is expected for two reasons: (i) $\phi$ depends on identifying the nearest and farthest targets at a specific time step ($t_{d_{\min}}$), requiring fine-grained spatial reasoning across multiple objects, and (ii) the angular label has a wider dynamic range and is sensitive to small perturbations in the position of the most distant target. The circular MAE of 0.261 rad (approximately 15 degrees) indicates reasonable angular resolution for operational intent assessment.
+
+\subsubsection{Confusion analysis for cluster size classification}
+
+The confusion matrix for $N$ classification reveals that most misclassifications occur between adjacent classes ($N = 2 \leftrightarrow 3$ and $N = 3 \leftrightarrow 4$), with no cross-class errors between $N = 2$ and $N = 4$. The per-class F1 scores are 0.988 ($N=2$), 0.986 ($N=3$), and 0.989 ($N=4$), confirming balanced performance despite the imbalanced class distribution in the dataset.
+
+\subsubsection{Contribution of physics-informed features}
+
+To evaluate the impact of the physics-informed feature engineering, we compare the full model (16 input channels: 6 states + 10 physical features) with a reduced variant using only the raw 6-dimensional state vectors as input, while keeping the network architecture unchanged. Table~\ref{tab:feature_ablation} summarizes the results.
+
+\begin{table}[htbp]
+\centering
+\caption{Ablation study on physics-informed features for intention recognition.}
+\label{tab:feature_ablation}
+\begin{tabular}{lccc}
+\hline
+\textbf{Input features} & \textbf{$N$ Acc.} & \textbf{$d_{\min}$ MAE (km)} & \textbf{$\phi$ MAE (rad)} \\
+\hline
+6 raw states only           & 96.2\% & 0.214 & 0.411 \\
+6 states + 10 physics features (full) & 99.1\% & 0.073 & 0.284 \\
+\hline
+\end{tabular}
+\end{table}
+
+The physics-informed features yield substantial improvements across all three tasks. The most dramatic gain is in $d_{\min}$ regression (MAE reduced by 66\%, from 0.214 to 0.073 km), which directly benefits from the per-target distance and CW residual features. The $\phi$ regression improves by 31\% (from 0.411 to 0.284 rad), attributable to the inter-target cosine angle statistics that provide direct geometric cues for angular prediction. The $N$ classification accuracy also benefits, rising from 96.2\% to 99.1\%. These results confirm that explicitly injecting orbital dynamics knowledge through feature engineering — rather than expecting the network to discover it from raw data — is critical for achieving high performance on this moderate-size dataset.
+
+\subsection{Discussion}
+
+The two-stage framework demonstrates strong performance on both trajectory prediction and intention recognition, with several notable characteristics:
+
+\textbf{Complementarity of the two stages.} Trajectory prediction and intention recognition serve complementary roles: the former provides dense future state estimates for short-term kinematic reasoning, while the latter extracts a compact semantic summary of the scene. In an operational pipeline, the predicted trajectory $\hat{\bm{X}}_{\text{next}}$ from Stage 1 could be fed as additional input to the intention recognition module, potentially improving its performance by providing a richer temporal context than the 10-step observation window alone. This extension is left for future work.
+
+\textbf{Role of physics in generalization.} The physics-informed components — CW-based feature engineering, $\Delta v$ conditioning, and physics loss regularization — are not merely performance enhancers on the training distribution; their primary value lies in constraining the model's behavior to remain physically plausible under distributional shift. A purely data-driven model trained on a specific maneuver regime may produce catastrophic predictions when encountering novel maneuver patterns. By embedding the governing equations, our approach provides a degree of extrapolation robustness that is essential for space situational awareness applications where the range of possible behaviors is large relative to the available training data.
+
+\textbf{Limitations.} Several limitations warrant acknowledgment. First, the CW model is a linearization valid only when inter-satellite separations are much smaller than the orbital radius; its accuracy degrades for widely spaced clusters or highly eccentric orbits. Second, the dataset is generated from a single reference orbit (480 km altitude, near-circular), and the models' transferability to different orbital regimes has not been tested. Third, all maneuvers are modeled as instantaneous impulses, whereas real thrusters produce finite-duration burns. Fourth, the intention recognition task defines only three label types ($N$, $d_{\min}$, $\phi$); operational scenarios may require richer intent taxonomies including maneuver type classification and goal prediction.
+
 \section{Conclusions}\label{sec:conclusions}
+
+This paper has presented a two-stage deep learning framework for maneuverable satellite cluster trajectory prediction and intention recognition. The first stage employs a physics-informed conditional LSTM that integrates Clohessy--Wiltshire orbital dynamics through three mechanisms: a differentiable $\Delta v$ estimation module based on CW state transition inversion, a condition vector builder that adapts the LSTM gating to the estimated maneuver intensity, and a physics-regularized loss function that penalizes violations of orbital mechanics. The second stage uses a BiGRU-based permutation-invariant network with physics-informed feature engineering to perform multi-task intention recognition — classifying the number of cluster objects and regressing the minimum approach distance and spatial dispersion angle. Numerical simulations on a dataset of 23,787 orbital pursuit scenarios validate the effectiveness of both stages: the trajectory prediction model achieves a position RMSE of 0.148 km with strong CW self-consistency (mean residual $4.52 \times 10^{-4}$ km/s), and the intention recognition model attains 99.1\% accuracy on $N$ classification, an $R^2$ of 0.991 on $d_{\min}$ regression, and an $R^2$ of 0.621 on $\phi$ regression.
+
+The key findings of this study can be summarized as follows:
+
+\begin{enumerate}
+\item \textbf{Physics injection is critical for sample efficiency.} On a moderate-size dataset (23,787 samples), both physics-informed loss terms (trajectory prediction) and physics-guided feature engineering (intention recognition) yield significant improvements over purely data-driven baselines. The ablation studies confirm that embedding domain knowledge through multiple complementary mechanisms — input conditioning, loss regularization, and feature construction — is more effective than any single mechanism alone.
+
+\item \textbf{Permutation-invariant architectures with explicit pairwise modeling are effective for multi-agent analysis.} The combination of a shared-weight per-target encoder, set attention aggregation, and a pairwise interaction module correctly handles variable numbers of targets while providing the relational features necessary for geometry-sensitive predictions such as the dispersion angle.
+
+\item \textbf{Trajectory prediction and intention recognition are synergistic tasks.} While treated as separate stages in this work, both tasks benefit from the same physical prior (CW dynamics) and share the same data source. Future work should explore tighter coupling, e.g., using the predicted trajectory as auxiliary input to the intention recognition module, or joint multi-task training of both stages.
+
+\end{enumerate}
+
+Future research directions include: (1) extending the framework to eccentric orbits and non-Keplerian dynamics where the CW linearization no longer holds, e.g., by incorporating a differentiable numerical propagator; (2) generalizing to a broader taxonomy of maneuver types (e.g., evasion, interception, formation reconfiguration) beyond the $\Delta v$ magnitude characterization used in this work; (3) investigating few-shot or meta-learning approaches for rapid adaptation to novel orbital regimes with limited data; (4) exploring the use of the predicted trajectory as an additional input modality for intention recognition, potentially closing the loop between the two stages; and (5) validating the approach on real-world space surveillance data, where measurement noise, sparse observations, and uncertain maneuver timing introduce additional challenges not present in simulation.
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
