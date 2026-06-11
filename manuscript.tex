@@ -98,7 +98,10 @@
 
 % Affiliation
 \affiliation[1]{organization={School of Aeronautics, Northwestern Polytechnical University},
-    addressline={Xi'an 710072, Shaanxi},
+    addressline={127 Youyi Xilu},
+    city={Xi'an},
+    postcode={710072},
+    state={Shaanxi},
     country={China}}
 
 % Corresponding author text
@@ -423,19 +426,18 @@ Hyperparameters for both models follow the configurations described in Sections~
 
 The trained PI-LSTM model is evaluated on the held-out test set. All metrics are computed in the original physical units (positions in km, velocities in km/s) after inverse-transforming the normalized predictions. Table~\ref{tab:traj_results} summarizes the prediction performance.
 
-\begin{table}[htbp]
-\centering
+\begin{table}[width=.9\linewidth,cols=4,pos=h]
 \caption{Trajectory prediction performance on the test set (3,568 samples). All metrics reported in original physical units.}
 \label{tab:traj_results}
-\begin{tabular}{lcccc}
-\hline
+\begin{tabular*}{\tblwidth}{@{}LCCC@{}}
+\toprule
 \textbf{Metric} & \textbf{Overall} & \textbf{Position} & \textbf{Velocity} \\
-\hline
+\midrule
 MSE  & $1.72 \times 10^{-2}$ & $2.18 \times 10^{-2}$ & $7.09 \times 10^{-6}$ \\
 RMSE & $1.31 \times 10^{-1}$ & $1.48 \times 10^{-1}$ & $2.66 \times 10^{-3}$ \\
 MAE  & $8.57 \times 10^{-2}$ & $9.65 \times 10^{-2}$ & $1.82 \times 10^{-3}$ \\
-\hline
-\end{tabular}
+\bottomrule
+\end{tabular*}
 \end{table}
 
 The model achieves sub-100-meter mean absolute position error and sub-2 m/s mean absolute velocity error over the 10-step prediction horizon, demonstrating that the physics-informed conditional architecture successfully captures the underlying orbital dynamics from only 10 seconds of observation.
@@ -462,19 +464,18 @@ To quantify the contribution of the physics-informed components, we compare the 
 \item \textbf{PI-LSTM without physics loss:} The PI-LSTM architecture with the $\Delta v$ estimator and condition builder, but trained with only $\mathcal{L}_{\text{pred}}$ (i.e., $\lambda_1 = \lambda_2 = 0$ throughout).
 \end{enumerate}
 
-\begin{table}[htbp]
-\centering
+\begin{table}[width=.9\linewidth,cols=4,pos=h]
 \caption{Ablation study on physics-informed components. CW residual and $\Delta v$ metrics quantify physical consistency of predictions.}
 \label{tab:ablation}
-\begin{tabular}{lccc}
-\hline
+\begin{tabular*}{\tblwidth}{@{}LCCC@{}}
+\toprule
 \textbf{Model variant} & \textbf{Position RMSE (km)} & \textbf{CW resid. mean (km/s)} & \textbf{$\Delta v$ max (m/s)} \\
-\hline
+\midrule
 Standard LSTM     & 0.162 & $9.81 \times 10^{-4}$ & 5.23 \\
-PI-LSTM w/o phys. loss & 0.151 & $7.44 \times 10^{-4}$ & 3.87 \\
+PI-LSTM w/o phys.\ loss & 0.151 & $7.44 \times 10^{-4}$ & 3.87 \\
 PI-LSTM (full)    & 0.148 & $4.52 \times 10^{-4}$ & 2.94 \\
-\hline
-\end{tabular}
+\bottomrule
+\end{tabular*}
 \end{table}
 
 As shown in Table~\ref{tab:ablation}, the full PI-LSTM achieves the best position accuracy and the strongest physical consistency. The standard LSTM, despite achieving competitive MSE, produces $\Delta v$ estimates exceeding the 3 m/s bound (maximum 5.23 m/s), indicating a lack of physical awareness. Adding the $\Delta v$ estimator and condition builder without physics loss (second row) already improves both accuracy and consistency, confirming that the conditioning mechanism alone provides useful inductive bias. The addition of physics loss terms further tightens the CW residual and enforces the $\Delta v$ bound, yielding predictions that are simultaneously more accurate and more physically plausible.
@@ -485,28 +486,27 @@ As shown in Table~\ref{tab:ablation}, the full PI-LSTM achieves the best positio
 
 Table~\ref{tab:intent_results} reports the test-set performance of the BiGRU-based intention recognition model for all three prediction tasks.
 
-\begin{table}[htbp]
-\centering
+\begin{table}[width=.9\linewidth,cols=2,pos=h]
 \caption{Intention recognition performance on the test set (3,569 samples).}
 \label{tab:intent_results}
-\begin{tabular}{lcc}
-\hline
+\begin{tabular*}{\tblwidth}{@{}LL@{}}
+\toprule
 \textbf{Task \& Metric} & \textbf{Value} \\
-\hline
-\multicolumn{2}{c}{\textit{$N$ — cluster size classification}} \\
+\midrule
+\multicolumn{2}{@{}C@{}}{\textit{$N$ --- cluster size classification}} \\
 \quad Accuracy  & 99.1\% \\
-\quad Macro F1  & 0.989 \\
-\multicolumn{2}{c}{\textit{$d_{\min}$ — minimum distance regression}} \\
+\quad Macro F1  & 0.989 \\[2pt]
+\multicolumn{2}{@{}C@{}}{\textit{$d_{\min}$ --- minimum distance regression}} \\
 \quad MAE       & 0.073 km \\
 \quad RMSE      & 0.187 km \\
-\quad $R^2$     & 0.991 \\
-\multicolumn{2}{c}{\textit{$\phi$ — dispersion angle regression}} \\
+\quad $R^2$     & 0.991 \\[2pt]
+\multicolumn{2}{@{}C@{}}{\textit{$\phi$ --- dispersion angle regression}} \\
 \quad MAE       & 0.284 rad \\
 \quad Circular MAE & 0.261 rad \\
 \quad RMSE      & 0.357 rad \\
 \quad $R^2$     & 0.621 \\
-\hline
-\end{tabular}
+\bottomrule
+\end{tabular*}
 \end{table}
 
 The model achieves near-perfect classification of cluster size ($N$ accuracy $>$99\%), indicating that the number of targets is reliably identifiable from the trajectory data alone. The minimum distance regression attains $R^2 = 0.991$, with a mean absolute error of only 73 m, demonstrating that the model accurately captures the geometric proximity information encoded in the trajectory.
@@ -521,18 +521,17 @@ The confusion matrix for $N$ classification reveals that most misclassifications
 
 To evaluate the impact of the physics-informed feature engineering, we compare the full model (16 input channels: 6 states + 10 physical features) with a reduced variant using only the raw 6-dimensional state vectors as input, while keeping the network architecture unchanged. Table~\ref{tab:feature_ablation} summarizes the results.
 
-\begin{table}[htbp]
-\centering
+\begin{table}[width=.9\linewidth,cols=4,pos=h]
 \caption{Ablation study on physics-informed features for intention recognition.}
 \label{tab:feature_ablation}
-\begin{tabular}{lccc}
-\hline
+\begin{tabular*}{\tblwidth}{@{}LCCC@{}}
+\toprule
 \textbf{Input features} & \textbf{$N$ Acc.} & \textbf{$d_{\min}$ MAE (km)} & \textbf{$\phi$ MAE (rad)} \\
-\hline
+\midrule
 6 raw states only           & 96.2\% & 0.214 & 0.411 \\
-6 states + 10 physics features (full) & 99.1\% & 0.073 & 0.284 \\
-\hline
-\end{tabular}
+6 states + 10 phys.\ features (full) & 99.1\% & 0.073 & 0.284 \\
+\bottomrule
+\end{tabular*}
 \end{table}
 
 The physics-informed features yield substantial improvements across all three tasks. The most dramatic gain is in $d_{\min}$ regression (MAE reduced by 66\%, from 0.214 to 0.073 km), which directly benefits from the per-target distance and CW residual features. The $\phi$ regression improves by 31\% (from 0.411 to 0.284 rad), attributable to the inter-target cosine angle statistics that provide direct geometric cues for angular prediction. The $N$ classification accuracy also benefits, rising from 96.2\% to 99.1\%. These results confirm that explicitly injecting orbital dynamics knowledge through feature engineering — rather than expecting the network to discover it from raw data — is critical for achieving high performance on this moderate-size dataset.
