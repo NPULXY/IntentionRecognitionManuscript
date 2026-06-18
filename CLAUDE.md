@@ -58,6 +58,14 @@ pdflatex -interaction=nonstopmode manuscript.tex
 
 编译产物 `manuscript.pdf` 即论文 PDF。
 
+## Git 与 GitHub 备份
+
+- 每次修改完论文内容（`.tex` 文件）后，必须及时做 git 提交，确保更改被版本记录
+- 远程仓库地址：`git@github.com:NPULXY/IntentionRecognitionManuscript.git`（SSH，需先配置 SSH 密钥认证）
+- 推送前先 `git status` 确认更改范围，`git add` 暂存相关文件（`.tex`、`.bib`、`figs/` 等），然后 `git commit` 并 `git push`
+- 本地分支名为 `main`，与 GitHub 默认分支一致
+- 重要节点（如完成章节重写、添加图表、格式修正）后务必提交并推送，防止本地工作丢失
+
 ## 关键文件
 
 | 文件 | 用途 |
