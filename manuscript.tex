@@ -191,19 +191,19 @@ The remainder of this paper is organized as follows. Section~\ref{sec:problem} f
 
 \section{Problem formulation}\label{sec:problem}
 
-\subsection{Orbital dynamics and the Clohessy--Wiltshire model}
+\subsection{Orbital dynamics model}
 
-The mission scenario addressed in this section is illustrated in Fig.~\ref{fig:coord_frames}. The scenario involves two parties: an observation spacecraft $\mathrm{E}$ and a non-cooperative target cluster consisting of multiple satellites $\mathrm{T}$, both operating in near-circular low Earth orbit at altitude $h_{\text{orb}}$. Two orthogonal coordinate systems are employed to describe the orbital motion.
-% 中文：本节所涉及的任务场景如图~\ref{fig:coord_frames} 所示。该场景涉及两方：观测航天器 $\mathrm{E}$ 和一个由多颗卫星组成的非合作目标集群 $\mathrm{T}$，两者均在高度 $h_{\text{orb}}$ 的近圆低地球轨道上运行。采用两个正交坐标系来描述轨道运动。
+The mission scenario addressed in this section is illustrated in Fig.~\ref{fig:coord_frames}. The scenario involves two parties: an observation spacecraft $\mathrm{O}$ and a non-cooperative target cluster consisting of multiple satellites $\mathrm{T}$, both operating in near-circular low Earth orbit at altitude $h_{\text{orb}}$. Two orthogonal coordinate systems are employed to describe the orbital motion.
+% 中文：本节所涉及的任务场景如图~\ref{fig:coord_frames} 所示。该场景涉及两方：观测航天器 $\mathrm{O}$ 和一个由多颗卫星组成的非合作目标集群 $\mathrm{T}$，两者均在高度 $h_{\text{orb}}$ 的近圆低地球轨道上运行。采用两个正交坐标系来描述轨道运动。
 
 The Earth-centered inertial (ECI) frame, denoted as $\mathcal{F}_{\mathrm{I}}: O_{\mathrm{I}}\text{-}X_{\mathrm{I}}Y_{\mathrm{I}}Z_{\mathrm{I}}$, has its origin $O_{\mathrm{I}}$ at the Earth's center. The $O_{\mathrm{I}}X_{\mathrm{I}}$ axis lies in the equatorial plane and points toward the mean vernal equinox at 12:00 Terrestrial Time on 1 January 2000 (J2000.0). The $O_{\mathrm{I}}Z_{\mathrm{I}}$ axis coincides with the Earth's rotation axis and points northward, perpendicular to the equatorial plane. The $O_{\mathrm{I}}Y_{\mathrm{I}}$ axis completes the right-handed orthogonal triad.
 % 中文：地心惯性系（ECI）记为F_I: O_I-X_I Y_I Z_I，原点O_I位于地心。O_I X_I轴位于赤道平面，指向J2000.0时刻（2000年1月1日12:00地球时）的平春分点。O_I Z_I轴与地球自转轴重合，指向北向，垂直于赤道平面。O_I Y_I轴构成右手正交坐标系。
 
-The local-vertical local-horizontal (LVLH) frame, denoted as $\mathcal{F}_{\mathrm{L}}: O_{\mathrm{L}}\text{-}X_{\mathrm{L}}Y_{\mathrm{L}}Z_{\mathrm{L}}$, is centered at the own satellite (the target spacecraft), which serves as the reference point for relative motion analysis. The $O_{\mathrm{L}}X_{\mathrm{L}}$ axis is aligned with the radial direction, pointing from the Earth's center to the own satellite (radially outward). The $O_{\mathrm{L}}Z_{\mathrm{L}}$ axis is aligned with the orbital angular momentum vector, i.e., perpendicular to the orbital plane. The $O_{\mathrm{L}}Y_{\mathrm{L}}$ axis completes the right-handed triad, pointing approximately along the along-track (velocity) direction.
-% 中文：当地垂直当地水平系（LVLH）记为F_L: O_L-X_L Y_L Z_L，以本星（目标航天器）为中心，作为相对运动分析的参考点。O_L X_L轴与径向对齐，从地心指向本星（径向向外）。O_L Z_L轴与轨道角动量矢量对齐，即垂直于轨道平面。O_L Y_L轴构成右手坐标系，大致沿迹（速度）方向。
+The local-vertical local-horizontal (LVLH) frame, denoted as $\mathcal{F}_{\mathrm{L}}: O_{\mathrm{L}}\text{-}X_{\mathrm{L}}Y_{\mathrm{L}}Z_{\mathrm{L}}$, is centered at the observation spacecraft, which serves as the reference point for relative motion analysis. The $O_{\mathrm{L}}X_{\mathrm{L}}$ axis is aligned with the radial direction, pointing from the Earth's center to the observation spacecraft (radially outward). The $O_{\mathrm{L}}Z_{\mathrm{L}}$ axis is aligned with the orbital angular momentum vector, i.e., perpendicular to the orbital plane. The $O_{\mathrm{L}}Y_{\mathrm{L}}$ axis completes the right-handed triad, pointing approximately along the along-track (velocity) direction.
+% 中文：当地垂直当地水平系（LVLH）记为F_L: O_L-X_L Y_L Z_L，以观测航天器为中心，作为相对运动分析的参考点。O_L X_L轴与径向对齐，从地心指向观测航天器（径向向外）。O_L Z_L轴与轨道角动量矢量对齐，即垂直于轨道平面。O_L Y_L轴构成右手坐标系，大致沿迹（速度）方向。
 
-The own satellite (target) is assumed to be non-maneuvering throughout both the trajectory prediction and intention recognition processes, serving as an inertial reference for the relative motion of neighboring maneuverable spacecraft. Under these conditions, the relative motion of a chaser spacecraft with respect to the own satellite in the LVLH frame is governed by the Clohessy--Wiltshire equations \cite{clohessy1960terminal}:
-% 中文：本星（目标）在轨迹预测和意图识别过程中假设不进行机动，作为邻近可机动航天器相对运动的惯性参考。在此条件下，追踪航天器相对于本星在LVLH系中的相对运动由Clohessy-Wiltshire方程描述：
+The observation spacecraft is assumed to be non-maneuvering and operating in a near-circular orbit throughout both the trajectory prediction and intention recognition processes, serving as an inertial reference for the relative motion of neighboring maneuverable spacecraft. Under these conditions, the relative motion of a satellite of the non-cooperative target cluster with respect to the observation spacecraft in the LVLH frame is governed by the Clohessy--Wiltshire equations \cite{clohessy1960terminal}:
+% 中文：观测航天器在轨迹预测和意图识别过程中假设不进行机动且在近圆轨道上运行，作为邻近可机动航天器相对运动的惯性参考。在此条件下，非合作目标集群的卫星相对于观测航天器在LVLH系中的相对运动由Clohessy-Wiltshire方程描述：
 
 \begin{align}
     \ddot{x} - 2n\dot{y} - 3n^2 x & = 0, \label{eq:cw_x} \\
@@ -216,8 +216,8 @@ where $x$, $y$, $z$ denote the radial (positive outward), along-track, and cross
 \begin{figure}[pos={t}]
     \centering
     \includegraphics[width=\columnwidth]{figs/coordinate_frames}
-    \caption{Coordinate frames: Earth-centered inertial (ECI) frame $\mathcal{F}_{\mathrm{I}}$ and local-vertical local-horizontal (LVLH) frame $\mathcal{F}_{\mathrm{L}}$, with maneuvering chaser spacecraft approaching the target satellite.}\label{fig:coord_frames}
-    % 中文：图1：坐标系：地心惯性系（ECI）F_I和当地垂直当地水平系（LVLH）F_L，机动追踪航天器正在接近目标卫星。
+    \caption{Coordinate frames: Earth-centered inertial (ECI) frame $\mathcal{F}_{\mathrm{I}}$ and local-vertical local-horizontal (LVLH) frame $\mathcal{F}_{\mathrm{L}}$, with a maneuvering satellite of the non-cooperative target cluster approaching the target satellite.}\label{fig:coord_frames}
+    % 中文：图1：坐标系：地心惯性系（ECI）F_I和当地垂直当地水平系（LVLH）F_L，非合作目标集群的一颗机动卫星正在接近目标卫星。
 \end{figure}
 
 In the absence of maneuvers, the CW equations admit an analytical solution expressed through the state transition matrix $\biPhi(\Delta t) \in \mathbb{R}^{6 \times 6}$. Let the state vector be $\bm{s} = [x, y, z, \dot{x}, \dot{y}, \dot{z}]^\top$. The free evolution over time interval $\Delta t$ is then:
@@ -265,29 +265,43 @@ where $\bm{B}_{\text{eff}}(\Delta t) \in \mathbb{R}^{6 \times 3}$ consists of th
 where $\bm{B}_{\text{eff}}^+ = (\bm{B}_{\text{eff}}^\top \bm{B}_{\text{eff}})^{-1} \bm{B}_{\text{eff}}^\top$ is the least-squares solution. This operation is differentiable and can therefore be embedded as a module within a neural network, enabling gradient-based learning of $\Delta v$-aware representations without requiring explicit maneuver labels.
 % 中文：其中B_eff^+ = (B_eff^T B_eff)^{-1} B_eff^T为最小二乘解。该运算可微，因此可嵌入神经网络作为模块，实现基于梯度的Δv感知表示学习，而无需显式的机动标签。
 
-\subsection{Multi-scenario dataset generation}
+\subsection{Construction of satellite cluster intention dataset}
 
-The dataset is constructed from orbital pursuit simulations across five distinct maneuver intention scenarios. Each scenario is modeled as a Markov decision process and solved using Proximal Policy Optimization \cite{schulman2017proximal}. The simulation configuration is as follows. A non-maneuvering target satellite is placed at the LVLH origin. A chaser (pursuer) satellite starts from a random position on a sphere of radius $d_{\text{init}}$ around the origin and executes impulsive orbital maneuvers to approach the target. The chaser's policy is trained using PPO with a 6-dimensional observation (relative position and velocity) and a 3-dimensional continuous action (velocity increment $\Delta \bm{v}$ per step, scaled such that $|\Delta v| \leq \Delta v_{\max}$). At each RL step, a single impulsive maneuver is followed by $N_{\text{sub}}$ sub-steps of free CW propagation at time step $\Delta t$.
-% 中文：数据集通过五种不同机动意图场景的轨道追击仿真构建。每个场景建模为马尔可夫决策过程，并使用近端策略优化求解。仿真配置如下：非机动目标卫星位于LVLH原点；追踪（追击）卫星从原点周围半径d_init球面上的随机位置出发，执行脉冲轨道机动接近目标。追踪者的策略使用PPO训练，具有6维观测（相对位置和速度）和3维连续动作（每步速度增量Δv，缩放使得|Δv| ≤ Δv_max）。在每个RL步骤中，一次脉冲机动后跟随N_sub步自由CW传播子步（时间步长Δt）。
+Based on the orbital dynamics model established in the preceding subsection, this section describes the intention recognition scenario considered in this work. The observation spacecraft $\mathrm{O}$ is equipped with onboard detection sensors capable of observing multiple targets within a range of $d_{\text{obs}}$, thereby acquiring the position and velocity states of these targets for subsequent trajectory prediction and intention recognition. The target satellite cluster $\mathrm{T}$ approaches the observation spacecraft with different operational intentions and possesses high-frequency maneuvering capability. To facilitate the analysis and simplify the problem, the following assumptions are made:
+% 中文：基于前一小节建立的轨道动力学模型，本节描述本文所考虑的意图识别场景。观测航天器O配备星载探测传感器，能够在d_obs范围内观测多个目标，从而获取这些目标的位置和速度状态，用于后续的轨迹预测和意图识别。目标卫星集群T以不同的作战意图接近观测航天器，并具备高频机动能力。为便于分析和简化问题，作出如下假设：
+
+\begin{enumerate}[1.]
+    \item The observation spacecraft $\mathrm{O}$ does not perform any orbital maneuver during the trajectory prediction and intention recognition processes.
+          % 中文：观测航天器O在轨迹预测和意图识别过程中不进行任何轨道机动。
+    \item Each satellite $\mathrm{T}_i$ ($i=1,2,\ldots,N$) of the target satellite cluster $\mathrm{T}$ executes impulsive velocity increment maneuvers simultaneously at a fixed interval $T$, with the velocity increment in each direction ($x,y,z$) bounded by $\Delta v_{\max}$.
+          % 中文：目标卫星集群T中的每颗卫星T_i在固定时间间隔T同步执行脉冲式速度增量机动，各方向(x,y,z)的速度增量不超过Δv_max。
+    \item The observation spacecraft $\mathrm{O}$ acquires the position and velocity states of the target satellite cluster $\mathrm{T}$ exactly at the maneuver instants, and the acquired velocity corresponds to the post-impulsive state (after applying $\Delta v$).
+          % 中文：观测航天器O在机动时刻精确获取目标卫星集群T的位置和速度状态，且获取的速度对应于脉冲施加后的状态。
+    \item The set of possible intentions that the observation spacecraft $\mathrm{O}$ can discriminate for the target satellite cluster $\mathrm{T}$ at each observation instant is finite.
+          % 中文：观测航天器O在每个观测时刻能够识别的目标卫星集群T的可能意图集合是有限的。
+\end{enumerate}
+
+The dataset is constructed from orbital pursuit simulations across five distinct maneuver intention scenarios. Each scenario is modeled as a Markov decision process and solved using Proximal Policy Optimization \cite{schulman2017proximal}. The simulation configuration is as follows. A non-maneuvering target satellite is placed at the LVLH origin. A satellite of the non-cooperative target cluster starts from a random position on a sphere of radius $d_{\text{init}}$ around the origin and executes impulsive orbital maneuvers to approach the target. The satellite's policy is trained using PPO with a 6-dimensional observation (relative position and velocity) and a 3-dimensional continuous action (velocity increment $\Delta \bm{v}$ per step, scaled such that $|\Delta v| \leq \Delta v_{\max}$). At each RL step, a single impulsive maneuver is followed by $N_{\text{sub}}$ sub-steps of free CW propagation at time step $\Delta t$.
+% 中文：数据集通过五种不同机动意图场景的轨道追击仿真构建。每个场景建模为马尔可夫决策过程，并使用近端策略优化求解。仿真配置如下：非机动目标卫星位于LVLH原点；非合作目标集群的卫星从原点周围半径d_init球面上的随机位置出发，执行脉冲轨道机动接近目标。该卫星的策略使用PPO训练，具有6维观测（相对位置和速度）和3维连续动作（每步速度增量Δv，缩放使得|Δv| ≤ Δv_max）。在每个RL步骤中，一次脉冲机动后跟随N_sub步自由CW传播子步（时间步长Δt）。
 
 The five intention scenarios differ in their reward structures, which encode distinct operational objectives:
 % 中文：五种意图场景的奖励结构不同，编码了不同的操作目标：
 
 \begin{itemize}
-    \item \textbf{Pursuit (Capture):} The chaser receives a reward of $+R_{\text{cap}}$ upon reaching within distance $d_{\text{cap}}$ of the target and a penalty of $-R_{\text{cap}}$ if the inter-satellite distance exceeds $d_{\text{bnd}}$. This incentivizes rapid approach and rendezvous.
-          % 中文：追击（捕获）：追踪者在到达距目标d_cap范围内时获得+R_cap的奖励，如果星间距离超过d_bnd则获得-R_cap的惩罚，激励快速接近和交会。
+    \item \textbf{Pursuit (Capture):} The satellite of the non-cooperative target cluster receives a reward of $+R_{\text{cap}}$ upon reaching within distance $d_{\text{cap}}$ of the target and a penalty of $-R_{\text{cap}}$ if the inter-satellite distance exceeds $d_{\text{bnd}}$. This incentivizes rapid approach and rendezvous.
+          % 中文：追击（捕获）：非合作目标集群的卫星在到达距目标d_cap范围内时获得+R_cap的奖励，如果星间距离超过d_bnd则获得-R_cap的惩罚，激励快速接近和交会。
 
-    \item \textbf{Reconnaissance (Detection):} The chaser is rewarded for approaching the target to within a detection range $[d_{\text{det}}^{\min}, d_{\text{det}}^{\max}]$ without necessarily achieving rendezvous, simulating fly-by inspection or surveillance.
-          % 中文：侦察（探测）：追踪者接近目标至探测范围[d_det_min, d_det_max]内获得奖励，无需实现交会，模拟飞越式检查或监视。
+    \item \textbf{Reconnaissance (Detection):} The satellite of the non-cooperative target cluster is rewarded for approaching the target to within a detection range $[d_{\text{det}}^{\min}, d_{\text{det}}^{\max}]$ without necessarily achieving rendezvous, simulating fly-by inspection or surveillance.
+          % 中文：侦察（探测）：非合作目标集群的卫星接近目标至探测范围[d_det_min, d_det_max]内获得奖励，无需实现交会，模拟飞越式检查或监视。
 
-    \item \textbf{Ambush (Lurk):} The chaser maintains a holding distance within $[d_{\text{lurk}}^{\min}, d_{\text{lurk}}^{\max}]$ before executing a terminal approach, simulating covert positioning followed by a sudden engagement.
-          % 中文：潜伏（潜伏）：追踪者在执行末端接近前维持[d_lurk_min, d_lurk_max]范围内的保持距离，模拟隐蔽定位后突然接敌。
+    \item \textbf{Ambush (Lurk):} The satellite of the non-cooperative target cluster maintains a holding distance within $[d_{\text{lurk}}^{\min}, d_{\text{lurk}}^{\max}]$ before executing a terminal approach, simulating covert positioning followed by a sudden engagement.
+          % 中文：潜伏（潜伏）：非合作目标集群的卫星在执行末端接近前维持[d_lurk_min, d_lurk_max]范围内的保持距离，模拟隐蔽定位后突然接敌。
 
-    \item \textbf{Obstruction (Obstruction):} The chaser maneuvers to position itself along the line-of-sight between the target and a third reference point, simulating denial of access or field-of-view obstruction.
-          % 中文：遮挡（遮挡）：追踪者机动至目标与第三参考点之间的视线上，模拟拒绝接近或视场遮挡。
+    \item \textbf{Obstruction (Obstruction):} The satellite of the non-cooperative target cluster maneuvers to position itself along the line-of-sight between the target and a third reference point, simulating denial of access or field-of-view obstruction.
+          % 中文：遮挡（遮挡）：非合作目标集群的卫星机动至目标与第三参考点之间的视线上，模拟拒绝接近或视场遮挡。
 
-    \item \textbf{Mixed (Mix):} The chaser's policy is trained with a composite reward that randomly switches between the above objectives during training, producing trajectories that blend multiple behavioral patterns.
-          % 中文：混合（混合）：追踪者策略使用复合奖励训练，在训练过程中随机切换上述目标，产生融合多种行为模式的轨迹。
+    \item \textbf{Mixed (Mix):} The satellite's policy is trained with a composite reward that randomly switches between the above objectives during training, producing trajectories that blend multiple behavioral patterns.
+          % 中文：混合（混合）：该卫星的策略使用复合奖励训练，在训练过程中随机切换上述目标，产生融合多种行为模式的轨迹。
 \end{itemize}
 
 Successful trajectories (those meeting the scenario-specific success criteria) are recorded at $\Delta t$ intervals. For each scenario, approximately $N_{\text{traj}}$ successful trajectories are collected.
@@ -295,8 +309,8 @@ Successful trajectories (those meeting the scenario-specific success criteria) a
 
 \subsection{Dataset construction and labels}
 
-To construct multi-target cluster scenarios, the recorded single-chaser trajectories are randomly grouped into batches of $N \in \{N_{\min}, \dots, N_{\max}\}$ targets. For each group, the final $T_{\text{total}}$ time steps are extracted from each trajectory. If the raw trajectory length is not an exact multiple of $T_{\text{obs}}$, the remaining steps are padded using the CW state transition matrix $\biPhi(T_{\text{pad}})$ with $T_{\text{pad}} = N_{\text{sub}} \cdot \Delta t$. The resulting $T_{\text{total}}$-step sequence is partitioned into an observation window $\bm{X}_{\text{now}} \in \mathbb{R}^{T_{\text{obs}} \times 6N}$ (the first $T_{\text{obs}}$ steps) and a prediction target $\bm{X}_{\text{next}} \in \mathbb{R}^{T_{\text{pred}} \times 6N}$ (the subsequent $T_{\text{pred}}$ steps, where $T_{\text{pred}} = T_{\text{obs}}$). For each sample, three scalar labels are computed:
-% 中文：为构建多目标集群场景，将记录的单追踪者轨迹随机分组为N ∈ {N_min, ..., N_max}个目标。对每组，从每条轨迹中提取最后T_total个时间步。若原始轨迹长度不是T_obs的整数倍，则使用CW状态转移矩阵Φ(T_pad)（其中T_pad = N_sub·Δt）填充剩余步。将得到的T_total步序列分为观测窗口X_now ∈ R^{T_obs×6N}（前T_obs步）和预测目标X_next ∈ R^{T_pred×6N}（后续T_pred步，其中T_pred = T_obs）。对每个样本，计算三个标量标签：
+To construct multi-target cluster scenarios, the recorded single-satellite trajectories are randomly grouped into batches of $N \in \{N_{\min}, \dots, N_{\max}\}$ targets. For each group, the final $T_{\text{total}}$ time steps are extracted from each trajectory. If the raw trajectory length is not an exact multiple of $T_{\text{obs}}$, the remaining steps are padded using the CW state transition matrix $\biPhi(T_{\text{pad}})$ with $T_{\text{pad}} = N_{\text{sub}} \cdot \Delta t$. The resulting $T_{\text{total}}$-step sequence is partitioned into an observation window $\bm{X}_{\text{now}} \in \mathbb{R}^{T_{\text{obs}} \times 6N}$ (the first $T_{\text{obs}}$ steps) and a prediction target $\bm{X}_{\text{next}} \in \mathbb{R}^{T_{\text{pred}} \times 6N}$ (the subsequent $T_{\text{pred}}$ steps, where $T_{\text{pred}} = T_{\text{obs}}$). For each sample, three scalar labels are computed:
+% 中文：为构建多目标集群场景，将记录的单卫星轨迹随机分组为N ∈ {N_min, ..., N_max}个目标。对每组，从每条轨迹中提取最后T_total个时间步。若原始轨迹长度不是T_obs的整数倍，则使用CW状态转移矩阵Φ(T_pad)（其中T_pad = N_sub·Δt）填充剩余步。将得到的T_total步序列分为观测窗口X_now ∈ R^{T_obs×6N}（前T_obs步）和预测目标X_next ∈ R^{T_pred×6N}（后续T_pred步，其中T_pred = T_obs）。对每个样本，计算三个标量标签：
 
 \begin{itemize}
     \item $N \in \{N_{\min}, \dots, N_{\max}\}$: the number of objects in the cluster;
@@ -313,7 +327,7 @@ To construct multi-target cluster scenarios, the recorded single-chaser trajecto
 The complete dataset contains $N_{\text{samples}}$ samples. The dataset is randomly partitioned into training (ratio $r_{\text{train}}$), validation (ratio $r_{\text{val}}$), and test (ratio $r_{\text{test}}$) sets using a fixed random seed $s$.
 % 中文：完整数据集包含N_samples个样本，使用固定随机种子s随机划分为训练集（比例r_train）、验证集（比例r_val）和测试集（比例r_test）。
 
-\subsection{Problem formulation}
+\subsection{Task formulation}
 
 With the above setup, two interlinked tasks are defined:
 % 中文：基于上述设置，定义两个相互关联的任务：
@@ -448,51 +462,51 @@ The model is trained using the AdamW optimizer \cite{loshchilov2019decoupled} wi
 %% ALGORITHM 1: PI-LSTM trajectory prediction
 \noindent
 \begin{minipage}{\columnwidth}
-\hrule height 0.6pt
-\vspace{3pt}
-\small
-\begin{algorithmic}[1]
-\State \textbf{Input:} Observed trajectory $\mathcal{S}_{\text{obs}} = \{\bm{s}_1, \dots, \bm{s}_{T_{\text{obs}}}\}$, $\bm{s}_t \in \mathbb{R}^{6}$
-\State \textbf{Output:} Predicted trajectory $\mathcal{S}_{\text{pred}} = \{\hat{\bm{s}}_{T_{\text{obs}}+1}, \dots, \hat{\bm{s}}_{T_{\text{obs}}+T_{\text{pred}}}\}$
-\State \text{\# Stage~1: Differentiable $\Delta v$ estimation}
-\For{$t = 1$ \textbf{to} $T_{\text{obs}}-1$}
-    \State $\Delta\bm{v}_t \gets \text{CWInverse}(\bm{s}_t, \bm{s}_{t+1})$\label{alg:dv_est}
-    \State $\bm{c}_t \gets \text{MLP}_{\text{cond}}([\text{ModeEmbed}(\mathcal{S}_{\text{obs}}),$
-    \Statex \hspace*{2em} $\Delta\bm{v}_t])$\label{alg:cond}
-\EndFor
-\State $\bm{c}_0 \gets \bm{0}$  \Comment{Initial zero-padded condition}
-\State \text{\# Stage~2: LSTM encoder}
-\For{$t = 1$ \textbf{to} $T_{\text{obs}}$}
-    \State $\bm{x}_t \gets [\bm{s}_t; \bm{c}_{t-1}]$\label{alg:ext_input}
-    \State $(\bm{h}_t^{\text{enc}}, \bm{c}_t^{\text{enc}}) \gets$
-    \Statex \hspace*{2em} $\text{LSTM}_{\text{enc}}(\bm{x}_t, \bm{h}_{t-1}^{\text{enc}}, \bm{c}_{t-1}^{\text{enc}})$\label{alg:encode}
-\EndFor
-\State $\bm{z} \gets \text{MLP}_{\text{ctx}}(\bm{h}_{T_{\text{obs}}}^{\text{enc}})$  \Comment{Context vector for decoder}
-\State $(\bm{h}_0^{\text{dec}}, \bm{c}_0^{\text{dec}}) \gets (\bm{h}_{T_{\text{obs}}}^{\text{enc}}, \bm{c}_{T_{\text{obs}}}^{\text{enc}})$
-\State \text{\# Stage~3: LSTM decoder with residual prediction}
-\For{$k = 1$ \textbf{to} $T_{\text{pred}}$}
-    \If{training \textbf{and} teacher forcing}
+    \hrule height 0.6pt
+    \vspace{3pt}
+    \small
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Observed trajectory $\mathcal{S}_{\text{obs}} = \{\bm{s}_1, \dots, \bm{s}_{T_{\text{obs}}}\}$, $\bm{s}_t \in \mathbb{R}^{6}$
+        \State \textbf{Output:} Predicted trajectory $\mathcal{S}_{\text{pred}} = \{\hat{\bm{s}}_{T_{\text{obs}}+1}, \dots, \hat{\bm{s}}_{T_{\text{obs}}+T_{\text{pred}}}\}$
+        \State \text{\# Stage~1: Differentiable $\Delta v$ estimation}
+        \For{$t = 1$ \textbf{to} $T_{\text{obs}}-1$}
+        \State $\Delta\bm{v}_t \gets \text{CWInverse}(\bm{s}_t, \bm{s}_{t+1})$\label{alg:dv_est}
+        \State $\bm{c}_t \gets \text{MLP}_{\text{cond}}([\text{ModeEmbed}(\mathcal{S}_{\text{obs}}),$
+                        \Statex \hspace*{2em} $\Delta\bm{v}_t])$\label{alg:cond}
+        \EndFor
+        \State $\bm{c}_0 \gets \bm{0}$  \Comment{Initial zero-padded condition}
+        \State \text{\# Stage~2: LSTM encoder}
+        \For{$t = 1$ \textbf{to} $T_{\text{obs}}$}
+        \State $\bm{x}_t \gets [\bm{s}_t; \bm{c}_{t-1}]$\label{alg:ext_input}
+        \State $(\bm{h}_t^{\text{enc}}, \bm{c}_t^{\text{enc}}) \gets$
+        \Statex \hspace*{2em} $\text{LSTM}_{\text{enc}}(\bm{x}_t, \bm{h}_{t-1}^{\text{enc}}, \bm{c}_{t-1}^{\text{enc}})$\label{alg:encode}
+        \EndFor
+        \State $\bm{z} \gets \text{MLP}_{\text{ctx}}(\bm{h}_{T_{\text{obs}}}^{\text{enc}})$  \Comment{Context vector for decoder}
+        \State $(\bm{h}_0^{\text{dec}}, \bm{c}_0^{\text{dec}}) \gets (\bm{h}_{T_{\text{obs}}}^{\text{enc}}, \bm{c}_{T_{\text{obs}}}^{\text{enc}})$
+        \State \text{\# Stage~3: LSTM decoder with residual prediction}
+        \For{$k = 1$ \textbf{to} $T_{\text{pred}}$}
+        \If{training \textbf{and} teacher forcing}
         \State $\tilde{\bm{\delta}}_k \gets \bm{\delta}_k^{\text{gt}}$\label{alg:teacher}
-    \Else
+        \Else
         \State $\tilde{\bm{\delta}}_k \gets \hat{\bm{\delta}}_{k-1}$
-    \EndIf
-    \State $\bm{u}_k \gets [\bm{z}; \tilde{\bm{\delta}}_k; \bm{c}_{T_{\text{obs}}+k-1}]$\label{alg:dec_input}
-    \State $(\bm{h}_k^{\text{dec}}, \bm{c}_k^{\text{dec}}) \gets$
-    \Statex \hspace*{2em} $\text{LSTM}_{\text{dec}}(\bm{u}_k, \bm{h}_{k-1}^{\text{dec}}, \bm{c}_{k-1}^{\text{dec}})$
-    \State $\hat{\bm{\delta}}_k \gets \text{MLP}_{\text{out}}(\bm{h}_k^{\text{dec}})$ \Comment{Residual delta prediction}\label{alg:delta}
-    \State $\hat{\bm{s}}_{T_{\text{obs}}+k} \gets \bm{s}_{T_{\text{obs}}} + \hat{\bm{\delta}}_k$
-    \State $\Delta\hat{\bm{v}}_k \gets \text{MLP}_{\text{dv}}(\bm{h}_k^{\text{dec}})$ \Comment{$\Delta v$ for physics loss}\label{alg:dv_pred}
-\EndFor
-\State \text{\# Stage~4: Physics-based regularization}
-\State $\mathcal{L}_{\text{pred}} \gets \lambda_{\text{pred}}\mathcal{L}_{\text{MSE}}$
-\Statex \hspace*{2em} $+ \lambda_{\text{phy}}\mathcal{L}_{\text{physics}} + \lambda_{\text{mode}}\mathcal{L}_{\text{mode}}$\label{alg:loss}
-\State \textbf{return} $\hat{\mathcal{S}}_{\text{pred}}$
-\end{algorithmic}
-\vspace{3pt}
-\hrule height 0.6pt
-\vspace{3pt}
-\noindent\captionof{figure}{PI-LSTM trajectory prediction with physics-informed conditional LSTM. The algorithm comprises four stages: differentiable $\Delta v$ estimation via CW inverse~\eqref{alg:dv_est}, condition vector construction~\eqref{alg:cond}, encoder--decoder LSTM with extended input~\eqref{alg:ext_input}--\eqref{alg:encode}, autoregressive residual prediction with teacher forcing~\eqref{alg:teacher}--\eqref{alg:dv_pred}, and physics-based multi-objective optimization~\eqref{alg:loss}.}\label{alg:pilstm}
-% 中文：算法1：基于物理信息条件LSTM的PI-LSTM轨迹预测。该算法包含四个阶段：通过CW反演的可微分Δv估计，条件向量构建，具有扩展输入的编码器-解码器LSTM，带教师强制自回归残差预测，以及基于物理的多目标优化。
+        \EndIf
+        \State $\bm{u}_k \gets [\bm{z}; \tilde{\bm{\delta}}_k; \bm{c}_{T_{\text{obs}}+k-1}]$\label{alg:dec_input}
+        \State $(\bm{h}_k^{\text{dec}}, \bm{c}_k^{\text{dec}}) \gets$
+        \Statex \hspace*{2em} $\text{LSTM}_{\text{dec}}(\bm{u}_k, \bm{h}_{k-1}^{\text{dec}}, \bm{c}_{k-1}^{\text{dec}})$
+        \State $\hat{\bm{\delta}}_k \gets \text{MLP}_{\text{out}}(\bm{h}_k^{\text{dec}})$ \Comment{Residual delta prediction}\label{alg:delta}
+        \State $\hat{\bm{s}}_{T_{\text{obs}}+k} \gets \bm{s}_{T_{\text{obs}}} + \hat{\bm{\delta}}_k$
+        \State $\Delta\hat{\bm{v}}_k \gets \text{MLP}_{\text{dv}}(\bm{h}_k^{\text{dec}})$ \Comment{$\Delta v$ for physics loss}\label{alg:dv_pred}
+        \EndFor
+        \State \text{\# Stage~4: Physics-based regularization}
+        \State $\mathcal{L}_{\text{pred}} \gets \lambda_{\text{pred}}\mathcal{L}_{\text{MSE}}$
+        \Statex \hspace*{2em} $+ \lambda_{\text{phy}}\mathcal{L}_{\text{physics}} + \lambda_{\text{mode}}\mathcal{L}_{\text{mode}}$\label{alg:loss}
+        \State \textbf{return} $\hat{\mathcal{S}}_{\text{pred}}$
+    \end{algorithmic}
+    \vspace{3pt}
+    \hrule height 0.6pt
+    \vspace{3pt}
+    \noindent\captionof{figure}{PI-LSTM trajectory prediction with physics-informed conditional LSTM. The algorithm comprises four stages: differentiable $\Delta v$ estimation via CW inverse~\eqref{alg:dv_est}, condition vector construction~\eqref{alg:cond}, encoder--decoder LSTM with extended input~\eqref{alg:ext_input}--\eqref{alg:encode}, autoregressive residual prediction with teacher forcing~\eqref{alg:teacher}--\eqref{alg:dv_pred}, and physics-based multi-objective optimization~\eqref{alg:loss}.}\label{alg:pilstm}
+    % 中文：算法1：基于物理信息条件LSTM的PI-LSTM轨迹预测。该算法包含四个阶段：通过CW反演的可微分Δv估计，条件向量构建，具有扩展输入的编码器-解码器LSTM，带教师强制自回归残差预测，以及基于物理的多目标优化。
 \end{minipage}
 
 \section{BiGRU-based intention recognition}\label{sec:intention}
@@ -625,50 +639,50 @@ The model is trained with AdamW (learning rate $\eta_{\text{rec}}$, weight decay
 %% ALGORITHM 2: BiGRU intention recognition
 \noindent
 \begin{minipage}{\columnwidth}
-\hrule height 0.6pt
-\vspace{3pt}
-\small
-\begin{algorithmic}[1]
-\State \textbf{Input:} Multi-target trajectories $\{\mathcal{S}_1, \mathcal{S}_2, \dots, \mathcal{S}_N\}$, $\mathcal{S}_i \in \mathbb{R}^{T_{\text{obs}} \times 6}$, $N \in \{2,3,4\}$
-\State \textbf{Output:} Predicted cluster size $\hat{N}$, global minimum distance $\hat{d}_{\min}$, dispersion angle $\hat{\phi}$
-\State \text{\# Stage~1: Physics-informed feature extraction}
-\For{each target $i = 1$ \textbf{to} $N$}
-    \State $\bm{F}_i \gets \text{PhysFeatures}(\mathcal{S}_i)$\label{alg:phys_feat}
-    \Statex \hspace*{2em} \Comment{10-channel features: $r, v, v_r, h, E$, CW residuals, $\cos$ statistics}
-    \State $\bm{X}_i \gets [\mathcal{S}_i; \bm{F}_i]$\label{alg:aug_state}
-    \Statex \hspace*{2em} \Comment{Augment state: $(T_{\text{obs}} \times 16)$}
-\EndFor
-\State \text{\# Stage~2: Per-target BiGRU encoding}
-\For{each target $i = 1$ \textbf{to} $N$}
-    \State $\bm{e}_i \gets \text{BiGRU}_{\text{enc}}(\bm{X}_i) \in \mathbb{R}^{256}$\label{alg:bigru_encode}
-\EndFor
-\State \text{\# Stage~3: Set attention aggregation (Deep Sets)}
-\State $\bm{K} \gets \text{MLP}_k(\{\bm{e}_1, \dots, \bm{e}_N\})$,
-\Statex \hspace*{2em} $\bm{V} \gets \text{MLP}_v(\{\bm{e}_1, \dots, \bm{e}_N\})$\label{alg:set_attn}
-\State $\bm{q} \gets \text{LearnableSeedQuery}$ \Comment{Learnable seed query vector}
-\State $\bm{\alpha} \gets \text{softmax}\big(\bm{q}^\top \bm{K} / \sqrt{d}\big)$ \Comment{Attention over $N$ targets}
-\State $\bm{h}_{\text{global}} \gets \sum_{i=1}^{N} \alpha_i \bm{v}_i$\label{alg:global_repr}
-\State \text{\# Stage~4: Pairwise interaction modeling}
-\For{each pair $(i,j)$ with $i < j$}
-    \State $\bm{p}_{ij} \gets \text{MLP}_{\text{pair}}([\bm{e}_i; \bm{e}_j; |\bm{e}_i-\bm{e}_j|;$
-    \Statex \hspace*{2em} $\bm{e}_i \odot \bm{e}_j])$\label{alg:pairwise}
-\EndFor
-\State $\bm{h}_{\text{pair}} \gets \text{MaxPool}(\{\bm{p}_{ij}\}) \in \mathbb{R}^{256}$\label{alg:pair_pool}
-\State $\bm{h} \gets [\bm{h}_{\text{global}}; \bm{h}_{\text{pair}}] \in \mathbb{R}^{512}$\label{alg:concat}
-\State \text{\# Stage~5: Multi-task prediction heads}
-\State $\hat{N} \gets \arg\max\big(\text{MLP}_{\text{cls}}(\bm{h})\big)$\label{alg:N_cls}
-\Comment{3-class: $N=2,3,4$}
-\State $\hat{d}_{\min} \gets \text{MLP}_{d_{\min}}(\bm{h})$\label{alg:d_reg}
-\Comment{Huber regression}
-\State $\hat{\phi} \gets \text{MLP}_{\phi}(\bm{h})$\label{alg:phi_reg}
-\Comment{MSE + cosine penalty}
-\State \textbf{return} $\hat{N}, \hat{d}_{\min}, \hat{\phi}$
-\end{algorithmic}
-\vspace{3pt}
-\hrule height 0.6pt
-\vspace{3pt}
-\noindent\captionof{figure}{BiGRU-based intention recognition with permutation-invariant set attention and pairwise interaction. The pipeline covers: physics-informed feature extraction~\eqref{alg:phys_feat}--\eqref{alg:aug_state}, per-target BiGRU encoding~\eqref{alg:bigru_encode}, set attention aggregation~\eqref{alg:set_attn}--\eqref{alg:global_repr}, pairwise interaction modeling~\eqref{alg:pairwise}--\eqref{alg:pair_pool}, and multi-task prediction~\eqref{alg:N_cls}--\eqref{alg:phi_reg}.}\label{alg:bigru}
-% 中文：算法2：基于BiGRU的意图识别，具有置换不变集合注意力和成对交互。流水线包括：物理信息特征提取、每目标BiGRU编码、集合注意力聚合、成对交互建模和多任务预测。
+    \hrule height 0.6pt
+    \vspace{3pt}
+    \small
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Multi-target trajectories $\{\mathcal{S}_1, \mathcal{S}_2, \dots, \mathcal{S}_N\}$, $\mathcal{S}_i \in \mathbb{R}^{T_{\text{obs}} \times 6}$, $N \in \{2,3,4\}$
+        \State \textbf{Output:} Predicted cluster size $\hat{N}$, global minimum distance $\hat{d}_{\min}$, dispersion angle $\hat{\phi}$
+        \State \text{\# Stage~1: Physics-informed feature extraction}
+        \For{each target $i = 1$ \textbf{to} $N$}
+        \State $\bm{F}_i \gets \text{PhysFeatures}(\mathcal{S}_i)$\label{alg:phys_feat}
+        \Statex \hspace*{2em} \Comment{10-channel features: $r, v, v_r, h, E$, CW residuals, $\cos$ statistics}
+        \State $\bm{X}_i \gets [\mathcal{S}_i; \bm{F}_i]$\label{alg:aug_state}
+        \Statex \hspace*{2em} \Comment{Augment state: $(T_{\text{obs}} \times 16)$}
+        \EndFor
+        \State \text{\# Stage~2: Per-target BiGRU encoding}
+        \For{each target $i = 1$ \textbf{to} $N$}
+        \State $\bm{e}_i \gets \text{BiGRU}_{\text{enc}}(\bm{X}_i) \in \mathbb{R}^{256}$\label{alg:bigru_encode}
+        \EndFor
+        \State \text{\# Stage~3: Set attention aggregation (Deep Sets)}
+        \State $\bm{K} \gets \text{MLP}_k(\{\bm{e}_1, \dots, \bm{e}_N\})$,
+        \Statex \hspace*{2em} $\bm{V} \gets \text{MLP}_v(\{\bm{e}_1, \dots, \bm{e}_N\})$\label{alg:set_attn}
+        \State $\bm{q} \gets \text{LearnableSeedQuery}$ \Comment{Learnable seed query vector}
+        \State $\bm{\alpha} \gets \text{softmax}\big(\bm{q}^\top \bm{K} / \sqrt{d}\big)$ \Comment{Attention over $N$ targets}
+        \State $\bm{h}_{\text{global}} \gets \sum_{i=1}^{N} \alpha_i \bm{v}_i$\label{alg:global_repr}
+        \State \text{\# Stage~4: Pairwise interaction modeling}
+        \For{each pair $(i,j)$ with $i < j$}
+        \State $\bm{p}_{ij} \gets \text{MLP}_{\text{pair}}([\bm{e}_i; \bm{e}_j; |\bm{e}_i-\bm{e}_j|;$
+                        \Statex \hspace*{2em} $\bm{e}_i \odot \bm{e}_j])$\label{alg:pairwise}
+        \EndFor
+        \State $\bm{h}_{\text{pair}} \gets \text{MaxPool}(\{\bm{p}_{ij}\}) \in \mathbb{R}^{256}$\label{alg:pair_pool}
+        \State $\bm{h} \gets [\bm{h}_{\text{global}}; \bm{h}_{\text{pair}}] \in \mathbb{R}^{512}$\label{alg:concat}
+        \State \text{\# Stage~5: Multi-task prediction heads}
+        \State $\hat{N} \gets \arg\max\big(\text{MLP}_{\text{cls}}(\bm{h})\big)$\label{alg:N_cls}
+        \Comment{3-class: $N=2,3,4$}
+        \State $\hat{d}_{\min} \gets \text{MLP}_{d_{\min}}(\bm{h})$\label{alg:d_reg}
+        \Comment{Huber regression}
+        \State $\hat{\phi} \gets \text{MLP}_{\phi}(\bm{h})$\label{alg:phi_reg}
+        \Comment{MSE + cosine penalty}
+        \State \textbf{return} $\hat{N}, \hat{d}_{\min}, \hat{\phi}$
+    \end{algorithmic}
+    \vspace{3pt}
+    \hrule height 0.6pt
+    \vspace{3pt}
+    \noindent\captionof{figure}{BiGRU-based intention recognition with permutation-invariant set attention and pairwise interaction. The pipeline covers: physics-informed feature extraction~\eqref{alg:phys_feat}--\eqref{alg:aug_state}, per-target BiGRU encoding~\eqref{alg:bigru_encode}, set attention aggregation~\eqref{alg:set_attn}--\eqref{alg:global_repr}, pairwise interaction modeling~\eqref{alg:pairwise}--\eqref{alg:pair_pool}, and multi-task prediction~\eqref{alg:N_cls}--\eqref{alg:phi_reg}.}\label{alg:bigru}
+    % 中文：算法2：基于BiGRU的意图识别，具有置换不变集合注意力和成对交互。流水线包括：物理信息特征提取、每目标BiGRU编码、集合注意力聚合、成对交互建模和多任务预测。
 \end{minipage}
 
 \section{Numerical simulations and analysis}\label{sec:simulations}
@@ -702,7 +716,8 @@ Table~\ref{tab:sim_params} lists the orbital environment, RL simulation, and dat
         Time step $\Delta t$                                                           & 1 s                                             \\
         CW sub-steps per RL step $N_{\text{sub}}$                                      & 60                                              \\
         Max velocity increment $\Delta v_{\max}$                                       & $3 \times 10^{-3}$ km/s (3 m/s)                 \\
-        Initial chaser distance $d_{\text{init}}$                                      & $[100, 120]$ km                                 \\
+        Initial satellite distance $d_{\text{init}}$                                   & $[100, 120]$ km                                 \\
+        Observation spacecraft detection range $d_{\text{obs}}$                        & 100 km                                          \\
         \midrule
         \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Scenario-specific distances}} \\
         Capture success distance $d_{\text{cap}}$                                      & 5 km, reward $R_{\text{cap}} = 100$             \\
