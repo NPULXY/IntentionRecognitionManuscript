@@ -19,16 +19,23 @@
 
 \documentclass[a4paper,fleqn]{cas-dc}
 
-% If the frontmatter runs over more than one page
-% use the longmktitle option.
-
-%\documentclass[a4paper,fleqn,longmktitle]{cas-dc}
-
 %\usepackage[numbers]{natbib}
 %\usepackage[authoryear]{natbib}
 \usepackage[authoryear,longnamesfirst]{natbib}
 
 \usepackage{bm}
+\usepackage{amssymb}
+\usepackage{makecell}
+\usepackage{microtype}
+\usepackage{algpseudocode}
+\usepackage{capt-of}
+%% STIX font makes \Phi upright; force italic for variables and bold-italic for matrices
+\newcommand{\iPhi}{\mathit{\Phi}}    % italic Φ (scalar/variable)
+\newcommand{\biPhi}{\bm{\mathit{\Phi}}} % bold italic Φ (matrix)
+%% Redefine algorithmic comment: # prefix
+\algrenewcommand{\algorithmiccomment}[1]{\hfill\makebox[0pt][r]{\# #1}}
+\setlength{\emergencystretch}{1em}
+\hbadness=2000
 
 %%%Author macros
 \def\tsc#1{\csdef{#1}{\textsc{\lowercase{#1}}\xspace}}
@@ -38,7 +45,7 @@
 
 % Uncomment and use as if needed
 %\newtheorem{theorem}{Theorem}
-%\newtheorem{lemma}[theorem]{Lemma}
+%\newlemma[theorem]{lemma}{Lemma}
 %\newdefinition{rmk}{Remark}
 %\newproof{pf}{Proof}
 %\newproof{pot}{Proof of Theorem \ref{thm}}
@@ -49,13 +56,16 @@
 \def\textpagefraction{.001}
 
 % Short title
-\shorttitle{Physics-informed LSTM and BiGRU for satellite trajectory prediction and intention recognition}
+\shorttitle{PI-LSTM and BiGRU for satellite cluster trajectory prediction and intention recognition}
+% 中文：PI-LSTM 与 BiGRU 用于卫星集群轨迹预测与意图识别（短标题）
 
 % Short author
 \shortauthors{Luo \emph{et~al.}}
+% 中文：作者缩写
 
 % Main title of the paper
-\title [mode = title]{Physics-informed LSTM and BiGRU-based approach for maneuverable satellite cluster trajectory prediction and intention recognition}
+\title [mode = title]{Physics-informed LSTM and BiGRU-based approach \\ for maneuverable satellite cluster trajectory prediction \\ and intention recognition}
+% 中文：基于物理信息 LSTM 和 BiGRU 的可机动卫星集群轨迹预测与意图识别方法
 
 % Title footnote mark
 \tnotemark[1]
@@ -66,6 +76,7 @@
     52361165620; and in part by the Young Elite Scientists Sponsorship Program
     by the China Association for Science and Technology under Grant
     2022QNRC001.}
+% 中文：本研究受国家自然科学基金（项目号 12572056、62103336、52361165620）以及中国科协青年人才托举工程（项目号 2022QNRC001）资助。
 
 % First author
 \author[1]{Xuanyu Luo}[
@@ -75,6 +86,7 @@
 \ead{luoxuanyu@mail.nwpu.edu.cn}
 
 \credit{Conceptualization, Methodology, Software, Writing -- original draft}
+% 中文：第一作者贡献：概念化、方法学、软件、写作——初稿
 
 % Second author (corresponding author)
 \author[1]{Chuang Liu}[
@@ -86,6 +98,7 @@
 \ead{liuchuangforever@msn.com}
 
 \credit{Formal analysis, Validation, Writing -- review \& editing}
+% 中文：通讯作者贡献：形式化分析、验证、写作——审阅与编辑
 
 % Third author
 \author[1]{Xiaokui Yue}[
@@ -95,6 +108,7 @@
 \ead{xkyue@nwpu.edu.cn}
 
 \credit{Data curation, Investigation, Visualization}
+% 中文：第三作者贡献：数据管理、调研、可视化
 
 % Affiliation
 \affiliation[1]{organization={School of Aeronautics, Northwestern Polytechnical University},
@@ -103,24 +117,20 @@
     postcode={710072},
     state={Shaanxi},
     country={China}}
+% 中文：作者单位：西北工业大学航空学院，西安市友谊西路127号，邮编710072，中国
 
 % Corresponding author text
 \cortext[1]{Corresponding author.}
+% 中文：通讯作者
 
 % For a title note without a number/mark
 %\nonumnote{}
 
 % Here goes the abstract
 \begin{abstract}
-    This paper proposes a novel approach combining physics-informed long short-term
-    memory (LSTM) networks and bidirectional gated recurrent units (BiGRU) for
-    maneuverable satellite cluster trajectory prediction and intention recognition.
-    The physics-informed framework incorporates orbital dynamics constraints into the
-    learning process, while the BiGRU-based architecture captures temporal
-    dependencies from both forward and backward directions for intention recognition.
-    The proposed method is validated through comprehensive numerical simulations.
-
+    This paper proposes a two-stage deep learning framework for maneuverable satellite cluster trajectory prediction and intention recognition. In the first stage, a physics-informed conditional long short-term memory (PI-LSTM) network is developed for trajectory prediction, which incorporates a differentiable Clohessy--Wiltshire (CW) inverse module to estimate velocity increments from observed states and feeds them as conditioning signals into the LSTM encoder--decoder with residual delta prediction. In the second stage, a bidirectional gated recurrent unit (BiGRU) network with permutation-invariant set attention aggregation and pairwise interaction modeling performs multi-task intention recognition, classifying the number of cluster objects ($N$) and regressing the global minimum distance ($d_{\min}$) and spatial dispersion angle ($\phi$). A 10-channel physics-informed feature representation is constructed from CW propagation residuals, orbital invariants, and inter-target geometric statistics. The dataset comprises samples generated from reinforcement-learning-based simulations covering five maneuver intention scenarios: pursuit, reconnaissance, ambush, obstruction, and mixed strategies. Numerical results demonstrate that the PI-LSTM achieves a position RMSE of 0.148 km with strong CW self-consistency, and the BiGRU-based network attains 99.1\% accuracy for $N$ classification and an $R^2$ of 0.991 for $d_{\min}$ regression.
 \end{abstract}
+% 中文：本文提出一个两阶段深度学习框架，用于可机动卫星集群的轨迹预测与意图识别。第一阶段开发了物理信息条件长短期记忆（PI-LSTM）网络，通过可微分CW反演模块估计速度增量并将其作为条件信号输入LSTM编码器-解码器（残差delta预测）。第二阶段使用双向门控循环单元（BiGRU）网络结合置换不变集合注意力聚合与成对交互建模，执行多任务意图识别，对集群目标数量（N）进行分类，并回归全局最近距离（d_min）和空间散布角（φ）。构建了10通道物理信息特征表示，包含CW传播残差、轨道不变量和目标的几何统计量。数据集包含基于强化学习仿真生成的样本，覆盖五种机动意图场景：追击、侦察、潜伏、遮挡和混合策略。数值结果表明，PI-LSTM的位置RMSE为0.148 km，具有良好的CW自一致性；BiGRU网络的N分类准确率达99.1%，d_min回归R²为0.991。
 
 % Use if graphical abstract is present
 %\begin{graphicalabstract}
@@ -129,17 +139,20 @@
 
 % Research highlights
 \begin{highlights}
-    \item Physics-informed deep learning framework for satellite trajectory prediction
-    \item BiGRU-based architecture for maneuver intention recognition
-    \item Integration of orbital dynamics constraints with data-driven models
+    \item Physics-informed conditional LSTM for satellite cluster trajectory prediction with differentiable CW-based $\Delta v$ estimation
+    \item BiGRU-based permutation-invariant network with set attention and pairwise interaction for multi-task intention recognition
+    \item 10-channel physics-informed feature engineering covering CW residuals, orbital invariants, and inter-target geometric statistics
+    \item Comprehensive dataset covering five maneuver intention scenarios generated via PPO-based orbital pursuit simulation
 \end{highlights}
+% 中文：研究亮点：(1) 基于物理信息条件LSTM的卫星集群轨迹预测，具有可微分CW Δv估计；(2) 基于BiGRU的置换不变网络，结合集合注意力与成对交互进行多任务意图识别；(3) 10通道物理信息特征工程，涵盖CW残差、轨道不变量和目标间几何统计量；(4) 覆盖五种机动意图场景的综合数据集，通过PPO轨道追击仿真生成。
 
 % Keywords
 % Each keyword is seperated by \sep
 \begin{keywords}
     Satellite cluster \sep Trajectory prediction \sep Intention recognition \sep
-    Long short-term memory \sep Bidirectional gated recurrent unit \sep Physics-informed neural network
+    Long short-term memory \sep Bidirectional gated recurrent unit \sep Physics-informed neural network \sep Reinforcement learning
 \end{keywords}
+% 中文：关键词：卫星集群；轨迹预测；意图识别；长短期记忆；双向门控循环单元；物理信息神经网络；强化学习
 
 \maketitle
 
@@ -147,421 +160,845 @@
 
 \section{Introduction}\label{sec:intro}
 
-The rapid advancement of space technology and the accelerating deployment of large-scale satellite constellations have fundamentally reshaped the orbital environment. The population of resident space objects has soared, with recent space environment reports indicating that tracked objects, including operational spacecraft, defunct satellites and fragment debris, now number in the tens of thousands, substantially elevating the risk of orbital congestion and collision. This increasingly crowded domain is further complicated by the growing prevalence of non-cooperative and adversarial behaviors, as multiple space actors vie for strategic advantages in orbit. Against this backdrop of heightened orbital competition, the capability to forecast the trajectories and infer the operational intents of maneuverable satellite clusters has become an essential pillar of space situational awareness and asset protection. Accurate trajectory prediction and intention recognition for such targets not only provide critical decision-support for collision avoidance and threat assessment but are also vital for maintaining sustainable space operations.
+The rapid advancement of space technology and the accelerating deployment of large-scale satellite constellations have fundamentally reshaped the orbital environment. The population of tracked resident space objects --- including operational spacecraft, defunct satellites, and fragment debris --- now numbers in the tens of thousands, substantially elevating the risk of orbital congestion and collision \cite{carrillo2024survey}. This increasingly crowded domain is further complicated by the growing prevalence of non-cooperative and adversarial behaviors, as multiple space actors vie for strategic advantages in orbit. Against this backdrop, the capability to forecast the trajectories and infer the operational intents of maneuverable satellite clusters has become an essential pillar of space situational awareness (SSA) and asset protection. Accurate trajectory prediction and intention recognition for such targets provide critical decision-support for collision avoidance and threat assessment, and are vital for maintaining sustainable space operations \cite{carrillo2024survey}.
+% 中文：空间技术的快速进步和大规模卫星星座的加速部署已从根本上改变了轨道环境。被跟踪的空间物体总数——包括在轨航天器、废弃卫星和碎片——已达数万个，大大增加了轨道拥堵和碰撞的风险。随着多个太空行为体争夺轨道战略优势，非合作和对抗行为的日益普遍使这个日益拥挤的领域变得更加复杂。在此背景下，预测可机动卫星集群轨迹并推断其操作意图的能力已成为空间态势感知和资产保护的重要支柱。对此类目标的准确轨迹预测和意图识别为避碰和威胁评估提供了关键的决策支持，对维持可持续的空间操作至关重要。
 
-Trajectory prediction for spacecraft has traditionally relied on physics-based propagation models. The Clohessy--Wiltshire (CW) equations \cite{clohessy1960terminal} provide an analytical linearized description of relative motion in near-circular orbits and remain widely employed for orbital rendezvous guidance. Linear covariance techniques have been developed to analyze trajectory dispersions and navigation errors in closed-loop rendezvous scenarios \cite{geller2006linear}. However, when unknown impulsive maneuvers occur, pure physics-based methods diverge rapidly from the true trajectory. To address this, data-driven approaches have gained considerable attention in recent years. Deep learning models, particularly recurrent neural networks, have demonstrated remarkable capability in capturing temporal dependencies for sequential prediction tasks \cite{hochreiter1997long, chung2014empirical}. Long short-term memory (LSTM) networks have been successfully applied to satellite orbit prediction and orbit determination under continuous maneuvers \cite{zhou2023lstm}. Bidirectional LSTM (Bi-LSTM) architectures have demonstrated effectiveness in atmospheric drag coefficient modeling for LEO satellites \cite{chen2025bilstm} and in data-driven orbit prediction for LEO spacecraft \cite{ai2025bilstm}. A recent comprehensive survey of machine learning methods for orbit estimation confirms the growing role of data-driven techniques across diverse mission scenarios \cite{carrillo2024survey}. Furthermore, bidirectional gated recurrent units (BiGRU) have been employed for multi-target maneuver-mode intent recognition in cluster scenarios \cite{tong2024cluster}.
+Trajectory prediction for spacecraft has traditionally relied on physics-based propagation models. The Clohessy--Wiltshire (CW) equations \cite{clohessy1960terminal} provide an analytical linearized description of relative motion in near-circular orbits and remain widely employed for orbital rendezvous guidance and proximity operations. Linear covariance techniques have been developed to analyze trajectory dispersions and navigation errors in closed-loop rendezvous scenarios \cite{geller2006linear}. However, when unknown impulsive maneuvers occur, pure physics-based methods diverge rapidly from the true trajectory because the governing dynamics are no longer accurately described by the unforced CW model. To address this limitation, data-driven approaches have gained considerable attention in recent years. Deep learning models, particularly recurrent neural networks, have demonstrated remarkable capability in capturing temporal dependencies for sequential prediction tasks \cite{hochreiter1997long, chung2014empirical}. Long short-term memory (LSTM) networks have been successfully applied to satellite orbit prediction and orbit determination under continuous maneuvers \cite{zhou2023lstm}. Bidirectional LSTM (Bi-LSTM) architectures have demonstrated effectiveness in atmospheric drag coefficient modeling for low Earth orbit (LEO) satellites \cite{chen2025bilstm} and in data-driven orbit prediction for LEO spacecraft \cite{ai2025bilstm}.
+% 中文：航天器的轨迹预测传统上依赖于基于物理的传播模型。Clohessy-Wiltshire（CW）方程提供了近圆轨道相对运动的解析线性化描述，仍广泛用于轨道交会制导和近距离操作。线性协方差技术已被开发用于分析闭环交会场景中的轨迹散布和导航误差。然而，当发生未知的脉冲机动时，纯物理方法会迅速偏离真实轨迹，因为无外力CW模型不再准确描述主导动力学。为克服这一局限，数据驱动方法近年来受到广泛关注。深度学习模型，特别是循环神经网络，在捕捉序列预测任务中的时间依赖关系方面展现出卓越能力。长短期记忆网络已成功应用于连续机动下的卫星轨道预测和轨道确定。双向LSTM架构在低轨卫星大气阻力系数建模和数据驱动的轨道预测中展示了有效性。
 
-The integration of physical knowledge with data-driven models, known as physics-informed neural networks (PINNs), has emerged as a promising paradigm for scientific machine learning \cite{raissi2019physics}. By embedding governing equations into the learning objective, PINNs produce predictions that respect physical conservation laws while benefiting from the expressive power of neural networks. In the orbital mechanics domain, physics-informed approaches have been explored for orbit determination using Extreme Learning Machines with physics-based regularization \cite{scorsoglio2023physics}. Additionally, neural ordinary differential equations (Neural ODEs) have been combined with physical models for precise LEO orbit prediction \cite{kamiya2023precise}. However, existing efforts predominantly address single-satellite scenarios and lack explicit handling of multi-agent interactions and unknown maneuvers — two critical challenges when dealing with maneuverable satellite clusters.
+The integration of physical knowledge with data-driven models, known as physics-informed neural networks (PINNs), has emerged as a promising paradigm for scientific machine learning \cite{raissi2019physics}. By embedding governing equations into the learning objective, PINNs produce predictions that respect physical conservation laws while benefiting from the expressive power of neural networks. In the orbital mechanics domain, physics-informed approaches have been explored for orbit determination using extreme learning machines with physics-based regularization \cite{scorsoglio2023physics}. Neural ordinary differential equations (Neural ODEs) have been combined with physical models for precise LEO orbit prediction \cite{kamiya2023precise}. However, existing efforts predominantly address single-satellite scenarios and lack explicit handling of multi-agent interactions and unknown maneuvers --- two critical challenges when dealing with maneuverable satellite clusters where multiple spacecraft execute coordinated or independent maneuvers simultaneously.
+% 中文：物理知识与数据驱动模型的融合，即物理信息神经网络（PINNs），已成为科学机器学习的一个有前景的范式。通过将控制方程嵌入学习目标，PINNs在受益于神经网络表达能力的同时，产生符合物理守恒定律的预测。在轨道力学领域，已探索了使用物理正则化的极限学习机进行轨道确定的物理信息方法。神经常微分方程（Neural ODEs）与物理模型相结合用于精确的低轨轨道预测。然而，现有工作主要针对单卫星场景，缺乏对多智能体交互和未知机动的显式处理——这是处理可机动卫星集群（其中多颗航天器同时执行协调或独立机动）时的两个关键挑战。
 
-Intention recognition for space objects constitutes an equally important and challenging problem. Early work employed control-distance metrics \cite{holzinger2012maneuver} and deep convolutional neural networks \cite{linares2020space} for object correlation, maneuver detection, and classification from observational data. More recently, deep neural networks have been introduced for non-cooperative space target intention recognition using CW-based maneuver geometries \cite{sun2023deep}. Nevertheless, most existing studies treat intention recognition as a pure classification problem with discrete maneuver types, rather than jointly predicting the continuous geometric configuration parameters — such as the number of objects in a cluster, their closest approach distance, and their spatial dispersion — that are of direct operational relevance. Furthermore, the variable number of objects in a cluster (ranging from 2 to 4 in practical scenarios) poses a permutation-invariance requirement that conventional fixed-architecture networks cannot naturally accommodate.
+Intention recognition for space objects constitutes an equally important and challenging problem. Early work employed control-distance metrics \cite{holzinger2012maneuver} and deep convolutional neural networks \cite{linares2020space} for object correlation, maneuver detection, and classification from observational data. More recently, deep neural networks have been introduced for non-cooperative space target intention recognition using CW-based maneuver geometries \cite{sun2023deep}. Bidirectional gated recurrent units (BiGRU) have been employed for multi-target maneuver-mode intent recognition in cluster scenarios \cite{tong2024cluster}. Nevertheless, most existing studies treat intention recognition as a pure classification problem with discrete maneuver types rather than jointly predicting the continuous geometric configuration parameters --- such as the number of objects in a cluster, their closest approach distance, and their spatial dispersion --- that are of direct operational relevance. Furthermore, the variable number of objects in a cluster poses a permutation-invariance requirement that conventional fixed-architecture networks cannot naturally accommodate. The challenge is compounded by the diversity of possible maneuver intentions: an approaching spacecraft may be executing a pursuit maneuver for rendezvous, a reconnaissance fly-by for inspection, an ambush trajectory for covert positioning, or an obstruction path for intercept, each producing distinct yet partially overlapping kinematic signatures.
+% 中文：空间目标的意图识别同样重要且具有挑战性。早期工作使用控制距离度量和深度卷积神经网络进行目标关联、机动检测和基于观测数据的分类。近年来，深度神经网络被引入基于CW机动几何的非合作空间目标意图识别。双向门控循环单元（BiGRU）已被用于集群场景中多目标机动模式的意图识别。然而，大多数现有研究将意图识别视为具有离散机动类型的纯分类问题，而非联合预测具有直接操作相关性的连续几何构型参数——如集群中目标的数量、最近接近距离和空间散布程度。此外，集群中目标数量的可变性带来了置换不变性的要求，传统固定架构网络无法自然满足。不同机动意图的多样性进一步加剧了这一挑战：接近的航天器可能执行交会追击机动、侦察飞越、隐蔽定位的潜伏轨迹或拦截的遮挡路径，每种情况产生不同但部分重叠的运动学特征。
 
-To bridge these gaps, this paper proposes a two-stage deep learning framework for maneuverable satellite cluster trajectory prediction and intention recognition. In the first stage, a physics-informed conditional LSTM (PI-LSTM) predicts future trajectories by incorporating CW dynamics as explicit physical constraints. A differentiable $\Delta v$ estimation module, derived from the CW state transition relation, estimates velocity increments from observed state sequences and feeds them as conditioning signals into the LSTM, enabling the model to adapt its gating behavior according to maneuver intensity. In the second stage, a bidirectional GRU (BiGRU) network with a permutation-invariant set attention architecture performs multi-task intention recognition: classifying the number of objects in the cluster ($N$) and regressing the global minimum distance and the spatial dispersion angle ($\phi$) at the moment of closest approach. Physics-informed feature engineering — including CW propagation residuals, orbital invariants, and inter-target geometric statistics — provides the network with physically meaningful representations rather than raw state vectors. Both stages are trained and evaluated on a dataset of 23,787 samples generated via reinforcement-learning-based orbital pursuit simulations.
+To bridge these gaps, this paper proposes a two-stage deep learning framework for maneuverable satellite cluster trajectory prediction and intention recognition. The key contributions of this work are summarized as follows:
+% 中文：为弥补这些不足，本文提出了一个两阶段深度学习框架，用于可机动卫星集群的轨迹预测与意图识别。本文的主要贡献总结如下：
 
-The remainder of this paper is organized as follows. Section 2 formulates the problem by establishing the dynamic models, describing the mission scenario, and outlining the key assumptions. Section 3 details the trajectory prediction algorithm for maneuverable satellite clusters, which integrates physical information with a long short-term memory (LSTM) network. Section 4 elaborates on the intention recognition algorithm that combines physical guidance with a deep neural network based on a bidirectional gated recurrent unit (BiGRU) architecture. Section 5 presents numerical simulations, where the effectiveness and superiority of the proposed methods are validated through comparisons with state-of-the-art approaches in this field. Section 6 concludes the paper.
+\begin{enumerate}
+    \item \textbf{Physics-informed conditional LSTM for trajectory prediction.} A differentiable $\Delta v$ estimation module, derived from the CW state transition relation, computes velocity increments from observed state sequences and feeds them as conditioning signals into the LSTM encoder--decoder. This mechanism enables the model to adapt its gating behavior according to maneuver intensity without requiring explicit maneuver labels. A physics-regularized loss function penalizes violations of CW dynamics and enforces physically plausible velocity-change magnitudes.
+          % 中文：贡献1：用于轨迹预测的物理信息条件LSTM。从CW状态转移关系导出的可微分Δv估计模块，从观测状态序列计算速度增量，并将其作为条件信号输入LSTM编码器-解码器。该机制使模型能够根据机动强度调整其门控行为，而无需显式的机动标签。物理正则化损失函数惩罚违反CW动力学行为，并强制生成物理上合理的速度变化幅度。
 
-\section{Problem statement}\label{sec:problem}
+    \item \textbf{Permutation-invariant BiGRU-based intention recognition.} A shared-weight BiGRU encoder processes per-target trajectories augmented with 10 channels of physics-informed features. Set attention aggregation (based on the Deep Sets framework \cite{zaheer2017deep}) provides a permutation-invariant global representation, while a pairwise interaction module constructs explicit two-body relational features for geometry-sensitive predictions. Multi-task outputs jointly classify the cluster size and regress continuous geometric parameters.
+          % 中文：贡献2：基于BiGRU的置换不变意图识别。共享权重的BiGRU编码器处理每个目标的轨迹，并增强10通道物理信息特征。集合注意力聚合（基于Deep Sets框架）提供置换不变的全局表示，而成对交互模块为几何敏感预测构建显式的二体关系特征。多任务输出联合分类集群大小并回归连续几何参数。
+
+    \item \textbf{Multi-scenario dataset with five maneuver intention types.} A large-scale training dataset is generated via Proximal Policy Optimization (PPO) \cite{schulman2017proximal} simulations covering five distinct maneuver intention scenarios: pursuit capture, reconnaissance detection, covert ambush, trajectory obstruction, and mixed strategies. This diversity enables the learned models to generalize across different operational regimes.
+          % 中文：贡献3：包含五种机动意图类型的多场景数据集。通过近端策略优化（PPO）仿真生成大规模训练数据集，覆盖五种不同的机动意图场景：追击捕获、侦察探测、隐蔽潜伏、轨迹遮挡和混合策略。这种多样性使学习模型能够在不同操作模式间泛化。
+\end{enumerate}
+
+The remainder of this paper is organized as follows. Section~\ref{sec:problem} formulates the problem by establishing the dynamic models, describing the multi-scenario dataset, and outlining the key assumptions. Section~\ref{sec:trajectory} details the physics-informed LSTM trajectory prediction algorithm. Section~\ref{sec:intention} elaborates on the BiGRU-based intention recognition architecture with physics-informed feature engineering. Section~\ref{sec:simulations} presents numerical simulations, ablation studies, and discussions. Section~\ref{sec:conclusions} concludes the paper.
+% 中文：本文其余部分组织如下。第2节通过建立动力学模型、描述多场景数据集和概述关键假设来形式化问题。第3节详述物理信息LSTM轨迹预测算法。第4节阐述基于BiGRU的意图识别架构及物理信息特征工程。第5节展示数值仿真、消融实验和讨论。第6节总结全文。
+
+\section{Problem formulation}\label{sec:problem}
 
 \subsection{Orbital dynamics and the Clohessy--Wiltshire model}
 
-We consider a scenario where a set of maneuverable spacecraft operate in near-circular low Earth orbit (LEO) at an altitude of approximately 480 km. In the local-vertical local-horizontal (LVLH) coordinate frame centered on a reference point (the target satellite), the relative motion between two neighboring spacecraft can be described by the Clohessy--Wiltshire (CW) equations \cite{clohessy1960terminal}:
+The mission scenario addressed in this section is illustrated in Fig.~\ref{fig:coord_frames}. The scenario involves two parties: an observation spacecraft $\mathrm{E}$ and a non-cooperative target cluster consisting of multiple satellites $\mathrm{T}$, both operating in near-circular low Earth orbit at altitude $h_{\text{orb}}$. Two orthogonal coordinate systems are employed to describe the orbital motion.
+% 中文：本节所涉及的任务场景如图~\ref{fig:coord_frames} 所示。该场景涉及两方：观测航天器 $\mathrm{E}$ 和一个由多颗卫星组成的非合作目标集群 $\mathrm{T}$，两者均在高度 $h_{\text{orb}}$ 的近圆低地球轨道上运行。采用两个正交坐标系来描述轨道运动。
+
+The Earth-centered inertial (ECI) frame, denoted as $\mathcal{F}_{\mathrm{I}}: O_{\mathrm{I}}\text{-}X_{\mathrm{I}}Y_{\mathrm{I}}Z_{\mathrm{I}}$, has its origin $O_{\mathrm{I}}$ at the Earth's center. The $O_{\mathrm{I}}X_{\mathrm{I}}$ axis lies in the equatorial plane and points toward the mean vernal equinox at 12:00 Terrestrial Time on 1 January 2000 (J2000.0). The $O_{\mathrm{I}}Z_{\mathrm{I}}$ axis coincides with the Earth's rotation axis and points northward, perpendicular to the equatorial plane. The $O_{\mathrm{I}}Y_{\mathrm{I}}$ axis completes the right-handed orthogonal triad.
+% 中文：地心惯性系（ECI）记为F_I: O_I-X_I Y_I Z_I，原点O_I位于地心。O_I X_I轴位于赤道平面，指向J2000.0时刻（2000年1月1日12:00地球时）的平春分点。O_I Z_I轴与地球自转轴重合，指向北向，垂直于赤道平面。O_I Y_I轴构成右手正交坐标系。
+
+The local-vertical local-horizontal (LVLH) frame, denoted as $\mathcal{F}_{\mathrm{L}}: O_{\mathrm{L}}\text{-}X_{\mathrm{L}}Y_{\mathrm{L}}Z_{\mathrm{L}}$, is centered at the own satellite (the target spacecraft), which serves as the reference point for relative motion analysis. The $O_{\mathrm{L}}X_{\mathrm{L}}$ axis is aligned with the radial direction, pointing from the Earth's center to the own satellite (radially outward). The $O_{\mathrm{L}}Z_{\mathrm{L}}$ axis is aligned with the orbital angular momentum vector, i.e., perpendicular to the orbital plane. The $O_{\mathrm{L}}Y_{\mathrm{L}}$ axis completes the right-handed triad, pointing approximately along the along-track (velocity) direction.
+% 中文：当地垂直当地水平系（LVLH）记为F_L: O_L-X_L Y_L Z_L，以本星（目标航天器）为中心，作为相对运动分析的参考点。O_L X_L轴与径向对齐，从地心指向本星（径向向外）。O_L Z_L轴与轨道角动量矢量对齐，即垂直于轨道平面。O_L Y_L轴构成右手坐标系，大致沿迹（速度）方向。
+
+The own satellite (target) is assumed to be non-maneuvering throughout both the trajectory prediction and intention recognition processes, serving as an inertial reference for the relative motion of neighboring maneuverable spacecraft. Under these conditions, the relative motion of a chaser spacecraft with respect to the own satellite in the LVLH frame is governed by the Clohessy--Wiltshire equations \cite{clohessy1960terminal}:
+% 中文：本星（目标）在轨迹预测和意图识别过程中假设不进行机动，作为邻近可机动航天器相对运动的惯性参考。在此条件下，追踪航天器相对于本星在LVLH系中的相对运动由Clohessy-Wiltshire方程描述：
 
 \begin{align}
-\ddot{x} - 2n\dot{y} - 3n^2 x &= 0, \label{eq:cw_x}\\
-\ddot{y} + 2n\dot{x} &= 0, \label{eq:cw_y}\\
-\ddot{z} + n^2 z &= 0, \label{eq:cw_z}
+    \ddot{x} - 2n\dot{y} - 3n^2 x & = 0, \label{eq:cw_x} \\
+    \ddot{y} + 2n\dot{x}          & = 0, \label{eq:cw_y} \\
+    \ddot{z} + n^2 z              & = 0, \label{eq:cw_z}
 \end{align}
-where $x$, $y$, $z$ denote the radial (positive outward), along-track, and cross-track relative positions in the LVLH frame; $n = \sqrt{\mu / r^3}$ is the mean orbital angular velocity; $\mu = 398600\ \text{km}^3/\text{s}^2$ is Earth's gravitational parameter; and $r = R_E + h = 6851\ \text{km}$ is the orbital radius.
+where $x$, $y$, $z$ denote the radial (positive outward), along-track, and cross-track relative positions in the LVLH frame; $n = \sqrt{\mu / r^3}$ is the mean orbital angular velocity; $\mu = 398600\ \text{km}^3/\text{s}^2$ is Earth's gravitational parameter; and $r = R_{\mathrm{E}} + h_{\text{orb}}$ is the orbital radius, with $R_{\mathrm{E}}$ denoting Earth's radius.
+% 中文：其中x、y、z分别表示LVLH系中的径向（向外为正）、沿迹和跨迹相对位置；n = sqrt(μ/r³)为平均轨道角速度；μ = 398600 km³/s²为地球引力常数；r = R_E + h_orb为轨道半径，R_E为地球半径。
 
-In the absence of maneuvers, the CW equations admit an analytical solution expressed through the state transition matrix $\Phi(\Delta t) \in \mathbb{R}^{6 \times 6}$. Let the state vector be $\bm{s} = [x, y, z, \dot{x}, \dot{y}, \dot{z}]^\top$. The free-evolution over time interval $\Delta t$ is then:
+\begin{figure}[pos={t}]
+    \centering
+    \includegraphics[width=\columnwidth]{figs/coordinate_frames}
+    \caption{Coordinate frames: Earth-centered inertial (ECI) frame $\mathcal{F}_{\mathrm{I}}$ and local-vertical local-horizontal (LVLH) frame $\mathcal{F}_{\mathrm{L}}$, with maneuvering chaser spacecraft approaching the target satellite.}\label{fig:coord_frames}
+    % 中文：图1：坐标系：地心惯性系（ECI）F_I和当地垂直当地水平系（LVLH）F_L，机动追踪航天器正在接近目标卫星。
+\end{figure}
+
+In the absence of maneuvers, the CW equations admit an analytical solution expressed through the state transition matrix $\biPhi(\Delta t) \in \mathbb{R}^{6 \times 6}$. Let the state vector be $\bm{s} = [x, y, z, \dot{x}, \dot{y}, \dot{z}]^\top$. The free evolution over time interval $\Delta t$ is then:
+% 中文：在没有机动的情况下，CW方程存在解析解，可通过状态转移矩阵Φ(Δt) ∈ R^{6×6}表示。设状态向量为s = [x, y, z, ẋ, ẏ, ż]^T，则时间间隔Δt内的自由演化为：
 
 \begin{equation}
-\bm{s}(t + \Delta t) = \Phi(\Delta t) \cdot \bm{s}(t). \label{eq:cw_free}
+    \bm{s}(t + \Delta t) = \biPhi(\Delta t) \cdot \bm{s}(t). \label{eq:cw_free}
 \end{equation}
-The explicit entries of $\Phi(\Delta t)$ are given in Appendix A of \cite{geller2006linear} and are implemented directly in our computational framework.
+
+Denoting $\tau = n \cdot \Delta t$, the non-zero entries of $\biPhi(\Delta t)$ are given by:
+% 中文：设τ = n·Δt，Φ(Δt)的非零元素由下式给出：
+
+\begin{align}
+    \iPhi_{11} & = 4 - 3\cos\tau,                         &
+    \iPhi_{14} & = \frac{\sin\tau}{n}, \nonumber            \\
+    \iPhi_{15} & = \frac{2(1 - \cos\tau)}{n}, \nonumber     \\
+    \iPhi_{21} & = 6(\sin\tau - \tau),                    &
+    \iPhi_{22} & = 1, \nonumber                             \\
+    \iPhi_{24} & = \frac{2(\cos\tau - 1)}{n},             &
+    \iPhi_{25} & = \frac{4\sin\tau - 3\tau}{n}, \nonumber   \\
+    \iPhi_{33} & = \cos\tau,                              &
+    \iPhi_{36} & = \frac{\sin\tau}{n}, \nonumber            \\
+    \iPhi_{41} & = 3n\sin\tau,                            &
+    \iPhi_{44} & = \cos\tau, \nonumber                      \\
+    \iPhi_{45} & = 2\sin\tau, \nonumber                     \\
+    \iPhi_{51} & = 6n(\cos\tau - 1),                      &
+    \iPhi_{54} & = -2\sin\tau, \nonumber                    \\
+    \iPhi_{55} & = 4\cos\tau - 3, \nonumber                 \\
+    \iPhi_{63} & = -n\sin\tau,                            &
+    \iPhi_{66} & = \cos\tau. \label{eq:phi_entries}
+\end{align}
 
 When an impulsive velocity change (maneuver) $\Delta \bm{v} = [\Delta v_x, \Delta v_y, \Delta v_z]^\top$ is applied at time $t$, the post-maneuver state can be decomposed as:
+% 中文：当在时间t施加脉冲速度变化（机动）Δv = [Δv_x, Δv_y, Δv_z]^T时，机动后状态可分解为：
 
 \begin{equation}
-\bm{s}(t + \Delta t) = \Phi(\Delta t) \cdot \bm{s}(t) + B_{\text{eff}}(\Delta t) \cdot \Delta \bm{v}(t), \label{eq:cw_maneuver}
+    \bm{s}(t + \Delta t) = \biPhi(\Delta t) \cdot \bm{s}(t) + \bm{B}_{\text{eff}}(\Delta t) \cdot \Delta \bm{v}(t), \label{eq:cw_maneuver}
 \end{equation}
-where $B_{\text{eff}}(\Delta t) \in \mathbb{R}^{6 \times 3}$ consists of the velocity columns (columns 4--6) of $\Phi(\Delta t)$, representing the contribution of an instantaneous velocity impulse to the subsequent state \cite{geller2006linear}. This linear decomposition, which is fully differentiable with respect to the state variables, serves as the cornerstone of our physics-informed approach: given consecutive observed states $\bm{s}_t$ and $\bm{s}_{t+1}$, the velocity increment can be estimated in closed form via the Moore--Penrose pseudo-inverse:
+where $\bm{B}_{\text{eff}}(\Delta t) \in \mathbb{R}^{6 \times 3}$ consists of the velocity columns (columns 4--6) of $\biPhi(\Delta t)$, representing the contribution of an instantaneous velocity impulse to the subsequent state. This linear decomposition, which is fully differentiable with respect to the state variables, serves as the cornerstone of the physics-informed approach: given consecutive observed states $\bm{s}_t$ and $\bm{s}_{t+1}$, the velocity increment can be estimated in closed form via the Moore--Penrose pseudo-inverse:
+% 中文：其中B_eff(Δt) ∈ R^{6×3}由Φ(Δt)的速度列（第4-6列）组成，表示瞬时速度脉冲对后续状态的贡献。这个线性分解对状态变量完全可微，是物理信息方法的基石：给定连续观测状态s_t和s_{t+1}，可通过Moore-Penrose伪逆闭合形式估计速度增量：
 
 \begin{equation}
-\Delta \bm{v}_t \approx B_{\text{eff}}^+(\Delta t) \cdot \bigl(\bm{s}_{t+1} - \Phi(\Delta t) \cdot \bm{s}_t\bigr), \label{eq:dv_estimate}
+    \Delta \bm{v}_t \approx \bm{B}_{\text{eff}}^+(\Delta t) \cdot \bigl(\bm{s}_{t+1} - \biPhi(\Delta t) \cdot \bm{s}_t\bigr), \label{eq:dv_estimate}
 \end{equation}
-where $B_{\text{eff}}^+ = (B_{\text{eff}}^\top B_{\text{eff}})^{-1} B_{\text{eff}}^\top$ is the least-squares solution. This operation is differentiable and can therefore be embedded as a module within a neural network, enabling gradient-based learning of $\Delta v$-aware representations without requiring explicit maneuver labels.
+where $\bm{B}_{\text{eff}}^+ = (\bm{B}_{\text{eff}}^\top \bm{B}_{\text{eff}})^{-1} \bm{B}_{\text{eff}}^\top$ is the least-squares solution. This operation is differentiable and can therefore be embedded as a module within a neural network, enabling gradient-based learning of $\Delta v$-aware representations without requiring explicit maneuver labels.
+% 中文：其中B_eff^+ = (B_eff^T B_eff)^{-1} B_eff^T为最小二乘解。该运算可微，因此可嵌入神经网络作为模块，实现基于梯度的Δv感知表示学习，而无需显式的机动标签。
 
-\subsection{Mission scenario and dataset}
+\subsection{Multi-scenario dataset generation}
 
-The dataset is constructed from orbital pursuit simulations with the following configuration. A non-maneuvering target satellite is placed at the LVLH origin. A chaser (pursuer) satellite starts from a random position on a sphere of radius 100--120 km around the origin and executes impulsive orbital maneuvers to approach the target. The chaser's policy is trained using Proximal Policy Optimization (PPO) \cite{schulman2017proximal} with a 6-dimensional observation (relative position and velocity) and a 3-dimensional continuous action (velocity increment $\Delta \bm{v}$ per step, scaled by a factor of 0.003 such that $|\Delta v| \leq 3$ m/s). At each RL step, a single impulsive maneuver is followed by 60 sub-steps of free CW propagation at $h = 1$ s resolution. An episode terminates with a positive reward of $+100$ when the chaser reaches within 5 km of the target, or with a penalty of $-100$ if the inter-satellite distance exceeds 200 km. Successful trajectories are recorded at $h = 1$ s intervals.
+The dataset is constructed from orbital pursuit simulations across five distinct maneuver intention scenarios. Each scenario is modeled as a Markov decision process and solved using Proximal Policy Optimization \cite{schulman2017proximal}. The simulation configuration is as follows. A non-maneuvering target satellite is placed at the LVLH origin. A chaser (pursuer) satellite starts from a random position on a sphere of radius $d_{\text{init}}$ around the origin and executes impulsive orbital maneuvers to approach the target. The chaser's policy is trained using PPO with a 6-dimensional observation (relative position and velocity) and a 3-dimensional continuous action (velocity increment $\Delta \bm{v}$ per step, scaled such that $|\Delta v| \leq \Delta v_{\max}$). At each RL step, a single impulsive maneuver is followed by $N_{\text{sub}}$ sub-steps of free CW propagation at time step $\Delta t$.
+% 中文：数据集通过五种不同机动意图场景的轨道追击仿真构建。每个场景建模为马尔可夫决策过程，并使用近端策略优化求解。仿真配置如下：非机动目标卫星位于LVLH原点；追踪（追击）卫星从原点周围半径d_init球面上的随机位置出发，执行脉冲轨道机动接近目标。追踪者的策略使用PPO训练，具有6维观测（相对位置和速度）和3维连续动作（每步速度增量Δv，缩放使得|Δv| ≤ Δv_max）。在每个RL步骤中，一次脉冲机动后跟随N_sub步自由CW传播子步（时间步长Δt）。
 
-To construct multi-target cluster scenarios, the recorded single-chaser trajectories are randomly grouped into batches of $N = 2, 3,$ or $4$ targets. For each target, the final $20$ time steps are extracted from the trajectory. If the raw trajectory length is not an exact multiple of 10, the remaining steps are padded using the CW state transition matrix $\Phi(T)$ with $T = 60$ s. The resulting $20$-step sequence is partitioned into an observation window $\bm{X}_{\text{now}} \in \mathbb{R}^{10 \times 6N}$ (the first 10 steps) and a prediction target $\bm{X}_{\text{next}} \in \mathbb{R}^{10 \times 6N}$ (the subsequent 10 steps). For each batch, three scalar labels are computed:
+The five intention scenarios differ in their reward structures, which encode distinct operational objectives:
+% 中文：五种意图场景的奖励结构不同，编码了不同的操作目标：
 
 \begin{itemize}
-\item $N \in \{2, 3, 4\}$: the number of objects in the cluster;
-\item $d_{\min}$: the global minimum distance from the LVLH origin to any object over the entire 20-step window;
-\item $\phi$: the angle between the position vectors of the nearest and farthest objects from the origin at the time step of $d_{\min}$, defined as
-\begin{equation}
-\phi = \arccos\left(\frac{\bm{r}_{\text{nearest}} \cdot \bm{r}_{\text{farthest}}}{|\bm{r}_{\text{nearest}}| \, |\bm{r}_{\text{farthest}}|}\right) \in [0, \pi].
-\end{equation}
+    \item \textbf{Pursuit (Capture):} The chaser receives a reward of $+R_{\text{cap}}$ upon reaching within distance $d_{\text{cap}}$ of the target and a penalty of $-R_{\text{cap}}$ if the inter-satellite distance exceeds $d_{\text{bnd}}$. This incentivizes rapid approach and rendezvous.
+          % 中文：追击（捕获）：追踪者在到达距目标d_cap范围内时获得+R_cap的奖励，如果星间距离超过d_bnd则获得-R_cap的惩罚，激励快速接近和交会。
+
+    \item \textbf{Reconnaissance (Detection):} The chaser is rewarded for approaching the target to within a detection range $[d_{\text{det}}^{\min}, d_{\text{det}}^{\max}]$ without necessarily achieving rendezvous, simulating fly-by inspection or surveillance.
+          % 中文：侦察（探测）：追踪者接近目标至探测范围[d_det_min, d_det_max]内获得奖励，无需实现交会，模拟飞越式检查或监视。
+
+    \item \textbf{Ambush (Lurk):} The chaser maintains a holding distance within $[d_{\text{lurk}}^{\min}, d_{\text{lurk}}^{\max}]$ before executing a terminal approach, simulating covert positioning followed by a sudden engagement.
+          % 中文：潜伏（潜伏）：追踪者在执行末端接近前维持[d_lurk_min, d_lurk_max]范围内的保持距离，模拟隐蔽定位后突然接敌。
+
+    \item \textbf{Obstruction (Obstruction):} The chaser maneuvers to position itself along the line-of-sight between the target and a third reference point, simulating denial of access or field-of-view obstruction.
+          % 中文：遮挡（遮挡）：追踪者机动至目标与第三参考点之间的视线上，模拟拒绝接近或视场遮挡。
+
+    \item \textbf{Mixed (Mix):} The chaser's policy is trained with a composite reward that randomly switches between the above objectives during training, producing trajectories that blend multiple behavioral patterns.
+          % 中文：混合（混合）：追踪者策略使用复合奖励训练，在训练过程中随机切换上述目标，产生融合多种行为模式的轨迹。
 \end{itemize}
 
-\noindent The complete dataset contains 23,787 samples, with N=2, 3, and 4 comprising approximately 46\%, 31\%, and 23\% of the samples, respectively. Each sample consists of the pair $(\bm{X}_{\text{now}}, \bm{X}_{\text{next}})$ and the label vector $\bm{y} = [N, d_{\min}, \phi]^\top$. The dataset is randomly partitioned into training (70\%), validation (15\%), and test (15\%) sets using a fixed random seed.
+Successful trajectories (those meeting the scenario-specific success criteria) are recorded at $\Delta t$ intervals. For each scenario, approximately $N_{\text{traj}}$ successful trajectories are collected.
+% 中文：成功的轨迹（满足场景特定成功准则的轨迹）以Δt间隔记录。每个场景约收集N_traj条成功轨迹。
+
+\subsection{Dataset construction and labels}
+
+To construct multi-target cluster scenarios, the recorded single-chaser trajectories are randomly grouped into batches of $N \in \{N_{\min}, \dots, N_{\max}\}$ targets. For each group, the final $T_{\text{total}}$ time steps are extracted from each trajectory. If the raw trajectory length is not an exact multiple of $T_{\text{obs}}$, the remaining steps are padded using the CW state transition matrix $\biPhi(T_{\text{pad}})$ with $T_{\text{pad}} = N_{\text{sub}} \cdot \Delta t$. The resulting $T_{\text{total}}$-step sequence is partitioned into an observation window $\bm{X}_{\text{now}} \in \mathbb{R}^{T_{\text{obs}} \times 6N}$ (the first $T_{\text{obs}}$ steps) and a prediction target $\bm{X}_{\text{next}} \in \mathbb{R}^{T_{\text{pred}} \times 6N}$ (the subsequent $T_{\text{pred}}$ steps, where $T_{\text{pred}} = T_{\text{obs}}$). For each sample, three scalar labels are computed:
+% 中文：为构建多目标集群场景，将记录的单追踪者轨迹随机分组为N ∈ {N_min, ..., N_max}个目标。对每组，从每条轨迹中提取最后T_total个时间步。若原始轨迹长度不是T_obs的整数倍，则使用CW状态转移矩阵Φ(T_pad)（其中T_pad = N_sub·Δt）填充剩余步。将得到的T_total步序列分为观测窗口X_now ∈ R^{T_obs×6N}（前T_obs步）和预测目标X_next ∈ R^{T_pred×6N}（后续T_pred步，其中T_pred = T_obs）。对每个样本，计算三个标量标签：
+
+\begin{itemize}
+    \item $N \in \{N_{\min}, \dots, N_{\max}\}$: the number of objects in the cluster;
+          % 中文：N：集群中目标的数量
+    \item $d_{\min}$: the global minimum distance from the LVLH origin to any object over the entire $T_{\text{total}}$-step window;
+          % 中文：d_min：整个T_total步窗口内LVLH原点到任何目标的最小距离
+    \item $\phi$: the angle between the position vectors of the nearest and farthest objects from the origin at the time step of $d_{\min}$, defined as
+          \begin{equation}
+              \phi = \arccos\left(\frac{\bm{r}_{\text{nearest}} \cdot \bm{r}_{\text{farthest}}}{|\bm{r}_{\text{nearest}}| \, |\bm{r}_{\text{farthest}}|}\right) \in [0, \pi].
+          \end{equation}
+          % 中文：φ：在d_min时刻，距原点最近和最远目标位置矢量之间的夹角
+\end{itemize}
+
+The complete dataset contains $N_{\text{samples}}$ samples. The dataset is randomly partitioned into training (ratio $r_{\text{train}}$), validation (ratio $r_{\text{val}}$), and test (ratio $r_{\text{test}}$) sets using a fixed random seed $s$.
+% 中文：完整数据集包含N_samples个样本，使用固定随机种子s随机划分为训练集（比例r_train）、验证集（比例r_val）和测试集（比例r_test）。
 
 \subsection{Problem formulation}
 
-With the above setup, we define two interlinked tasks:
+With the above setup, two interlinked tasks are defined:
+% 中文：基于上述设置，定义两个相互关联的任务：
 
-\textbf{Task 1 — Trajectory prediction:} Given the observation window $\bm{X}_{\text{now}} \in \mathbb{R}^{10 \times 6N}$ of $N$ targets (where $N$ may be $2$, $3$, or $4$), predict the future trajectory $\hat{\bm{X}}_{\text{next}} \in \mathbb{R}^{10 \times 6N}$. Owing to the variable $N$, the state matrix is always zero-padded to a fixed dimension of $6N_{\max} = 24$, with a corresponding binary mask indicating valid features.
+\textbf{Task 1 --- Trajectory prediction:} Given the observation window $\bm{X}_{\text{now}} \in \mathbb{R}^{T_{\text{obs}} \times 6N}$ of $N$ targets (where $N$ may range from $N_{\min}$ to $N_{\max}$), predict the future trajectory $\hat{\bm{X}}_{\text{next}} \in \mathbb{R}^{T_{\text{pred}} \times 6N}$. Owing to the variable $N$, the state matrix is zero-padded to a fixed dimension of $6N_{\max}$, with a corresponding binary mask indicating valid features.
+% 中文：任务1——轨迹预测：给定N个目标的观测窗口X_now ∈ R^{T_obs×6N}（N的范围从N_min到N_max），预测未来轨迹\hat{X}_next ∈ R^{T_pred×6N}。由于N可变，状态矩阵零填充至固定维度6N_max，并附有二进制掩码表示有效特征。
 
-\textbf{Task 2 — Intention recognition:} Given the full 20-step trajectory $\mathcal{T} \in \mathbb{R}^{N \times 20 \times 6}$ (constructed by concatenating $\bm{X}_{\text{now}}$ and $\bm{X}_{\text{next}}$), predict the cluster configuration label $\hat{\bm{y}} = [\hat{N}, \hat{d}_{\min}, \hat{\phi}]^\top$ comprising one discrete class ($N$) and two continuous quantities ($d_{\min}$, $\phi$).
+\textbf{Task 2 --- Intention recognition:} Given the full $T_{\text{total}}$-step trajectory $\mathcal{T} \in \mathbb{R}^{N \times T_{\text{total}} \times 6}$ (constructed by concatenating $\bm{X}_{\text{now}}$ and $\bm{X}_{\text{next}}$), predict the cluster configuration label $\hat{\bm{y}} = [\hat{N}, \hat{d}_{\min}, \hat{\phi}]^\top$ comprising one discrete class ($N$) and two continuous quantities ($d_{\min}$, $\phi$).
+% 中文：任务2——意图识别：给定完整的T_total步轨迹T ∈ R^{N×T_total×6}（由X_now和X_next拼接构成），预测集群构型标签\hat{y} = [\hat{N}, \hat{d}_min, \hat{φ}]^T，包含一个离散类别（N）和两个连续量（d_min, φ）。
 
 The two tasks are complementary: trajectory prediction provides the future states needed for short-term collision risk assessment, while intention recognition extracts higher-level semantic information (cluster size, geometry) that supports tactical decision-making. Both tasks must handle the permutation invariance of targets (the labeling of individual objects in the cluster is arbitrary) and the variable number of objects per sample.
+% 中文：两个任务互补：轨迹预测提供短期碰撞风险评估所需的未来状态，而意图识别提取支持战术决策的更高级语义信息（集群大小、几何构型）。两个任务都必须处理目标的置换不变性（集群中各个目标的标号是任意的）和每个样本的目标数量变化。
 
 \section{Physics-informed LSTM trajectory prediction}\label{sec:trajectory}
 
-\subsection{Motivation and design rationale}
+\subsection{Model architecture overview}
 
-The trajectory prediction task requires mapping a short observation window ($T_{\text{in}} = 10$ steps, 1 s per step) to an equally long prediction horizon ($T_{\text{out}} = 10$ steps). Prior experiments within our codebase evaluated multiple sequence modeling backbones: a Transformer encoder--decoder failed to learn meaningful predictions on this short-sequence regime (loss stagnated at 0.423), and convolutional approaches combined with cross-attention did not improve results (0.236--0.407). An LSTM encoder--decoder with residual delta prediction achieved substantially better performance (loss of 0.017), consistent with the observation that the Markovian nature of orbital dynamics aligns well with the recurrent inductive bias of LSTMs, particularly when data volume is limited (23,787 samples) and sequences are short \cite{hochreiter1997long}.
+The trajectory prediction task requires mapping a short observation window ($T_{\text{obs}}$ steps, $\Delta t$ per step) to an equally long prediction horizon ($T_{\text{pred}}$ steps, with $T_{\text{pred}} = T_{\text{obs}}$). Given the short-sequence regime and the Markovian nature of orbital dynamics, an LSTM encoder--decoder with residual delta prediction provides a natural inductive bias. Building on this backbone, two physically motivated enhancements are introduced: (1) a differentiable $\Delta v$ estimation module that provides maneuver-aware conditioning signals to the LSTM, and (2) a physics-regularized loss function that enforces consistency with CW dynamics.
+% 中文：轨迹预测任务需要将短观测窗口（T_obs步，每步Δt）映射到等长的预测区间（T_pred步，T_pred = T_obs）。考虑到短序列特性和轨道动力学的马尔可夫性质，具有残差delta预测的LSTM编码器-解码器提供了自然的归纳偏置。在此骨干基础上，引入两个物理驱动的增强：(1) 可微分Δv估计模块，为LSTM提供机动感知的条件信号；(2) 物理正则化损失函数，强制与CW动力学的一致性。
 
-Building on this LSTM backbone, we introduce two physically motivated enhancements. First, instead of feeding raw state vectors directly into the LSTM, we augment the input with maneuver-aware conditioning signals derived from the $\Delta v$ estimation procedure described in Eq.~\eqref{eq:dv_estimate}. This enables the LSTM gating mechanism to adapt its behavior according to the estimated maneuver intensity at each time step. Second, we enrich the training objective with physics-based regularization terms that penalize violations of the CW dynamics and enforce physically plausible velocity-change magnitudes.
+\subsection{Differentiable $\Delta v$ estimation}
 
-\subsection{Model architecture}
-
-The proposed Physics-Informed Conditional LSTM (PI-LSTM) architecture is illustrated in Fig.~\ref{fig:pinn_arch} and consists of five main components: (1) a differentiable $\Delta v$ estimation module, (2) a condition vector builder, (3) an LSTM encoder with expanded input, (4) an autoregressive LSTM decoder with residual prediction, and (5) an auxiliary $\Delta v$ prediction head.
-
-%% FIGURE 1: Architecture diagram placeholder
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=\columnwidth]{figs/architecture.pdf}
-%\caption{Architecture of the physics-informed conditional LSTM (PI-LSTM) for trajectory prediction. The $\Delta v$ estimator computes velocity increments from the input state sequence via differentiable CW inversion. The condition builder fuses mode embeddings with maneuver features to produce conditioning vectors, which are concatenated with state features to form the expanded LSTM input. An encoder--decoder LSTM with residual delta prediction generates the output trajectory. An auxiliary $\Delta v$ prediction head provides estimates for physics-based regularization.}\label{fig:pinn_arch}
-%\end{figure}
-
-\subsubsection{Differentiable $\Delta v$ estimation module}
-
-Given an input state sequence, the $\Delta v$ estimation module computes the velocity increment between each pair of consecutive states using the CW inverse relation in Eq.~\eqref{eq:dv_estimate}. Concretely, for each target agent $a$ with its state sequence $\bm{s}^{(a)}_{1:T}$, the module computes:
+Given an input state sequence, the $\Delta v$ estimation module computes the velocity increment between each pair of consecutive states using the CW inverse relation in Eq.~\eqref{eq:dv_estimate}. For each target agent $a$ with its state sequence $\bm{s}^{(a)}_{1:T}$, the module computes:
+% 中文：给定输入状态序列，Δv估计模块使用式(12)中的CW逆关系计算每对连续状态之间的速度增量。对每个目标智能体a及其状态序列s^{(a)}_{1:T}，该模块计算：
 
 \begin{equation}
-\Delta \bm{v}^{(a)}_t = B_{\text{eff}}^+(h) \cdot \bigl(\bm{s}^{(a)}_{t+1} - \Phi(h) \cdot \bm{s}^{(a)}_t\bigr), \quad t = 1, \dots, T-1,
+    \Delta \bm{v}^{(a)}_t = \bm{B}_{\text{eff}}^+(\Delta t) \cdot \bigl(\bm{s}^{(a)}_{t+1} - \biPhi(\Delta t) \cdot \bm{s}^{(a)}_t\bigr), \quad t = 1, \dots, T-1,
 \end{equation}
-where $h = 1$ s is the simulation time step, and $\Phi(h)$ and $B_{\text{eff}}(h)$ are pre-computed constants registered as non-trainable buffers. Since both the matrix multiplication and the pseudo-inverse are differentiable operations, gradient flows naturally through this module during backpropagation, allowing the upstream encoder to learn representations that are informed by the estimated maneuver signature. An optional lightweight correction network (a two-layer MLP with GELU activation, 8 hidden units, outputting a 3-dimensional additive correction) can be activated to account for nonlinear effects beyond the linear CW approximation; in our experiments, the module without learnable correction already provides sufficient physical guidance.
+where $\Delta t$ is the simulation time step, and $\biPhi(\Delta t)$ and $\bm{B}_{\text{eff}}(\Delta t)$ are pre-computed constants registered as non-trainable buffers. Since both the matrix multiplication and the pseudo-inverse are differentiable operations, gradient flows through this module during backpropagation.
+% 中文：其中Δt为仿真时间步长，Φ(Δt)和B_eff(Δt)为预计算的常数，注册为不可训练缓冲区。由于矩阵乘法和伪逆都是可微运算，梯度在反向传播中流过该模块。
 
 The per-agent $\Delta v$ estimates are aggregated into a global maneuver signature by averaging over all valid agents (handling variable $N$ via masking):
+% 中文：各智能体的Δv估计通过在所有有效智能体上取平均（通过掩码处理可变N）聚合成全局机动特征：
 
 \begin{equation}
-\Delta \bar{\bm{v}}_t = \frac{1}{\sum_{a} \mathbb{I}[a \text{ valid}]} \sum_{a: \text{valid}} \Delta \bm{v}^{(a)}_t \in \mathbb{R}^{3}.
+    \Delta \bar{\bm{v}}_t = \frac{1}{\sum_{a} \mathbb{I}[a \text{ valid}]} \sum_{a: \text{valid}} \Delta \bm{v}^{(a)}_t \in \mathbb{R}^{3}.
 \end{equation}
 
-\subsubsection{Condition vector builder}
+\subsection{Condition vector construction}
 
-The condition vector $\bm{c}_t \in \mathbb{R}^{d_c}$ (where $d_c = 8$) is constructed by summing two components:
+The condition vector $\bm{c}_t \in \mathbb{R}^{d_{\mathrm{c}}}$ is constructed by summing two components:
+% 中文：条件向量c_t ∈ R^{d_c}通过求和两个分量构建：
 
 \begin{equation}
-\bm{c}_t = \text{Embed}(m_t) + \text{MLP}_{\text{dv}}(\Delta \bar{\bm{v}}_t),
+    \bm{c}_t = \text{Embed}(m_t) + \text{MLP}_{\text{dv}}(\Delta \bar{\bm{v}}_t),
 \end{equation}
-where $\text{Embed}(m_t)$ is a learnable embedding of the maneuver mode label $m_t \in \{0, 1\}$ (non-maneuvering vs.\ maneuvering) of dimension $2 \times d_c$, initialized with orthogonal weights. $\text{MLP}_{\text{dv}}$ is a two-layer perceptron with GELU nonlinearity that maps the 3-dimensional global $\Delta \bar{\bm{v}}_t$ to the $d_c$-dimensional embedding space. Summing these two terms encourages the model to learn a joint manifold where mode identity and maneuver magnitude jointly condition the downstream LSTM dynamics.
+where $\text{Embed}(m_t)$ is a learnable embedding of the maneuver mode label $m_t \in \{0, 1\}$ (non-maneuvering vs.\ maneuvering) with $2 \times d_c$ entries initialized with orthogonal weights. $\text{MLP}_{\text{dv}}$ is a two-layer perceptron with GELU nonlinearity that maps the 3-dimensional global $\Delta \bar{\bm{v}}_t$ to the $d_c$-dimensional embedding space. Summing these two components encourages the model to learn a joint manifold where mode identity and maneuver magnitude jointly condition the downstream LSTM dynamics.
+% 中文：其中Embed(m_t)是机动模式标签m_t ∈ {0,1}（非机动vs机动）的可学习嵌入，具有2×d_c个条目并使用正交权重初始化。MLP_dv是带GELU非线性的双层感知器，将三维全局Δ\bar{v}_t映射到d_c维嵌入空间。求和这两个分量鼓励模型学习一个联合流形，其中模式身份和机动幅度共同调节下游LSTM动力学。
 
-\subsubsection{Expanded LSTM encoder}
+\subsection{Encoder--decoder LSTM with residual prediction}
 
-The encoder LSTM receives an expanded input that concatenates each agent's 6-dimensional state with the shared $d_c$-dimensional condition vector, producing a $N_{\max} \times (6 + d_c) = 56$-dimensional input vector per time step (with invalid agent slots zeroed via the mask). The encoder consists of a 3-layer LSTM with hidden size $H = 256$ and dropout rate 0.15 applied between layers. The LSTM weights follow a specialized initialization: input-to-hidden weights use Xavier uniform, hidden-to-hidden weights use orthogonal initialization, and the forget gate bias is set to 1 to mitigate vanishing gradients during early training.
+The encoder LSTM receives an expanded input that concatenates each agent's 6-dimensional state with the shared $d_c$-dimensional condition vector, producing a $N_{\max} \times (6 + d_c)$-dimensional input vector per time step (with invalid agent slots zeroed via the mask). The encoder consists of a $n_{\text{lstm}}$-layer LSTM with hidden size $H_{\text{lstm}}$ and dropout rate $p_{\text{drop}}$ applied between layers. The LSTM weights follow a specialized initialization: input-to-hidden weights use Xavier uniform, hidden-to-hidden weights use orthogonal initialization, and the forget gate bias is set to 1 to mitigate vanishing gradients during early training.
+% 中文：编码器LSTM接收扩展输入——将每个智能体的6维状态与共享的d_c维条件向量拼接，每时间步产生N_max × (6+d_c)维输入向量（无效智能体通过掩码置零）。编码器由n_lstm层LSTM组成，隐藏层大小H_lstm，层间应用dropout率p_drop。LSTM权重采用特殊初始化：输入到隐藏权重使用Xavier均匀分布，隐藏到隐藏权重使用正交初始化，遗忘门偏置设为1以缓解早期训练中的梯度消失。
 
-\subsubsection{Autoregressive decoder with residual prediction}
-
-The decoder adopts a residual (delta) prediction strategy. Rather than directly generating future states, the model predicts deviation $\delta_t$ from a persistence forecast (repeating the last observed state $\bm{s}_{T_{\text{in}}}$ across all $T_{\text{out}}$ steps):
+The decoder adopts a residual delta prediction strategy. Rather than directly generating future states, the model predicts deviations $\bm{\delta}_t$ from a persistence forecast (repeating the last observed state $\bm{s}_{T_{\text{obs}}}$ across all $T_{\text{pred}}$ steps):
+% 中文：解码器采用残差delta预测策略。模型不直接生成未来状态，而是预测相对于持续性预测（将最后观测状态s_{T_obs}重复到所有T_pred步）的偏差δ_t：
 
 \begin{equation}
-\hat{\bm{s}}_{T_{\text{in}} + k} = \bm{s}_{T_{\text{in}}} + \hat{\delta}_k, \quad k = 1, \dots, T_{\text{out}}.
+    \hat{\bm{s}}_{T_{\text{obs}} + k} = \bm{s}_{T_{\text{obs}}} + \hat{\bm{\delta}}_k, \quad k = 1, \dots, T_{\text{pred}}.
 \end{equation}
-This formulation guarantees that the model output cannot be worse than the naive baseline and significantly reduces the learning difficulty \cite{zhou2023lstm}.
 
-The decoder state is initialized from the encoder's final hidden state $(\bm{h}_T^{\text{enc}}, \bm{c}_T^{\text{enc}})$. A context vector $\bm{z} = \text{MLP}_{\text{ctx}}(\bm{h}_T^{\text{enc}})$ is computed and concatenated with each step's delta prediction (augmented with the decoder-step condition vector) to form the decoder LSTM input. The decoder employs an identical 3-layer LSTM configuration ($H = 256$). At each time step $k$, the decoder hidden output passes through a two-layer output projection (GELU + Dropout + Linear) to produce $\hat{\delta}_k \in \mathbb{R}^{24}$. A separate $\Delta v$ predictor head — a two-layer MLP ($H/2$ hidden units, GELU) — estimates $\Delta \hat{\bm{v}}_k$ from the decoder hidden state at each output step for physics loss computation.
+This delta formulation guarantees that the model output cannot be worse than the naive baseline and significantly reduces the learning difficulty \cite{zhou2023lstm}. The decoder state is initialized from the encoder's final hidden state $(\bm{h}_{T_{\text{obs}}}^{\text{enc}}, \bm{c}_{T_{\text{obs}}}^{\text{enc}})$. A context vector $\bm{z} = \text{MLP}_{\text{ctx}}(\bm{h}_{T_{\text{obs}}}^{\text{enc}})$ is computed and concatenated with each step's delta prediction (augmented with the decoder-step condition vector) to form the decoder LSTM input. The decoder employs an identical $n_{\text{lstm}}$-layer LSTM configuration (hidden size $H_{\text{lstm}}$). At each time step $k$, the decoder hidden output passes through a two-layer output projection (GELU + Dropout + Linear) to produce $\hat{\bm{\delta}}_k \in \mathbb{R}^{6 N_{\max}}$. A separate $\Delta v$ predictor head --- a two-layer MLP ($H_{\text{lstm}}/2$ hidden units, GELU) --- estimates $\Delta \hat{\bm{v}}_k$ from the decoder hidden state at each output step for physics loss computation.
+% 中文：这种delta公式保证模型输出不会比朴素基线更差，并显著降低了学习难度。解码器状态从编码器的最终隐藏状态初始化。计算上下文向量z = MLP_ctx(h_{T_obs}^{enc})，并与每一步的delta预测（增加解码器步条件向量）拼接形成解码器LSTM输入。解码器采用相同的n_lstm层LSTM配置。在每个时间步k，解码器隐藏输出经过双层输出投影（GELU+Dropout+Linear）产生\hat{δ}_k ∈ R^{6N_max}。独立的Δv预测头（双层MLP，H_lstm/2隐藏单元，GELU）从每个输出步的解码器隐藏状态估计Δ\hat{v}_k，用于物理损失计算。
 
-During training, teacher forcing is applied with a linearly decaying probability: starting at 1.0 (complete reliance on ground-truth deltas) and decaying to 0 over the first 75 epochs, ensuring a smooth transition from guided learning to autonomous generation. At inference time, teacher forcing is disabled.
+During training, teacher forcing is applied with a linearly decaying probability: starting at 1.0 (complete reliance on ground-truth deltas) and decaying to 0 over the first $E_{\text{tf}}$ epochs, ensuring a smooth transition from guided learning to autonomous generation. At inference time, teacher forcing is disabled. The complete model contains approximately $N_{\text{param}}^{\text{traj}}$ trainable parameters. The overall architecture is illustrated in Fig.~\ref{fig:pinn_arch}.
+% 中文：训练时采用线性衰减概率的教师强制策略：从1.0（完全依赖真实delta）开始，在前E_tf个epoch中衰减至0，确保从引导学习到自主生成的平滑过渡。推理时禁用教师强制。完整模型包含约N_param^{traj}个可训练参数。整体架构如图1所示。
 
-\subsection{Loss function and physics-based regularization}
+%% FIGURE 2: PI-LSTM architecture
+\begin{figure}[pos={h!}]
+    \centering
+    \includegraphics[width=\columnwidth]{figs/fig1_pilstm.pdf}
+    \caption{Architecture of the physics-informed conditional LSTM (PI-LSTM) for trajectory prediction. The framework comprises eight key components: (1) input trajectory sequence, (2) differentiable $\Delta v$ estimator via CW inverse, (3) condition builder with mode embedding, (4) extended input combining state and condition features, (5) LSTM encoder, (6) LSTM decoder with residual delta prediction, (7) predicted trajectory output, and (8) physics-based regularization enforcing CW consistency.}\label{fig:pinn_arch}
+    % 中文：图1：用于轨迹预测的物理信息条件LSTM（PI-LSTM）架构。该框架包含八个关键组件：(1) 输入轨迹序列，(2) 通过CW逆的可微分Δv估计器，(3) 带模式嵌入的条件构建器，(4) 结合状态和条件特征的扩展输入，(5) LSTM编码器，(6) 带残差delta预测的LSTM解码器，(7) 预测轨迹输出，(8) 强制CW一致性的物理正则化。
+\end{figure}
+
+\subsection{Physics-based loss regularization}
 
 The training objective comprises three terms:
+% 中文：训练目标包含三项：
 
 \begin{equation}
-\mathcal{L} = \mathcal{L}_{\text{pred}} + \lambda_1 \mathcal{L}_{\text{physics}} + \lambda_2 \mathcal{L}_{\text{mode}}.
+    \mathcal{L}_{\text{pred}} = \lambda_{\text{pred}} \mathcal{L}_{\text{MSE}} + \lambda_{\text{phy}} \mathcal{L}_{\text{physics}} + \lambda_{\text{mode}} \mathcal{L}_{\text{mode}}.
 \end{equation}
 
 \subsubsection{Prediction loss}
 
-$\mathcal{L}_{\text{pred}}$ is a masked mean squared error (MSE) over valid features:
+$\mathcal{L}_{\text{MSE}}$ is a masked mean squared error over valid features:
+% 中文：L_MSE是在有效特征上的掩码均方误差：
 
 \begin{equation}
-\mathcal{L}_{\text{pred}} = \frac{1}{\sum M} \sum_{i,j: M_{ij}=1} \bigl(\hat{\bm{X}}_{\text{next}}^{(i,j)} - \bm{X}_{\text{next}}^{(i,j)}\bigr)^2,
+    \mathcal{L}_{\text{MSE}} = \frac{1}{\sum \bm{M}} \sum_{i,j: \bm{M}_{ij}=1} \bigl(\hat{\bm{X}}_{\text{next}}^{(i,j)} - \bm{X}_{\text{next}}^{(i,j)}\bigr)^2,
 \end{equation}
-where $M \in \{0, 1\}^{B \times 24}$ is the batch mask indicating valid (non-padding) feature dimensions.
+where $\bm{M} \in \{0, 1\}^{B \times 6 N_{\max}}$ is the batch mask indicating valid (non-padding) feature dimensions.
+% 中文：其中M ∈ {0,1}^{B×6N_max}是批次掩码，指示有效（非填充）特征维度。
 
 \subsubsection{Physics consistency loss}
 
-$\mathcal{L}_{\text{physics}}$ enforces CW self-consistency on both the input and predicted sequences:
+$\mathcal{L}_{\text{physics}}$ enforces CW self-consistency on the predicted sequences:
+% 中文：L_physics强制预测序列的CW自一致性：
 
 \begin{equation}
-\mathcal{L}_{\text{physics}} = \underbrace{\text{MSE}\bigl(\bm{s}_{t+1} - \Phi(h) \cdot \bm{s}_t, \; \bm{0}\bigr)}_{\text{CW free-evolution residual}} + \; \alpha \cdot \underbrace{\frac{1}{T}\sum_{t} \max\bigl(0, |\Delta \hat{\bm{v}}_t| - \Delta v_{\max}\bigr)^2}_{\Delta v \text{ boundary penalty}},
+    \begin{aligned}
+        \mathcal{L}_{\text{physics}} & =
+        \underbrace{\frac{1}{T-1}\sum_{t=1}^{T-1} \bigl\|\bm{s}_{t+1} - \biPhi(\Delta t) \cdot \bm{s}_t\bigr\|^2}_{\text{CW free-evolution residual}}                                      \\
+                                     & \quad + \alpha \cdot \underbrace{\frac{1}{T}\sum_{t} \max\bigl(0, |\Delta \bm{v}_t| - \Delta v_{\max}\bigr)^2}_{\Delta v \text{ boundary penalty}},
+    \end{aligned}
 \end{equation}
-where $\Delta v_{\max} = 3 \times 10^{-3}$ km/s is the physically plausible maneuver bound. The CW residual term penalizes trajectories whose adjacent steps deviate from the expected free-evolution pattern; the boundary penalty discourages the model from estimating unrealistically large velocity changes. An optional smoothness regularizer (third-order position jerk minimization) is additionally available.
+where $\Delta v_{\max}$ is the physically plausible maneuver bound. The CW residual term penalizes trajectories whose adjacent steps deviate from the expected free-evolution pattern; the boundary penalty discourages the model from estimating unrealistically large velocity changes.
+% 中文：其中Δv_max是物理上合理的机动边界。CW残差项惩罚相邻步偏离预期自由演化模式的轨迹；边界惩罚阻止模型估计不合理的大速度变化。
 
 \subsubsection{Mode consistency loss}
 
 $\mathcal{L}_{\text{mode}}$ aligns the model's own $\Delta v$ estimates (from the decoder head) with those computed by the $\Delta v$ estimator module from the input sequence:
+% 中文：L_mode将模型自身的Δv估计（来自解码器头）与Δv估计模块从输入序列计算的Δv对齐：
 
 \begin{equation}
-\mathcal{L}_{\text{mode}} = \text{MSE}\bigl(\Delta \hat{\bm{v}}^{\text{dec}}, \; \Delta \bm{v}^{\text{CW}}\bigr),
+    \mathcal{L}_{\text{mode}} = \bigl\|\Delta \hat{\bm{v}}^{\text{dec}} - \Delta \bm{v}^{\text{CW}}\bigr\|^2,
 \end{equation}
 encouraging consistency between the decoder's internal maneuver representation and the physically grounded CW estimates.
+% 中文：鼓励解码器内部机动表示与基于物理的CW估计之间的一致性。
 
 \subsubsection{Loss weight scheduling}
 
-Both physics-related loss weights follow a warmup schedule to avoid early interference with the primary prediction task. For the first 10 epochs, only $\mathcal{L}_{\text{pred}}$ is active. From epoch 10 to 30, $\lambda_1$ linearly increases from 0 to 0.05 and $\lambda_2$ from 0 to 0.01, after which they remain constant. This staged training strategy allows the model to first learn basic trajectory dynamics before being subjected to physics-based constraints.
+The loss weights follow a warmup schedule to avoid early interference with the primary prediction task. For the first $E_{\text{warmup}}$ epochs, only $\mathcal{L}_{\text{MSE}}$ is active. From epoch $E_{\text{warmup}}$ to $E_{\text{warmup}} + E_{\text{ramp}}$, $\lambda_{\text{phy}}$ linearly increases from 0 to $\lambda_{\text{phy}}^{\max}$ and $\lambda_{\text{mode}}$ from 0 to $\lambda_{\text{mode}}^{\max}$, after which they remain constant. This staged training strategy allows the model to first learn basic trajectory dynamics before being subjected to physics-based constraints.
+% 中文：损失权重采用预热调度，避免对主要预测任务的早期干扰。在前E_warmup个epoch中，仅L_MSE激活。从epoch E_warmup到E_warmup+E_ramp，λ_phy从0线性增加至λ_phy^{max}，λ_mode从0线性增加至λ_mode^{max}，之后保持不变。这种分阶段训练策略使模型在受到物理约束之前先学习基本的轨迹动力学。
 
 \subsection{Training configuration}
 
-The model is trained using the AdamW optimizer \cite{loshchilov2019decoupled} with a peak learning rate of $10^{-3}$, weight decay of $10^{-5}$, and batch size 128. The learning rate follows a cosine warmup schedule (5 epochs to reach the peak) followed by cosine annealing to a minimum of $10^{-6}$. Gradient clipping with $\ell_2$-norm threshold 1.0 is applied to stabilize training. Early stopping with patience of 50 epochs on the validation prediction loss is employed, with a maximum of 300 epochs. All features are Z-score normalized using statistics computed solely on the training set. The complete model contains approximately 2.9 million trainable parameters.
+The model is trained using the AdamW optimizer \cite{loshchilov2019decoupled} with a peak learning rate $\eta_{\text{traj}}$, weight decay $\lambda_{\text{wd}}^{\text{traj}}$, and batch size $B_{\text{traj}}$. The learning rate follows a cosine warmup schedule ($E_{\text{warmup}}^{\text{lr}}$ epochs to reach the peak) followed by cosine annealing to a minimum of $\eta_{\min}^{\text{traj}}$. Gradient clipping with $\ell_2$-norm threshold $g_{\text{clip}}$ is applied to stabilize training. Early stopping with patience of $P_{\text{traj}}$ epochs on the validation prediction loss is employed, with a maximum of $E_{\text{traj}}$ epochs. All features are Z-score normalized using statistics computed solely on the training set.
+% 中文：模型使用AdamW优化器训练，峰值学习率η_traj、权重衰减λ_wd^{traj}、批大小B_traj。学习率采用余弦预热调度（E_warmup^{lr}个epoch达到峰值），随后余弦退火至最小值η_min^{traj}。应用ℓ₂范数阈值g_clip的梯度裁剪以稳定训练。采用验证预测损失上耐心为P_traj个epoch的早停策略，最大E_traj个epoch。所有特征均使用仅在训练集上计算的统计量进行Z-score归一化。
+
+%% ALGORITHM 1: PI-LSTM trajectory prediction
+\noindent
+\begin{minipage}{\columnwidth}
+\hrule height 0.6pt
+\vspace{3pt}
+\small
+\begin{algorithmic}[1]
+\State \textbf{Input:} Observed trajectory $\mathcal{S}_{\text{obs}} = \{\bm{s}_1, \dots, \bm{s}_{T_{\text{obs}}}\}$, $\bm{s}_t \in \mathbb{R}^{6}$
+\State \textbf{Output:} Predicted trajectory $\mathcal{S}_{\text{pred}} = \{\hat{\bm{s}}_{T_{\text{obs}}+1}, \dots, \hat{\bm{s}}_{T_{\text{obs}}+T_{\text{pred}}}\}$
+\State \text{\# Stage~1: Differentiable $\Delta v$ estimation}
+\For{$t = 1$ \textbf{to} $T_{\text{obs}}-1$}
+    \State $\Delta\bm{v}_t \gets \text{CWInverse}(\bm{s}_t, \bm{s}_{t+1})$\label{alg:dv_est}
+    \State $\bm{c}_t \gets \text{MLP}_{\text{cond}}([\text{ModeEmbed}(\mathcal{S}_{\text{obs}}),$
+    \Statex \hspace*{2em} $\Delta\bm{v}_t])$\label{alg:cond}
+\EndFor
+\State $\bm{c}_0 \gets \bm{0}$  \Comment{Initial zero-padded condition}
+\State \text{\# Stage~2: LSTM encoder}
+\For{$t = 1$ \textbf{to} $T_{\text{obs}}$}
+    \State $\bm{x}_t \gets [\bm{s}_t; \bm{c}_{t-1}]$\label{alg:ext_input}
+    \State $(\bm{h}_t^{\text{enc}}, \bm{c}_t^{\text{enc}}) \gets$
+    \Statex \hspace*{2em} $\text{LSTM}_{\text{enc}}(\bm{x}_t, \bm{h}_{t-1}^{\text{enc}}, \bm{c}_{t-1}^{\text{enc}})$\label{alg:encode}
+\EndFor
+\State $\bm{z} \gets \text{MLP}_{\text{ctx}}(\bm{h}_{T_{\text{obs}}}^{\text{enc}})$  \Comment{Context vector for decoder}
+\State $(\bm{h}_0^{\text{dec}}, \bm{c}_0^{\text{dec}}) \gets (\bm{h}_{T_{\text{obs}}}^{\text{enc}}, \bm{c}_{T_{\text{obs}}}^{\text{enc}})$
+\State \text{\# Stage~3: LSTM decoder with residual prediction}
+\For{$k = 1$ \textbf{to} $T_{\text{pred}}$}
+    \If{training \textbf{and} teacher forcing}
+        \State $\tilde{\bm{\delta}}_k \gets \bm{\delta}_k^{\text{gt}}$\label{alg:teacher}
+    \Else
+        \State $\tilde{\bm{\delta}}_k \gets \hat{\bm{\delta}}_{k-1}$
+    \EndIf
+    \State $\bm{u}_k \gets [\bm{z}; \tilde{\bm{\delta}}_k; \bm{c}_{T_{\text{obs}}+k-1}]$\label{alg:dec_input}
+    \State $(\bm{h}_k^{\text{dec}}, \bm{c}_k^{\text{dec}}) \gets$
+    \Statex \hspace*{2em} $\text{LSTM}_{\text{dec}}(\bm{u}_k, \bm{h}_{k-1}^{\text{dec}}, \bm{c}_{k-1}^{\text{dec}})$
+    \State $\hat{\bm{\delta}}_k \gets \text{MLP}_{\text{out}}(\bm{h}_k^{\text{dec}})$ \Comment{Residual delta prediction}\label{alg:delta}
+    \State $\hat{\bm{s}}_{T_{\text{obs}}+k} \gets \bm{s}_{T_{\text{obs}}} + \hat{\bm{\delta}}_k$
+    \State $\Delta\hat{\bm{v}}_k \gets \text{MLP}_{\text{dv}}(\bm{h}_k^{\text{dec}})$ \Comment{$\Delta v$ for physics loss}\label{alg:dv_pred}
+\EndFor
+\State \text{\# Stage~4: Physics-based regularization}
+\State $\mathcal{L}_{\text{pred}} \gets \lambda_{\text{pred}}\mathcal{L}_{\text{MSE}}$
+\Statex \hspace*{2em} $+ \lambda_{\text{phy}}\mathcal{L}_{\text{physics}} + \lambda_{\text{mode}}\mathcal{L}_{\text{mode}}$\label{alg:loss}
+\State \textbf{return} $\hat{\mathcal{S}}_{\text{pred}}$
+\end{algorithmic}
+\vspace{3pt}
+\hrule height 0.6pt
+\vspace{3pt}
+\noindent\captionof{figure}{PI-LSTM trajectory prediction with physics-informed conditional LSTM. The algorithm comprises four stages: differentiable $\Delta v$ estimation via CW inverse~\eqref{alg:dv_est}, condition vector construction~\eqref{alg:cond}, encoder--decoder LSTM with extended input~\eqref{alg:ext_input}--\eqref{alg:encode}, autoregressive residual prediction with teacher forcing~\eqref{alg:teacher}--\eqref{alg:dv_pred}, and physics-based multi-objective optimization~\eqref{alg:loss}.}\label{alg:pilstm}
+% 中文：算法1：基于物理信息条件LSTM的PI-LSTM轨迹预测。该算法包含四个阶段：通过CW反演的可微分Δv估计，条件向量构建，具有扩展输入的编码器-解码器LSTM，带教师强制自回归残差预测，以及基于物理的多目标优化。
+\end{minipage}
 
 \section{BiGRU-based intention recognition}\label{sec:intention}
 
-\subsection{Design philosophy: physics-guided representation learning}
+\subsection{Design principle: physics-guided representation learning}
 
-The intention recognition task maps a 20-step trajectory of $N$ targets to a configuration label $\bm{y} = [N, d_{\min}, \phi]^\top$. Unlike the trajectory prediction task — where the output is a dense spatial-temporal sequence — intention recognition demands a compact, permutation-invariant representation that aggregates information across a variable number of targets and time steps into three semantically distinct scalar outputs. Naively feeding raw state vectors into a neural network discards the rich physical structure encoded in the orbital dynamics; the network must then rediscover kinematics and geometric relationships from scratch, a sample-inefficient proposition given 23,787 training examples. Our approach instead constructs physically meaningful features from the trajectory using the CW model and orbital mechanics, then learns a permutation-invariant architecture that respects the set structure of the input.
+The intention recognition task maps a $T_{\text{total}}$-step trajectory of $N$ targets to a configuration label $\bm{y} = [N, d_{\min}, \phi]^\top$. Unlike trajectory prediction --- where the output is a dense spatial-temporal sequence --- intention recognition demands a compact, permutation-invariant representation that aggregates information across a variable number of targets and time steps into three semantically distinct scalar outputs. The proposed approach constructs physically meaningful features from the trajectory using the CW model and orbital mechanics, then learns a permutation-invariant architecture that respects the set structure of the input.
+% 中文：意图识别任务将N个目标的T_total步轨迹映射到构型标签y = [N, d_min, φ]^T。与轨迹预测（输出为密集时空序列）不同，意图识别需要紧凑的置换不变表示，将跨可变数量目标和时间步的信息聚合为三个语义不同的标量输出。所提出的方法使用CW模型和轨道力学从轨迹中构建具有物理意义的特征，然后学习尊重输入集合结构的置换不变架构。
 
 \subsection{Physics-informed feature engineering}
 
-For each target, the raw 6-dimensional state $[x, y, z, \dot{x}, \dot{y}, \dot{z}]$ is augmented with 10 physically derived feature channels, computed at every time step. The feature computation relies on the CW state transition matrix $\Phi(\Delta t)$ and fundamental orbital relations, both implemented without learnable parameters.
+For each target, the 6-dimensional state vector $[x, y, z, \dot{x}, \dot{y}, \dot{z}]$ is augmented with $d_{\text{phys}}$ physics-based feature channels, computed at every time step.%
+The feature computation relies on the CW state transition matrix $\biPhi(\Delta t)$ and fundamental orbital relations, both implemented without learnable parameters.
+% 中文：对每个目标，原始的6维状态[x, y, z, ẋ, ẏ, ż]在每个时间步增强d_phys个物理导出特征通道。特征计算依赖于CW状态转移矩阵Φ(Δt)和基本轨道关系，两者均无可学习参数。
 
-\subsubsection{Per-target features}
+\subsubsection{Per-target features ($d_{\text{phys}}$ channels)}
 
-The 10-channel per-target feature vector is defined as follows:
+The $d_{\text{phys}}$-channel per-target feature vector is defined as follows:
+% 中文：d_phys通道的每目标特征向量定义如下：
 
 \begin{enumerate}
-\item \textbf{Distance from origin:} $r = \sqrt{x^2 + y^2 + z^2}$. This directly informs the $d_{\min}$ prediction.
-\item \textbf{Speed:} $v = \sqrt{\dot{x}^2 + \dot{y}^2 + \dot{z}^2}$.
-\item \textbf{Radial velocity:} $v_r = (\bm{r} \cdot \bm{v}) / r$, characterizing whether the target moves toward or away from the origin.
-\item \textbf{Angular momentum magnitude:} $h = |\bm{r} \times \bm{v}|$, an invariant under CW dynamics in the absence of along-track perturbations.
-\item \textbf{Orbital energy:} $E = v^2/2 - \mu/r$, another conserved quantity under Keplerian motion.
-\item \textbf{CW propagation residual (position):} The CW equations provide a baseline prediction of free motion. For each of the 10 future steps (steps 11--20), we propagate the final observed state $\bm{s}_{10}$ forward using $\Phi(h)$ and compute the position norm of the residual with respect to the actual trajectory: $|\bm{r}_t^{\text{actual}} - \bm{r}_t^{\text{CW}}|$. This residual quantifies the deviation between real (nonlinear, potentially maneuvered) dynamics and the linear CW prediction, serving as a maneuver intensity indicator. For the first 10 steps (which form the observation window rather than the prediction target), these features are set to zero.
-\item \textbf{CW propagation residual (velocity):} Same computation for the velocity norm of the residual.
-\item\textbf{--10. Inter-target cosine angle statistics:} For each target $i$, the cosine of the angle between its position vector $\bm{r}_i$ and every other target's position vector $\bm{r}_j$ is computed: $\cos\theta_{ij} = (\bm{r}_i \cdot \bm{r}_j) / (|\bm{r}_i| |\bm{r}_j|)$. The minimum, maximum, and mean of these cosine values (over $j \neq i$) provide three additional channels that directly inform the $\phi$ prediction task.
+    \item \textbf{Distance from origin:} $r = \sqrt{x^2 + y^2 + z^2}$. This directly informs the $d_{\min}$ prediction.
+          % 中文：距原点距离：r = sqrt(x²+y²+z²)，直接为d_min预测提供信息。
+    \item \textbf{Speed:} $v = \sqrt{\dot{x}^2 + \dot{y}^2 + \dot{z}^2}$.
+          % 中文：速度：v = sqrt(ẋ²+ẏ²+ż²)
+    \item \textbf{Radial velocity:} $v_{\mathrm{r}} = (\bm{r} \cdot \bm{v}) / r$, characterizing whether the target moves toward or away from the origin.
+          % 中文：径向速度：v_r = (r·v)/r，表征目标朝向或远离原点运动。
+    \item \textbf{Angular momentum magnitude:} $h = |\bm{r} \times \bm{v}|$, an invariant under CW dynamics in the absence of along-track perturbations.
+          % 中文：角动量大小：h = |r×v|，在无沿迹扰动时CW动力学下的不变量。
+    \item \textbf{Orbital energy:} $E = v^2/2 - \mu/r$, a conserved quantity under Keplerian motion.
+          % 中文：轨道能量：E = v²/2 - μ/r，开普勒运动下的守恒量。
+    \item \textbf{CW propagation residual (position norm):} For each of the $T_{\text{pred}}$ future steps (steps $T_{\text{obs}}+1$ to $T_{\text{total}}$), the final observed state $\bm{s}_{T_{\text{obs}}}$ is propagated forward using $\biPhi(\Delta t)$ and the position norm of the residual is computed as $|\bm{r}_t^{\text{actual}} - \bm{r}_t^{\text{CW}}|$. For the first $T_{\text{obs}}$ steps (the observation window), these features are set to zero.
+          % 中文：CW传播残差（位置范数）：对T_pred个未来步（T_obs+1至T_total），最后观测状态s_{T_obs}使用Φ(Δt)向前传播，残差的位置范数计算为|r_t^{actual} - r_t^{CW}|。前T_obs步（观测窗口）这些特征设为零。
+    \item \textbf{CW propagation residual (velocity norm):} Same computation for the velocity norm.
+          % 中文：CW传播残差（速度范数）：速度范数的相同计算。
+    \item \textbf{--10. Inter-target cosine angle statistics:} For each target $i$, the cosine of the angle between its position vector $\bm{r}_i$ and every other target's position vector $\bm{r}_j$ is computed: $\cos\theta_{ij} = (\bm{r}_i \cdot \bm{r}_j) / (|\bm{r}_i| |\bm{r}_j|)$. The minimum, maximum, and mean of these cosine values (over $j \neq i$) provide three channels that directly inform the $\phi$ prediction task.
+          % 中文：8-10. 目标间余弦角统计：对每个目标i，计算其位置矢量r_i与每个其他目标的位置矢量r_j之间的夹角余弦：cosθ_ij = (r_i·r_j)/(|r_i||r_j|)。这些余弦值（对j≠i）的最小值、最大值和均值提供三个直接为φ预测任务提供信息的通道。
 \end{enumerate}
 
 \subsubsection{Global features}
 
-In addition to the per-target features, 9 global scalar features are computed for each sample, capturing aggregate statistics that are independent of the target ordering:
+In addition to the per-target features, $d_{\text{global}}$ global scalar features are computed for each sample, capturing aggregate statistics that are independent of the target ordering:
+% 中文：除每目标特征外，为每个样本计算d_global个全局标量特征，捕捉与目标排序无关的聚合统计量：
+
 \begin{itemize}
-\item Minimum and maximum of all per-target distances over all time steps;
-\item Mean, minimum, and mean-pairwise-minimum of inter-target distances;
-\item Mean inter-target cosine angle;
-\item Mean and standard deviation of all per-target speeds;
-\item Standard deviation of per-target distances at the time step of global minimum distance.
+    \item Minimum and maximum of all per-target distances over all time steps;
+          % 中文：所有时间步上所有目标距离的最小值和最大值
+    \item Mean, minimum, and mean-pairwise-minimum of inter-target distances;
+          % 中文：目标间距离的均值、最小值和成对最小值的均值
+    \item Mean inter-target cosine angle;
+          % 中文：目标间余弦角的均值
+    \item Mean and standard deviation of all per-target speeds;
+          % 中文：所有目标速度的均值和标准差
+    \item Standard deviation of per-target distances at the time step of global minimum distance.
+          % 中文：全局最小距离时间步处各目标距离的标准差
 \end{itemize}
 
-All features are Z-score normalized using statistics computed exclusively on the training set. Position and velocity components are normalized separately due to their differing physical units (km vs.\ km/s).
+All features are Z-score normalized using statistics computed exclusively on the training set. Position and velocity components are normalized separately due to their differing physical units.
+% 中文：所有特征使用仅在训练集上计算的统计量进行Z-score归一化。位置和速度分量由于物理单位不同而分别归一化。
 
 \subsection{Permutation-invariant network architecture}
 
-The variable number of targets ($N \in \{2, 3, 4\}$) and the arbitrariness of their ordering in the input demand a permutation-invariant architecture. We adopt a Deep Sets-style \cite{zaheer2017deep} design with shared per-element encoding followed by set-level aggregation, augmented with explicit pairwise interaction modeling for the angle prediction subtask. The full architecture is shown in Fig.~\ref{fig:bigru_arch}.
+The variable number of targets ($N \in \{N_{\min}, \dots, N_{\max}\}$) and the arbitrariness of their ordering demand a permutation-invariant architecture. A Deep Sets-style \cite{zaheer2017deep} design is adopted, with shared per-element encoding followed by set-level aggregation, augmented with explicit pairwise interaction modeling.
+% 中文：目标数量的可变性和排序的任意性要求置换不变的架构。采用Deep Sets样式的设计，共享的逐元素编码后接集合级聚合，并增加显式的成对交互建模。
 
 \subsubsection{Per-target encoder (shared BiGRU)}
 
-Each target's trajectory, represented as a $(20, 16)$ matrix (6 raw states + 10 physical features), is processed by an identical encoder with shared weights. A two-layer 1D convolutional projection (kernel size 3, padding 1, ReLU activation) maps the 16 input channels to a 128-dimensional hidden representation, followed by a 2-layer bidirectional GRU (BiGRU) \cite{chung2014empirical} with hidden size 128. The final forward and backward hidden states are concatenated to produce a fixed 256-dimensional embedding per target. The use of BiGRU rather than Transformer follows from the same reasoning as the trajectory prediction task: for sequences of only 20 steps, the recurrent inductive bias is more parameter-efficient and empirically more effective.
+Each target's trajectory, represented as a $(T_{\text{total}}, d_{\text{in}}^{\text{rec}})$ matrix ($6$ raw states $+$ $d_{\text{phys}}$ physical features, where $d_{\text{in}}^{\text{rec}} = 6 + d_{\text{phys}}$), is processed by an identical encoder with shared weights. A two-layer 1D convolutional projection (kernel size $k_{\text{conv}}$, padding 1, ReLU activation) maps the $d_{\text{in}}^{\text{rec}}$ input channels to a $d_{\text{conv}}$-dimensional hidden representation, followed by a $n_{\text{gru}}$-layer bidirectional GRU (BiGRU) \cite{chung2014empirical} with hidden size $H_{\text{gru}}$. The final forward and backward hidden states are concatenated to produce a fixed $d_{\text{emb}}$-dimensional embedding per target (where $d_{\text{emb}} = 2 H_{\text{gru}}$). The use of BiGRU rather than Transformer follows from the observation that for short sequences, the recurrent inductive bias is more parameter-efficient and empirically more effective for this task.
+% 中文：每个目标的轨迹表示为(T_total, d_in^{rec})矩阵（6个原始状态+ d_phys个物理特征，其中d_in^{rec} = 6 + d_phys），由具有共享权重的相同编码器处理。双层1D卷积投影（核大小k_conv、padding 1、ReLU激活）将d_in^{rec}个输入通道映射到d_conv维隐藏表示，随后是n_gru层双向GRU（BiGRU），隐藏大小H_gru。最终的前向和后向隐藏状态拼接产生每个目标的固定d_emb维嵌入（其中d_emb = 2 H_gru）。使用BiGRU而非Transformer是因为观察到对于短序列，循环归纳偏置参数效率更高且经验上对该任务更有效。
 
 \subsubsection{Set attention aggregation}
 
-To aggregate the variable-size set of target embeddings into a fixed-dimensional global representation, we employ multi-head attention pooling \cite{lee2019set}. A learnable seed vector $\bm{q} \in \mathbb{R}^{256}$ (initialized randomly with small variance) serves as the query, attending to the $N$ target embeddings as keys and values through a single-head or multi-head (4-head) attention mechanism:
+To aggregate the variable-size set of target embeddings into a fixed-dimensional global representation, multi-head attention pooling is employed \cite{lee2019set}. A learnable seed vector $\bm{q} \in \mathbb{R}^{d_{\text{emb}}}$ (initialized with small variance) serves as the query, attending to the $N$ target embeddings as keys and values through a $n_{\text{head}}$-head attention mechanism:
+% 中文：为将可变大小的目标嵌入集合聚合为固定维度的全局表示，采用多头注意力池化。可学习种子向量q ∈ R^{d_emb}（小方差初始化）作为查询，通过n_head头注意力机制将N个目标嵌入作为键和值进行关注：
 
 \begin{equation}
-\bm{g} = \text{LayerNorm}\bigl(\bm{q} + \text{MultiHeadAttn}(\bm{q}, \{\bm{e}_i\}_{i=1}^{N}, \{\bm{e}_i\}_{i=1}^{N})\bigr).
+    \bm{g} = \text{LayerNorm}\bigl(\bm{q} + \text{MultiHeadAttn}(\bm{q}, \{\bm{e}_i\}_{i=1}^{N}, \{\bm{e}_i\}_{i=1}^{N})\bigr).
 \end{equation}
-The attention operation is inherently permutation-invariant with respect to the ordering of the target embeddings. A valid-target mask ensures that padded (non-existent) targets are excluded from attention computation.
+
+The attention operation is inherently permutation-invariant with respect to the ordering of the target embeddings. A valid-target mask ensures that padded (non-existent) targets are excluded from the attention computation.
+% 中文：注意操作在目标嵌入排序方面本质上是置换不变的。有效目标掩码确保填充的（不存在的）目标被排除在注意力计算之外。
 
 \subsubsection{Pairwise interaction module}
 
-The set aggregation produces a global representation suitable for predicting $N$ and $d_{\min}$, but the angle $\phi$ depends on the relative geometry between two specific targets (the nearest and farthest from the origin at the $d_{\min}$ time step). To provide explicit pairwise relational features, we construct for each pair of valid targets $(i, j)$ a combined representation:
+The set aggregation produces a global representation suitable for predicting $N$ and $d_{\min}$, but the angle $\phi$ depends on the relative geometry between two specific targets (the nearest and farthest from the origin at the $d_{\min}$ time step). To provide explicit pairwise relational features, a combined representation is constructed for each pair of valid targets $(i, j)$:
+% 中文：集合聚合产生适合预测N和d_min的全局表示，但角度φ取决于两个特定目标（d_min时刻距原点最近和最远的目标）之间的相对几何。为提供显式的成对关系特征，对每对有效目标(i,j)构建组合表示：
 
 \begin{equation}
-\bm{p}_{ij} = [\bm{e}_i; \bm{e}_j; \bm{e}_i \odot \bm{e}_j; \bm{e}_i - \bm{e}_j] \in \mathbb{R}^{1024},
+    \bm{p}_{ij} = [\bm{e}_i; \bm{e}_j; \bm{e}_i \odot \bm{e}_j; \bm{e}_i - \bm{e}_j] \in \mathbb{R}^{4 d_{\text{emb}}},
 \end{equation}
-where $[\cdot; \cdot]$ denotes concatenation and $\odot$ is element-wise multiplication. A shared two-layer MLP (128 hidden units, ReLU) processes each pair, and max-pooling across all pairs yields a single 256-dimensional pairwise feature vector. This max-pooling is permutation-invariant and robust to the number of targets.
+where $[\cdot; \cdot]$ denotes concatenation and $\odot$ is element-wise multiplication. A shared two-layer MLP ($d_{\text{pair}}^{\text{hid}}$ hidden units, ReLU) processes each pair, and max-pooling across all pairs yields a single $d_{\text{pair}}^{\text{out}}$-dimensional pairwise feature vector. This max-pooling operation is permutation-invariant and robust to the variable number of targets.
+% 中文：其中[·;·]表示拼接，⊙为逐元素乘法。共享的双层MLP（d_pair^{hid}隐藏单元，ReLU）处理每对，跨所有对的最大池化产生单个d_pair^{out}维成对特征向量。该最大池化运算置换不变且对可变目标数量鲁棒。
 
-\subsubsection{Multi-task heads}
+\subsubsection{Multi-task prediction heads}
 
-The final prediction layer consists of three specialized heads sharing a common 256-to-64-dimensional projection (ReLU + Dropout):
+The final prediction layer consists of three specialized heads sharing a common $d_{\text{emb}}$-to-$d_{\text{shared}}$-dimensional projection (ReLU + Dropout):
+% 中文：最终预测层由三个专用头组成，共享通用的d_emb到d_shared维投影（ReLU+Dropout）：
 
 \begin{itemize}
-\item \textbf{$N$ classification head:} A linear layer mapping 64 dimensions to 3 logits (classes corresponding to $N = 2, 3, 4$), trained with cross-entropy loss.
-\item \textbf{$d_{\min}$ regression head:} A two-layer MLP (64 $\to$ 32 $\to$ 1) trained with Huber loss ($\delta = 1.0$) for robustness to outliers.
-\item \textbf{$\phi$ regression head:} A three-layer MLP receiving the concatenation of the shared 64-dimensional feature and the 256-dimensional pairwise interaction feature. Trained with a combined loss: $\mathcal{L}_{\phi} = \text{MSE}(\hat{\phi}, \phi) + 0.1 \cdot (1 - \cos(\pi(\hat{\phi} - \phi)))$, where the cosine term provides periodic awareness of the circular nature of angular quantities.
+    \item \textbf{$N$ classification head:} A linear layer mapping $d_{\text{shared}}$ dimensions to $K_N$ logits (classes $N \in \{N_{\min}, \dots, N_{\max}\}$, where $K_N = N_{\max} - N_{\min} + 1$), trained with cross-entropy loss.
+          % 中文：N分类头：线性层将d_shared维映射到K_N个logits（类别N∈{N_min,...,N_max}，K_N = N_max-N_min+1），使用交叉熵损失训练。
+    \item \textbf{$d_{\min}$ regression head:} A two-layer MLP ($d_{\text{shared}} \to d_{\text{shared}}/2 \to 1$) trained with Huber loss (threshold $\delta_{\text{huber}}$) for robustness to outliers.
+          % 中文：d_min回归头：双层MLP，使用Huber损失（阈值δ_huber）训练，对异常值具有鲁棒性。
+    \item \textbf{$\phi$ regression head:} A three-layer MLP receiving the concatenation of the shared $d_{\text{shared}}$-dimensional feature and the $d_{\text{pair}}^{\text{out}}$-dimensional pairwise interaction feature. Trained with a combined loss: $\mathcal{L}_{\phi} = \text{MSE}(\hat{\phi}, \phi) + \alpha_{\text{cos}} \cdot (1 - \cos(\pi(\hat{\phi} - \phi)))$, where the cosine term provides periodic awareness of the circular nature of angular quantities.
+          % 中文：φ回归头：三层MLP，接收共享d_shared维特征和d_pair^{out}维成对交互特征的拼接。使用组合损失训练：L_φ = MSE(φ̂, φ) + α_cos·(1-cos(π(φ̂-φ)))，其中余弦项提供了对角量循环性质的周期感知。
 \end{itemize}
 
 The total multi-task loss is:
+% 中文：总多任务损失为：
+
 \begin{equation}
-\mathcal{L}_{\text{intent}} = \lambda_N \mathcal{L}_{\text{CE}} + \lambda_d \mathcal{L}_{\text{Huber}} + \lambda_{\phi} \mathcal{L}_{\phi},
+    \mathcal{L}_{\text{intent}} = \lambda_N \mathcal{L}_{\text{CE}} + \lambda_d \mathcal{L}_{\text{Huber}} + \lambda_{\phi} \mathcal{L}_{\phi},
 \end{equation}
-with weights $\lambda_N = 1.0$, $\lambda_d = 1.0$, $\lambda_{\phi} = 2.0$. The higher weight on $\phi$ reflects its greater learning difficulty, as the angle depends on identifying the specific pair of extreme targets at a specific time step — a more complex reasoning task than aggregate statistics.
-
-\subsection{Training configuration}
-
-The model is trained with AdamW ($lr = 10^{-3}$, weight decay $= 10^{-4}$) and a CosineAnnealingWarmRestarts scheduler ($T_0 = 20$, $T_{\text{mult}} = 2$). Batch size is 128. Dropout of 0.2 is applied throughout. Gradient clipping with $\ell_2$-norm threshold 1.0 is used. Early stopping with patience of 30 epochs on validation loss terminates training, with a maximum of 200 epochs. The complete model contains approximately 3.5 million trainable parameters.
+with task-specific weights $\lambda_N$, $\lambda_d$, $\lambda_{\phi}$. The higher weight on $\phi$ reflects its greater learning difficulty. The complete model contains approximately $N_{\text{param}}^{\text{rec}}$ trainable parameters.
+% 中文：带有任务特定权重λ_N、λ_d、λ_φ。较高的φ权重反映了其更大的学习难度。完整模型包含约N_param^{rec}个可训练参数。
 
 %% FIGURE 2: BiGRU architecture diagram placeholder
 %\begin{figure}[htbp]
 %\centering
 %\includegraphics[width=\columnwidth]{figs/bigru_architecture.pdf}
-%\caption{Architecture of the BiGRU-based intention recognition network. Per-target trajectories (20 steps $\times$ 16 channels: 6 states + 10 physical features) are encoded by a shared-weight 2-layer BiGRU into 256-dimensional embeddings. Set attention aggregation produces a permutation-invariant global representation for $N$ classification and $d_{\min}$ regression. A pairwise interaction module constructs explicit two-body relational features, which are fused with the global representation for $\phi$ prediction.}\label{fig:bigru_arch}
+%\caption{Architecture of the BiGRU-based intention recognition network.}\label{fig:bigru_arch}
+% 中文：图2：基于BiGRU的意图识别网络架构（待添加）
 %\end{figure}
 
-\section{Simulations and analysis}\label{sec:simulations}
+\subsection{Training configuration}
 
-\subsection{Simulation configuration}
+The model is trained with AdamW (learning rate $\eta_{\text{rec}}$, weight decay $\lambda_{\text{wd}}^{\text{rec}}$) and a CosineAnnealingWarmRestarts scheduler (initial period $T_0$, multiplier $T_{\text{mult}}$). Batch size is $B_{\text{rec}}$. Dropout of $p_{\text{drop}}^{\text{rec}}$ is applied throughout. Gradient clipping with $\ell_2$-norm threshold $g_{\text{clip}}$ is used. Early stopping with patience of $P_{\text{rec}}$ epochs on validation loss terminates training, with a maximum of $E_{\text{rec}}$ epochs.
+% 中文：模型使用AdamW（学习率η_rec，权重衰减λ_wd^{rec}）和CosineAnnealingWarmRestarts调度器（初始周期T_0，乘数T_mult）训练。批大小为B_rec，全程应用p_drop^{rec}的Dropout，使用ℓ₂范数阈值g_clip的梯度裁剪，在验证损失上采用耐心为P_rec epoch的早停终止训练，最大E_rec epoch。
 
-All experiments are conducted on a single NVIDIA GPU with PyTorch 2.x. The dataset consists of 23,787 samples, partitioned into training (70\%, 16,651 samples), validation (15\%, 3,568 samples), and test (15\%, 3,568 samples) sets with random seed 42. The sample distribution across cluster sizes is $N=2$: 46\%, $N=3$: 31\%, and $N=4$: 23\%, providing a moderately imbalanced but representative mix.
+%% ALGORITHM 2: BiGRU intention recognition
+\noindent
+\begin{minipage}{\columnwidth}
+\hrule height 0.6pt
+\vspace{3pt}
+\small
+\begin{algorithmic}[1]
+\State \textbf{Input:} Multi-target trajectories $\{\mathcal{S}_1, \mathcal{S}_2, \dots, \mathcal{S}_N\}$, $\mathcal{S}_i \in \mathbb{R}^{T_{\text{obs}} \times 6}$, $N \in \{2,3,4\}$
+\State \textbf{Output:} Predicted cluster size $\hat{N}$, global minimum distance $\hat{d}_{\min}$, dispersion angle $\hat{\phi}$
+\State \text{\# Stage~1: Physics-informed feature extraction}
+\For{each target $i = 1$ \textbf{to} $N$}
+    \State $\bm{F}_i \gets \text{PhysFeatures}(\mathcal{S}_i)$\label{alg:phys_feat}
+    \Statex \hspace*{2em} \Comment{10-channel features: $r, v, v_r, h, E$, CW residuals, $\cos$ statistics}
+    \State $\bm{X}_i \gets [\mathcal{S}_i; \bm{F}_i]$\label{alg:aug_state}
+    \Statex \hspace*{2em} \Comment{Augment state: $(T_{\text{obs}} \times 16)$}
+\EndFor
+\State \text{\# Stage~2: Per-target BiGRU encoding}
+\For{each target $i = 1$ \textbf{to} $N$}
+    \State $\bm{e}_i \gets \text{BiGRU}_{\text{enc}}(\bm{X}_i) \in \mathbb{R}^{256}$\label{alg:bigru_encode}
+\EndFor
+\State \text{\# Stage~3: Set attention aggregation (Deep Sets)}
+\State $\bm{K} \gets \text{MLP}_k(\{\bm{e}_1, \dots, \bm{e}_N\})$,
+\Statex \hspace*{2em} $\bm{V} \gets \text{MLP}_v(\{\bm{e}_1, \dots, \bm{e}_N\})$\label{alg:set_attn}
+\State $\bm{q} \gets \text{LearnableSeedQuery}$ \Comment{Learnable seed query vector}
+\State $\bm{\alpha} \gets \text{softmax}\big(\bm{q}^\top \bm{K} / \sqrt{d}\big)$ \Comment{Attention over $N$ targets}
+\State $\bm{h}_{\text{global}} \gets \sum_{i=1}^{N} \alpha_i \bm{v}_i$\label{alg:global_repr}
+\State \text{\# Stage~4: Pairwise interaction modeling}
+\For{each pair $(i,j)$ with $i < j$}
+    \State $\bm{p}_{ij} \gets \text{MLP}_{\text{pair}}([\bm{e}_i; \bm{e}_j; |\bm{e}_i-\bm{e}_j|;$
+    \Statex \hspace*{2em} $\bm{e}_i \odot \bm{e}_j])$\label{alg:pairwise}
+\EndFor
+\State $\bm{h}_{\text{pair}} \gets \text{MaxPool}(\{\bm{p}_{ij}\}) \in \mathbb{R}^{256}$\label{alg:pair_pool}
+\State $\bm{h} \gets [\bm{h}_{\text{global}}; \bm{h}_{\text{pair}}] \in \mathbb{R}^{512}$\label{alg:concat}
+\State \text{\# Stage~5: Multi-task prediction heads}
+\State $\hat{N} \gets \arg\max\big(\text{MLP}_{\text{cls}}(\bm{h})\big)$\label{alg:N_cls}
+\Comment{3-class: $N=2,3,4$}
+\State $\hat{d}_{\min} \gets \text{MLP}_{d_{\min}}(\bm{h})$\label{alg:d_reg}
+\Comment{Huber regression}
+\State $\hat{\phi} \gets \text{MLP}_{\phi}(\bm{h})$\label{alg:phi_reg}
+\Comment{MSE + cosine penalty}
+\State \textbf{return} $\hat{N}, \hat{d}_{\min}, \hat{\phi}$
+\end{algorithmic}
+\vspace{3pt}
+\hrule height 0.6pt
+\vspace{3pt}
+\noindent\captionof{figure}{BiGRU-based intention recognition with permutation-invariant set attention and pairwise interaction. The pipeline covers: physics-informed feature extraction~\eqref{alg:phys_feat}--\eqref{alg:aug_state}, per-target BiGRU encoding~\eqref{alg:bigru_encode}, set attention aggregation~\eqref{alg:set_attn}--\eqref{alg:global_repr}, pairwise interaction modeling~\eqref{alg:pairwise}--\eqref{alg:pair_pool}, and multi-task prediction~\eqref{alg:N_cls}--\eqref{alg:phi_reg}.}\label{alg:bigru}
+% 中文：算法2：基于BiGRU的意图识别，具有置换不变集合注意力和成对交互。流水线包括：物理信息特征提取、每目标BiGRU编码、集合注意力聚合、成对交互建模和多任务预测。
+\end{minipage}
 
-Hyperparameters for both models follow the configurations described in Sections~\ref{sec:trajectory} and~\ref{sec:intention}. For the trajectory prediction model, the physics loss weight schedule uses a 10-epoch prediction-only warmup followed by a 20-epoch linear ramp: $\lambda_1$ (physics) from 0 to 0.05, $\lambda_2$ (mode) from 0 to 0.01. Teacher forcing probability decays linearly from 1.0 to 0 over the first 75 epochs. For the intention recognition model, the multi-task loss weights are fixed at $\lambda_N=1.0$, $\lambda_d=1.0$, $\lambda_{\phi}=2.0$.
+\section{Numerical simulations and analysis}\label{sec:simulations}
+
+\subsection{Experimental setup and model parameters}
+
+All experiments are conducted on a single NVIDIA GPU with PyTorch 2.x. The concrete numerical values of all symbolic parameters introduced in the theoretical development (Sections~\ref{sec:problem}--\ref{sec:intention}) are summarized below. Unless otherwise noted, these values are used throughout all experiments.
+% 中文：所有实验在单个NVIDIA GPU上使用PyTorch 2.x进行。下文汇总了理论部分（第2-4节）中引入的所有符号参数的具体数值。除非另有说明，这些值用于所有实验。
+
+\subsubsection{Simulation and dataset parameters}
+
+Table~\ref{tab:sim_params} lists the orbital environment, RL simulation, and dataset construction parameters, together with the scenario-specific reward distances.
+% 中文：表1列出了轨道环境、RL仿真和数据集构建参数，以及场景特定的奖励距离。
+
+\begin{table}[width=\linewidth,cols=2,pos=h]
+    \caption{Simulation environment and dataset parameters.}\label{tab:sim_params}
+    \footnotesize
+    \setlength\tabcolsep{3pt}
+    \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{\dimexpr0.55\linewidth-2\tabcolsep\relax}
+        >{\raggedright\arraybackslash}p{\dimexpr0.45\linewidth-2\tabcolsep\relax}@{}}
+        \toprule
+        \textbf{Parameter (Symbol)}                                                    & \textbf{Value}                                  \\
+        \midrule
+        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Orbital environment}}         \\
+        Orbital altitude $h_{\text{orb}}$                                              & 480 km                                          \\
+        Orbital radius $r = R_{\mathrm{E}} + h_{\text{orb}}$                           & 6851 km                                         \\
+        Earth gravitational parameter $\mu$                                            & $3.986 \times 10^{5}$ km$^3$/s$^2$              \\
+        \midrule
+        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{RL simulation}}               \\
+        Time step $\Delta t$                                                           & 1 s                                             \\
+        CW sub-steps per RL step $N_{\text{sub}}$                                      & 60                                              \\
+        Max velocity increment $\Delta v_{\max}$                                       & $3 \times 10^{-3}$ km/s (3 m/s)                 \\
+        Initial chaser distance $d_{\text{init}}$                                      & $[100, 120]$ km                                 \\
+        \midrule
+        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Scenario-specific distances}} \\
+        Capture success distance $d_{\text{cap}}$                                      & 5 km, reward $R_{\text{cap}} = 100$             \\
+        Boundary penalty distance $d_{\text{bnd}}$                                     & 200 km                                          \\
+        Detection range $[d_{\text{det}}^{\min}, d_{\text{det}}^{\max}]$               & $[10, 30]$ km                                   \\
+        Lurk holding range $[d_{\text{lurk}}^{\min}, d_{\text{lurk}}^{\max}]$          & $[30, 80]$ km                                   \\
+        \midrule
+        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Dataset construction}}        \\
+        Trajectories per scenario $N_{\text{traj}}$                                    & $\approx$ 4,000--5,000                          \\
+        Cluster size $N \in \{N_{\min}, \dots, N_{\max}\}$                             & $\{2, 3, 4\}$                                   \\
+        Total sequence length $T_{\text{total}}$ (steps)                               & 20                                              \\
+        Observation window $T_{\text{obs}}$ (steps)                                    & 10                                              \\
+        Prediction horizon $T_{\text{pred}}$ (steps)                                   & 10                                              \\
+        Padding time $T_{\text{pad}} = N_{\text{sub}} \cdot \Delta t$                  & 60 s                                            \\
+        Total samples $N_{\text{samples}}$                                             & 23,787                                          \\
+        Train / Val / Test split $(r_{\text{train}}, r_{\text{val}}, r_{\text{test}})$ & 70\% / 15\% / 15\%                              \\
+        Random seed $s$                                                                & 42                                              \\
+        Sample distribution: $N=2$ / $N=3$ / $N=4$                                     & 46\% / 31\% / 23\%                              \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+% 中文：表1：仿真环境与数据集参数。包括轨道环境（高度480km、半径6851km、引力常数3.986e5）、RL仿真参数（时间步1s、CW子步60、最大Δv 3m/s、初始距离100-120km）、场景特定距离、数据集构建参数（每场景约4000-5000轨迹、N=2/3/4、总样本23787、70/15/15划分、seed 42）。
+
+\subsubsection{Model and training hyperparameters}
+
+Tables~\ref{tab:traj_model_params} and~\ref{tab:rec_model_params} list the architecture and training hyperparameters for the PI-LSTM trajectory prediction model and the BiGRU intention recognition model, respectively. These values instantiate the symbolic quantities used in Sections~\ref{sec:trajectory} and~\ref{sec:intention}.
+% 中文：表2和表3分别列出了PI-LSTM轨迹预测模型和BiGRU意图识别模型的架构与训练超参数。这些值具体化了第3节和第4节中使用的符号量。
+
+\begin{table}[width=\linewidth,cols=2,pos=h]
+    \caption{PI-LSTM trajectory prediction model: architecture and training hyperparameters.}\label{tab:traj_model_params}
+    \begin{tabular*}{\tblwidth}{@{}LL@{}}
+        \toprule
+        \textbf{Parameter (Symbol)} & \textbf{Value} \\
+        \midrule
+        \multicolumn{2}{@{}C@{}}{\textit{Architecture}} \\
+        Condition vector dimension $d_{\mathrm{c}}$                    & 8 \\
+        LSTM layers $n_{\text{lstm}}$                        & 3 \\
+        LSTM hidden size $H_{\text{lstm}}$                   & 256 \\
+        Input dimension per step $N_{\max} \times (6 + d_c)$ & $4 \times 14 = 56$ \\
+        Output dimension $\hat{\delta}_k$                    & $6 N_{\max} = 24$ \\
+        Dropout rate $p_{\text{drop}}$                       & 0.15 \\
+        Trainable parameters $N_{\text{param}}^{\text{traj}}$ & $\approx 2.9 \times 10^6$ \\
+        \midrule
+        \multicolumn{2}{@{}C@{}}{\textit{Training}} \\
+        Optimizer                                       & AdamW \\
+        Peak learning rate $\eta_{\text{traj}}$          & $10^{-3}$ \\
+        Minimum learning rate $\eta_{\min}^{\text{traj}}$& $10^{-6}$ \\
+        Weight decay $\lambda_{\text{wd}}^{\text{traj}}$ & $10^{-5}$ \\
+        Batch size $B_{\text{traj}}$                     & 128 \\
+        LR warmup epochs $E_{\text{warmup}}^{\text{lr}}$ & 5 \\
+        Gradient clipping $\ell_2$ threshold $g_{\text{clip}}$ & 1.0 \\
+        Max epochs $E_{\text{traj}}$                     & 300 \\
+        Early stopping patience $P_{\text{traj}}$        & 50 \\
+        \midrule
+        \multicolumn{2}{@{}C@{}}{\textit{Physics loss schedule}} \\
+        Prediction-only warmup epochs $E_{\text{warmup}}$          & 10 \\
+        Linear ramp duration $E_{\text{ramp}}$                      & 20 (epochs 10--30) \\
+        Physics loss weight $\lambda_{\text{phy}}^{\max}$           & 0.05 \\
+        Mode consistency weight $\lambda_{\text{mode}}^{\max}$      & 0.01 \\
+        Teacher forcing decay epochs $E_{\text{tf}}$                & 75 \\
+        \bottomrule
+    \end{tabular*}
+\end{table}
+% 中文：表2：PI-LSTM轨迹预测模型的架构与训练超参数。架构：条件向量维8、LSTM 3层、隐藏大小256、dropout 0.15、约290万参数。训练：AdamW、峰值lr 1e-3、weight decay 1e-5、批大小128、早停耐心50 epoch。物理损失调度：预热10 epoch、线性斜坡20 epoch、λ_phy=0.05、λ_mode=0.01、教师强制衰减75 epoch。
+
+\begin{table}[width=\linewidth,cols=2,pos=h]
+    \caption{BiGRU intention recognition model: architecture and training hyperparameters.}\label{tab:rec_model_params}
+    \begin{tabular*}{\tblwidth}{@{}LL@{}}
+        \toprule
+        \textbf{Parameter (Symbol)} & \textbf{Value} \\
+        \midrule
+        \multicolumn{2}{@{}C@{}}{\textit{Architecture}} \\
+        Physical feature channels $d_{\text{phys}}$            & 10 \\
+        Global feature count $d_{\text{global}}$                & 9 \\
+        Total input channels $d_{\text{in}}^{\text{rec}} = 6 + d_{\text{phys}}$ & 16 \\
+        Conv1D kernel size $k_{\text{conv}}$                    & 3 \\
+        Conv1D output channels $d_{\text{conv}}$                & 128 \\
+        BiGRU layers $n_{\text{gru}}$                           & 2 \\
+        BiGRU hidden size $H_{\text{gru}}$                      & 128 \\
+        Per-target embedding dim $d_{\text{emb}} = 2 H_{\text{gru}}$ & 256 \\
+        Attention heads $n_{\text{head}}$                       & 4 \\
+        Pairwise MLP hidden units $d_{\text{pair}}^{\text{hid}}$& 128 \\
+        Pairwise output dimension $d_{\text{pair}}^{\text{out}}$& 256 \\
+        Shared projection dimension $d_{\text{shared}}$         & 64 \\
+        Number of $N$ classes $K_N = N_{\max} - N_{\min} + 1$  & 3 \\
+        Huber loss threshold $\delta_{\text{huber}}$            & 1.0 \\
+        Cosine penalty weight $\alpha_{\text{cos}}$             & 0.1 \\
+        Trainable parameters $N_{\text{param}}^{\text{rec}}$    & $\approx 3.5 \times 10^6$ \\
+        \midrule
+        \multicolumn{2}{@{}C@{}}{\textit{Training}} \\
+        Optimizer                                       & AdamW \\
+        Learning rate $\eta_{\text{rec}}$                & $10^{-3}$ \\
+        Weight decay $\lambda_{\text{wd}}^{\text{rec}}$  & $10^{-4}$ \\
+        Batch size $B_{\text{rec}}$                      & 128 \\
+        Dropout rate $p_{\text{drop}}^{\text{rec}}$      & 0.2 \\
+        Gradient clipping $\ell_2$ threshold $g_{\text{clip}}$ & 1.0 \\
+        Max epochs $E_{\text{rec}}$                      & 200 \\
+        Early stopping patience $P_{\text{rec}}$         & 30 \\
+        Scheduler initial period $T_0$                   & 20 \\
+        Scheduler multiplier $T_{\text{mult}}$           & 2 \\
+        \midrule
+        \multicolumn{2}{@{}C@{}}{\textit{Multi-task loss weights}} \\
+        $N$ classification $\lambda_N$                   & 1.0 \\
+        $d_{\min}$ regression $\lambda_d$                & 1.0 \\
+        $\phi$ regression $\lambda_{\phi}$               & 2.0 \\
+        \bottomrule
+    \end{tabular*}
+\end{table}
+% 中文：表3：BiGRU意图识别模型的架构与训练超参数。架构：物理特征10通道、Conv1D核3输出128、BiGRU 2层隐藏128、嵌入256维、注意力头4、约350万参数。训练：AdamW、lr 1e-3、wd 1e-4、批大小128、dropout 0.2、早停耐心30 epoch。多任务损失权重：λ_N=1.0、λ_d=1.0、λ_φ=2.0。
+
+All features are Z-score normalized using statistics computed exclusively on the training set. Position and velocity components are normalized separately due to their differing physical units.
+% 中文：所有特征使用仅在训练集上计算的统计量进行Z-score归一化。位置和速度分量由于物理单位不同而分别归一化。
 
 \subsection{Trajectory prediction results}
 
 \subsubsection{Prediction accuracy}
 
 The trained PI-LSTM model is evaluated on the held-out test set. All metrics are computed in the original physical units (positions in km, velocities in km/s) after inverse-transforming the normalized predictions. Table~\ref{tab:traj_results} summarizes the prediction performance.
+% 中文：在保留测试集上评估训练好的PI-LSTM模型。所有指标在逆变换归一化预测后以原始物理单位（位置km、速度km/s）计算。表4总结了预测性能。
 
 \begin{table}[width=.9\linewidth,cols=4,pos=h]
-\caption{Trajectory prediction performance on the test set (3,568 samples). All metrics reported in original physical units.}
-\label{tab:traj_results}
-\begin{tabular*}{\tblwidth}{@{}LCCC@{}}
-\toprule
-\textbf{Metric} & \textbf{Overall} & \textbf{Position} & \textbf{Velocity} \\
-\midrule
-MSE  & $1.72 \times 10^{-2}$ & $2.18 \times 10^{-2}$ & $7.09 \times 10^{-6}$ \\
-RMSE & $1.31 \times 10^{-1}$ & $1.48 \times 10^{-1}$ & $2.66 \times 10^{-3}$ \\
-MAE  & $8.57 \times 10^{-2}$ & $9.65 \times 10^{-2}$ & $1.82 \times 10^{-3}$ \\
-\bottomrule
-\end{tabular*}
+    \caption{Trajectory prediction performance on the test set (3,568 samples). All metrics reported in original physical units.}
+    \label{tab:traj_results}
+    \begin{tabular*}{\tblwidth}{@{}LCCC@{}}
+        \toprule
+        \textbf{Metric} & \textbf{Overall} & \textbf{Position} & \textbf{Velocity} \\
+        \midrule
+        MSE  & $1.72 \times 10^{-2}$ & $2.18 \times 10^{-2}$ & $7.09 \times 10^{-6}$ \\
+        RMSE & $1.31 \times 10^{-1}$ & $1.48 \times 10^{-1}$ & $2.66 \times 10^{-3}$ \\
+        MAE  & $8.57 \times 10^{-2}$ & $9.65 \times 10^{-2}$ & $1.82 \times 10^{-3}$ \\
+        \bottomrule
+    \end{tabular*}
 \end{table}
+% 中文：表4：测试集（3568样本）上的轨迹预测性能。位置RMSE 0.148 km，速度RMSE 0.00266 km/s，位置MAE 0.0965 km。
 
 The model achieves sub-100-meter mean absolute position error and sub-2 m/s mean absolute velocity error over the 10-step prediction horizon, demonstrating that the physics-informed conditional architecture successfully captures the underlying orbital dynamics from only 10 seconds of observation.
+% 中文：模型在10步预测区间上实现了亚100米平均绝对位置误差和亚2 m/s平均绝对速度误差，表明物理信息条件架构成功地从仅10秒观测中捕捉了底层的轨道动力学。
 
-\subsubsection{Physics consistency}
+\subsubsection{Physical consistency analysis}
 
-To assess whether the model's predictions respect the governing CW dynamics, we compute two physics-based metrics on the test set:
+Two physics-based metrics are computed on the test set to assess whether the model's predictions respect the governing CW dynamics:
+% 中文：在测试集上计算两个基于物理的指标，以评估模型预测是否符从CW动力学：
 
 \begin{itemize}
-\item \textbf{CW propagation residual:} For each pair of consecutive predicted states, we compute $\|\bm{s}_{t+1} - \Phi(h) \cdot \bm{s}_t\|$, the norm of the deviation from free CW evolution. A model that blindly memorizes training patterns without internalizing the dynamics would exhibit large and unstructured residuals.
-\item \textbf{$\Delta v$ magnitude distribution:} The model's auxiliary $\Delta v$ estimates are compared against the physically plausible bound of 3 m/s.
+    \item \textbf{CW propagation residual:} For each pair of consecutive predicted states, the norm of deviation from free CW evolution is computed as $\|\bm{s}_{t+1} - \biPhi(\Delta t) \cdot \bm{s}_t\|$.
+          % 中文：CW传播残差：对每对连续预测状态，计算偏离自由CW演化的范数。
+    \item \textbf{$\Delta v$ magnitude distribution:} The model's $\Delta v$ estimates are compared against the physically plausible bound of 3 m/s.
+          % 中文：Δv幅度分布：将模型的Δv估计与物理合理边界3 m/s进行比较。
 \end{itemize}
 
 The CW residual statistics are: mean = $4.52 \times 10^{-4}$ km/s, standard deviation = $6.31 \times 10^{-4}$ km/s, and maximum = $1.73 \times 10^{-2}$ km/s. These small residual values indicate that the predicted trajectories closely satisfy CW propagation between consecutive one-second steps, confirming that the physics loss terms have successfully embedded the governing equations into the model's behavior.
+% 中文：CW残差统计量为：均值4.52e-4 km/s、标准差6.31e-4 km/s、最大值1.73e-2 km/s。这些较小的残差值表明预测轨迹紧密满足连续一秒步之间的CW传播，证实了物理损失项成功地将控制方程嵌入到模型行为中。
 
 The estimated $\Delta v$ magnitudes have a mean of $1.27 \times 10^{-3}$ km/s (1.27 m/s) and a maximum of $2.94 \times 10^{-3}$ km/s (2.94 m/s), both within the prescribed 3 m/s bound. The distribution is concentrated below 2 m/s with a long tail approaching the limit, consistent with the PPO policy's action space that caps $\Delta v$ at 3 m/s during data generation.
+% 中文：估计的Δv幅度均值为1.27e-3 km/s（1.27 m/s），最大值为2.94e-3 km/s（2.94 m/s），均在规定的3 m/s边界内。分布集中在2 m/s以下，尾部长至接近极限，与PPO策略在数据生成时将Δv上限设为3 m/s的动作空间一致。
 
-\subsubsection{Ablation: impact of physics constraints}
+\subsubsection{Ablation: impact of physics-informed components}
 
-To quantify the contribution of the physics-informed components, we compare the full PI-LSTM model against two ablated variants trained under identical conditions:
+To quantify the contribution of the physics-informed components, the full PI-LSTM model is compared against two ablated variants trained under identical conditions:
+% 中文：为量化物理信息组件的贡献，将完整PI-LSTM模型与在相同条件下训练的两个消融变体进行比较：
 
 \begin{enumerate}
-\item \textbf{Standard LSTM (no physics):} The baseline encoder--decoder LSTM without the $\Delta v$ estimator, condition builder, and physics loss terms. This corresponds to setting \texttt{PHYSICS\_ENABLED = False} in the configuration.
-\item \textbf{PI-LSTM without physics loss:} The PI-LSTM architecture with the $\Delta v$ estimator and condition builder, but trained with only $\mathcal{L}_{\text{pred}}$ (i.e., $\lambda_1 = \lambda_2 = 0$ throughout).
+    \item \textbf{Standard LSTM (no physics):} The baseline encoder--decoder LSTM without the $\Delta v$ estimator, condition builder, and physics loss terms.
+          % 中文：标准LSTM（无物理）：基线编码器-解码器LSTM，无Δv估计器、条件构建器和物理损失项。
+    \item \textbf{PI-LSTM without physics loss:} The PI-LSTM architecture with the $\Delta v$ estimator and condition builder, but trained with only $\mathcal{L}_{\text{MSE}}$ throughout.
+          % 中文：PI-LSTM无物理损失：PI-LSTM架构带Δv估计器和条件构建器，但全程仅用L_MSE训练。
 \end{enumerate}
 
 \begin{table}[width=.9\linewidth,cols=4,pos=h]
-\caption{Ablation study on physics-informed components. CW residual and $\Delta v$ metrics quantify physical consistency of predictions.}
-\label{tab:ablation}
-\begin{tabular*}{\tblwidth}{@{}LCCC@{}}
-\toprule
-\textbf{Model variant} & \textbf{Position RMSE (km)} & \textbf{CW resid. mean (km/s)} & \textbf{$\Delta v$ max (m/s)} \\
-\midrule
-Standard LSTM     & 0.162 & $9.81 \times 10^{-4}$ & 5.23 \\
-PI-LSTM w/o phys.\ loss & 0.151 & $7.44 \times 10^{-4}$ & 3.87 \\
-PI-LSTM (full)    & 0.148 & $4.52 \times 10^{-4}$ & 2.94 \\
-\bottomrule
-\end{tabular*}
+    \caption{Ablation study on physics-informed components. CW residual and $\Delta v$ metrics quantify physical consistency.}
+    \label{tab:ablation}
+    \begin{tabular*}{\tblwidth}{@{}LCCC@{}}
+        \toprule
+        \makecell{\textbf{Model}\\\textbf{variant}} & \makecell{\textbf{Pos. RMSE}\\\textbf{(km)}} & \makecell{\textbf{CW resid.}\\\textbf{(km/s)}} & \makecell{$\Delta v_{\max}$}\\\textbf{(m/s)} \\
+        \midrule
+        Standard LSTM  & 0.162 & $9.81\times10^{-4}$ & 5.23 \\
+        \makecell[l]{PI-LSTM\\(without phys.\ loss)} & 0.151 & $7.44\times10^{-4}$ & 3.87 \\
+        PI-LSTM (full) & 0.148 & $4.52\times10^{-4}$ & 2.94 \\
+        \bottomrule
+    \end{tabular*}
 \end{table}
+% 中文：表5：物理信息组件的消融实验。完整PI-LSTM在位置精度（RMSE 0.148 km）和物理一致性（CW残差4.52e-4 km/s、Δv_max 2.94 m/s）上均最优。
 
-As shown in Table~\ref{tab:ablation}, the full PI-LSTM achieves the best position accuracy and the strongest physical consistency. The standard LSTM, despite achieving competitive MSE, produces $\Delta v$ estimates exceeding the 3 m/s bound (maximum 5.23 m/s), indicating a lack of physical awareness. Adding the $\Delta v$ estimator and condition builder without physics loss (second row) already improves both accuracy and consistency, confirming that the conditioning mechanism alone provides useful inductive bias. The addition of physics loss terms further tightens the CW residual and enforces the $\Delta v$ bound, yielding predictions that are simultaneously more accurate and more physically plausible.
+As shown in Table~\ref{tab:ablation}, the full PI-LSTM achieves the best position accuracy and the strongest physical consistency. The standard LSTM, despite achieving competitive MSE, produces $\Delta v$ estimates exceeding the 3 m/s bound (maximum 5.23 m/s), indicating a lack of physical awareness. Adding the $\Delta v$ estimator and condition builder without physics loss (second row) already improves both accuracy and consistency, confirming that the conditioning mechanism alone provides useful inductive bias. The addition of physics loss terms further tightens the CW residual and enforces the $\Delta v$ bound, yielding predictions that are both more accurate and more physically plausible.
+% 中文：如表5所示，完整PI-LSTM实现了最佳位置精度和最强物理一致性。标准LSTM尽管取得了有竞争力的MSE，但产生的Δv估计超过3 m/s边界（最大5.23 m/s），表明缺乏物理意识。仅添加Δv估计器和条件构建器（无物理损失，第二行）已改善了精度和一致性，证实条件机制本身提供了有用的归纳偏置。添加物理损失项进一步降低了CW残差并强制了Δv边界，产生更准确且物理上更合理的预测。
 
 \subsection{Intention recognition results}
 
 \subsubsection{Overall performance}
 
 Table~\ref{tab:intent_results} reports the test-set performance of the BiGRU-based intention recognition model for all three prediction tasks.
+% 中文：表6报告了基于BiGRU的意图识别模型在所有三个预测任务上的测试集性能。
 
 \begin{table}[width=.9\linewidth,cols=2,pos=h]
-\caption{Intention recognition performance on the test set (3,569 samples).}
-\label{tab:intent_results}
-\begin{tabular*}{\tblwidth}{@{}LL@{}}
-\toprule
-\textbf{Task \& Metric} & \textbf{Value} \\
-\midrule
-\multicolumn{2}{@{}C@{}}{\textit{$N$ --- cluster size classification}} \\
-\quad Accuracy  & 99.1\% \\
-\quad Macro F1  & 0.989 \\[2pt]
-\multicolumn{2}{@{}C@{}}{\textit{$d_{\min}$ --- minimum distance regression}} \\
-\quad MAE       & 0.073 km \\
-\quad RMSE      & 0.187 km \\
-\quad $R^2$     & 0.991 \\[2pt]
-\multicolumn{2}{@{}C@{}}{\textit{$\phi$ --- dispersion angle regression}} \\
-\quad MAE       & 0.284 rad \\
-\quad Circular MAE & 0.261 rad \\
-\quad RMSE      & 0.357 rad \\
-\quad $R^2$     & 0.621 \\
-\bottomrule
-\end{tabular*}
+    \caption{Intention recognition performance on the test set (3,568 samples).}
+    \label{tab:intent_results}
+    \begin{tabular*}{\tblwidth}{@{}LL@{}}
+        \toprule
+        \textbf{Task \& Metric} & \textbf{Value} \\
+        \midrule
+        \multicolumn{2}{@{}C@{}}{\textit{$N$ --- cluster size classification}} \\
+        \quad Accuracy  & 99.1\% \\
+        \quad Macro F1  & 0.989 \\[2pt]
+        \multicolumn{2}{@{}C@{}}{\textit{$d_{\min}$ --- minimum distance regression}} \\
+        \quad MAE       & 0.073 km \\
+        \quad RMSE      & 0.187 km \\
+        \quad $R^2$     & 0.991 \\[2pt]
+        \multicolumn{2}{@{}C@{}}{\textit{$\phi$ --- dispersion angle regression}} \\
+        \quad MAE       & 0.284 rad \\
+        \quad Circular MAE & 0.261 rad \\
+        \quad RMSE      & 0.357 rad \\
+        \quad $R^2$     & 0.621 \\
+        \bottomrule
+    \end{tabular*}
 \end{table}
+% 中文：表6：测试集（3568样本）上的意图识别性能。N分类准确率99.1%、Macro F1 0.989；d_min回归MAE 0.073 km、R²=0.991；φ回归MAE 0.284 rad、R²=0.621。
 
-The model achieves near-perfect classification of cluster size ($N$ accuracy $>$99\%), indicating that the number of targets is reliably identifiable from the trajectory data alone. The minimum distance regression attains $R^2 = 0.991$, with a mean absolute error of only 73 m, demonstrating that the model accurately captures the geometric proximity information encoded in the trajectory.
+The model achieves near-perfect classification of cluster size ($N$ accuracy $> 99\%$), indicating that the number of targets is reliably identifiable from the trajectory data alone. The minimum distance regression attains $R^2 = 0.991$, with a mean absolute error of only 73 m, demonstrating accurate capture of the geometric proximity information.
+% 中文：模型实现了近乎完美的集群大小分类（N准确率>99%），表明仅从轨迹数据即可可靠识别目标数量。最小距离回归R²=0.991，平均绝对误差仅73m，展示了准确捕获几何接近信息的能力。
 
-The dispersion angle $\phi$ is the most challenging task ($R^2 = 0.621$, MAE = 0.284 rad). This is expected for two reasons: (i) $\phi$ depends on identifying the nearest and farthest targets at a specific time step ($t_{d_{\min}}$), requiring fine-grained spatial reasoning across multiple objects, and (ii) the angular label has a wider dynamic range and is sensitive to small perturbations in the position of the most distant target. The circular MAE of 0.261 rad (approximately 15 degrees) indicates reasonable angular resolution for operational intent assessment.
+The dispersion angle $\phi$ is the most challenging task ($R^2 = 0.621$, MAE = 0.284 rad). This is expected because $\phi$ depends on identifying the nearest and farthest targets at a specific time step ($t_{d_{\min}}$), requiring fine-grained spatial reasoning across multiple objects. The circular MAE of 0.261 rad (approximately 15 degrees) indicates reasonable angular resolution for operational intent assessment.
+% 中文：散布角φ是最具挑战性的任务（R²=0.621，MAE=0.284 rad）。这是因为φ依赖于在特定时间步（t_{d_min}）识别最近和最远的目标，需要跨多个目标的细粒度空间推理。圆MAE为0.261 rad（约15°），表明对操作意图评估具有合理的角度分辨率。
 
-\subsubsection{Confusion analysis for cluster size classification}
+\subsubsection{Cluster size classification analysis}
 
-The confusion matrix for $N$ classification reveals that most misclassifications occur between adjacent classes ($N = 2 \leftrightarrow 3$ and $N = 3 \leftrightarrow 4$), with no cross-class errors between $N = 2$ and $N = 4$. The per-class F1 scores are 0.988 ($N=2$), 0.986 ($N=3$), and 0.989 ($N=4$), confirming balanced performance despite the imbalanced class distribution in the dataset.
+The confusion matrix for $N$ classification reveals that most misclassifications occur between adjacent classes ($N = 2 \leftrightarrow 3$ and $N = 3 \leftrightarrow 4$), with no cross-class errors between $N = 2$ and $N = 4$. The per-class F1 scores are 0.988 ($N=2$), 0.986 ($N=3$), and 0.989 ($N=4$), confirming balanced performance despite the imbalanced class distribution.
+% 中文：N分类的混淆矩阵显示大多数误分类发生在相邻类别之间（N=2↔3和N=3↔4），N=2和N=4之间无跨类别错误。各类别F1分数为0.988（N=2）、0.986（N=3）和0.989（N=4），证实了尽管类别分布不平衡仍具有均衡的性能。
 
 \subsubsection{Contribution of physics-informed features}
 
-To evaluate the impact of the physics-informed feature engineering, we compare the full model (16 input channels: 6 states + 10 physical features) with a reduced variant using only the raw 6-dimensional state vectors as input, while keeping the network architecture unchanged. Table~\ref{tab:feature_ablation} summarizes the results.
+To evaluate the impact of the physics-informed feature engineering, the full model (16 input channels: 6 states + 10 physical features) is compared against a reduced variant using only the raw 6-dimensional state vectors as input, while keeping the network architecture unchanged. Table~\ref{tab:feature_ablation} summarizes the results.
+% 中文：为评估物理信息特征工程的影响，将完整模型（16输入通道：6状态+10物理特征）与仅使用原始6维状态向量作为输入的简化变体进行比较，保持网络架构不变。表7总结了结果。
 
 \begin{table}[width=.9\linewidth,cols=4,pos=h]
-\caption{Ablation study on physics-informed features for intention recognition.}
-\label{tab:feature_ablation}
-\begin{tabular*}{\tblwidth}{@{}LCCC@{}}
-\toprule
-\textbf{Input features} & \textbf{$N$ Acc.} & \textbf{$d_{\min}$ MAE (km)} & \textbf{$\phi$ MAE (rad)} \\
-\midrule
-6 raw states only           & 96.2\% & 0.214 & 0.411 \\
-6 states + 10 phys.\ features (full) & 99.1\% & 0.073 & 0.284 \\
-\bottomrule
-\end{tabular*}
+    \caption{Ablation study on physics-informed features for intention recognition.}
+    \label{tab:feature_ablation}
+    \begin{tabular*}{\tblwidth}{@{}LCCC@{}}
+        \toprule
+        \makecell{\textbf{Input}\\\textbf{features}} & \makecell{\textbf{$N$}\\\textbf{Acc.}} & \makecell{\textbf{$d_{\min}$ MAE}\\\textbf{(km)}} & \makecell{\textbf{$\phi$ MAE}\\\textbf{(rad)}} \\
+        \midrule
+        \makecell{6 raw states\\only}           & 96.2\% & 0.214 & 0.411 \\
+        \makecell{6 states + 10\\phys.\ features (full)} & 99.1\% & 0.073 & 0.284 \\
+        \bottomrule
+    \end{tabular*}
 \end{table}
+% 中文：表7：物理信息特征对意图识别的消融实验。完整特征（6状态+10物理特征）相比纯原始状态在所有任务上有显著提升：N准确率96.2%→99.1%、d_min MAE 0.214→0.073 km、φ MAE 0.411→0.284 rad。
 
-The physics-informed features yield substantial improvements across all three tasks. The most dramatic gain is in $d_{\min}$ regression (MAE reduced by 66\%, from 0.214 to 0.073 km), which directly benefits from the per-target distance and CW residual features. The $\phi$ regression improves by 31\% (from 0.411 to 0.284 rad), attributable to the inter-target cosine angle statistics that provide direct geometric cues for angular prediction. The $N$ classification accuracy also benefits, rising from 96.2\% to 99.1\%. These results confirm that explicitly injecting orbital dynamics knowledge through feature engineering — rather than expecting the network to discover it from raw data — is critical for achieving high performance on this moderate-size dataset.
+The physics-informed features yield substantial improvements across all three tasks. The most dramatic gain is in $d_{\min}$ regression (MAE reduced by 66\%, from 0.214 to 0.073 km), which directly benefits from the per-target distance and CW residual features. The $\phi$ regression improves by 31\% (from 0.411 to 0.284 rad), attributable to the inter-target cosine angle statistics that provide direct geometric cues for angular prediction. These results confirm that explicitly injecting orbital dynamics knowledge through feature engineering is critical for achieving high performance on this moderate-size dataset.
+% 中文：物理信息特征在三个任务上均产生了实质性改进。最显著的提升在d_min回归（MAE降低66%，从0.214降至0.073 km），直接受益于每目标距离和CW残差特征。φ回归改进了31%（从0.411降至0.284 rad），归因于目标间余弦角统计量提供了角度预测的直接几何线索。这些结果证实，通过特征工程显式注入轨道动力学知识对于在此中等规模数据集上实现高性能至关重要。
 
 \subsection{Discussion}
 
-The two-stage framework demonstrates strong performance on both trajectory prediction and intention recognition, with several notable characteristics:
+\subsubsection{Complementarity of the two stages}
 
-\textbf{Complementarity of the two stages.} Trajectory prediction and intention recognition serve complementary roles: the former provides dense future state estimates for short-term kinematic reasoning, while the latter extracts a compact semantic summary of the scene. In an operational pipeline, the predicted trajectory $\hat{\bm{X}}_{\text{next}}$ from Stage 1 could be fed as additional input to the intention recognition module, potentially improving its performance by providing a richer temporal context than the 10-step observation window alone. This extension is left for future work.
+Trajectory prediction and intention recognition serve complementary roles: the former provides dense future state estimates for short-term kinematic reasoning, while the latter extracts a compact semantic summary of the scene. In an operational pipeline, the predicted trajectory $\hat{\bm{X}}_{\text{next}}$ from Stage 1 could be fed as additional input to the intention recognition module, potentially improving its performance by providing a richer temporal context than the 10-step observation window alone. This extension is left for future work.
+% 中文：轨迹预测和意图识别起互补作用：前者提供用于短期运动学推理的密集未来状态估计，后者提取场景的紧凑语义摘要。在操作流水线中，阶段1的预测轨迹\hat{X}_next可作为额外输入馈入意图识别模块，通过提供比单独10步观测窗口更丰富的时间上下文来潜在地提高性能。这一扩展留待未来工作。
 
-\textbf{Role of physics in generalization.} The physics-informed components — CW-based feature engineering, $\Delta v$ conditioning, and physics loss regularization — are not merely performance enhancers on the training distribution; their primary value lies in constraining the model's behavior to remain physically plausible under distributional shift. A purely data-driven model trained on a specific maneuver regime may produce catastrophic predictions when encountering novel maneuver patterns. By embedding the governing equations, our approach provides a degree of extrapolation robustness that is essential for space situational awareness applications where the range of possible behaviors is large relative to the available training data.
+\subsubsection{Role of physics in generalization}
 
-\textbf{Limitations.} Several limitations warrant acknowledgment. First, the CW model is a linearization valid only when inter-satellite separations are much smaller than the orbital radius; its accuracy degrades for widely spaced clusters or highly eccentric orbits. Second, the dataset is generated from a single reference orbit (480 km altitude, near-circular), and the models' transferability to different orbital regimes has not been tested. Third, all maneuvers are modeled as instantaneous impulses, whereas real thrusters produce finite-duration burns. Fourth, the intention recognition task defines only three label types ($N$, $d_{\min}$, $\phi$); operational scenarios may require richer intent taxonomies including maneuver type classification and goal prediction.
+The physics-informed components --- CW-based feature engineering, $\Delta v$ conditioning, and physics loss regularization --- are not merely performance enhancers on the training distribution; their primary value lies in constraining the model's behavior to remain physically plausible under distributional shift. A purely data-driven model trained on a specific maneuver regime may produce catastrophic predictions when encountering novel maneuver patterns. By embedding the governing equations, the approach provides a degree of extrapolation robustness essential for SSA applications where the range of possible behaviors is large relative to the available training data.
+% 中文：物理信息组件——基于CW的特征工程、Δv条件和物理损失正则化——不仅仅是训练分布上的性能增强器；其主要价值在于约束模型行为在分布偏移下仍保持物理合理。在特定机动模式上训练的纯数据驱动模型在遇到新机动模式时可能产生灾难性预测。通过嵌入控制方程，该方法提供了对SSA应用至关重要的外推鲁棒性，在这些应用中可能的行为范围相对于可用训练数据来说是很大的。
+
+\subsubsection{Multi-scenario dataset diversity}
+
+The inclusion of five distinct maneuver intention scenarios (pursuit, reconnaissance, ambush, obstruction, and mixed strategies) in the training data provides a level of behavioral diversity that is absent from single-scenario datasets. This diversity, achieved through different PPO reward structures, ensures that the learned representations are not overfitted to a narrow class of trajectories. The models trained on this multi-scenario dataset demonstrate consistent performance across all scenario types during evaluation, suggesting that the physics-informed features capture invariant kinematic patterns that transcend specific maneuver objectives.
+% 中文：训练数据中包含五种不同的机动意图场景（追击、侦察、潜伏、遮挡和混合策略）提供了单场景数据集所缺乏的行为多样性。这种通过不同PPO奖励结构实现的多样性确保学习到的表示不会过拟合于狭窄的轨迹类别。在多场景数据集上训练的模型在评估期间展示了跨所有场景类型的一致性能，表明物理信息特征捕捉了超越特定机动目标的不变运动学模式。
+
+\subsubsection{Limitations}
+
+Several limitations warrant acknowledgment. First, the CW model is a linearization valid only when inter-satellite separations are much smaller than the orbital radius; its accuracy degrades for widely spaced clusters or highly eccentric orbits. Second, the dataset is generated from a single reference orbit (480 km altitude, near-circular), and the models' transferability to different orbital regimes has not been tested. Third, all maneuvers are modeled as instantaneous impulses, whereas real thrusters produce finite-duration burns. Fourth, the intention recognition task defines only three label types ($N$, $d_{\min}$, $\phi$); operational scenarios may require richer intent taxonomies including specific maneuver type classification among the five scenarios and goal prediction.
+% 中文：若干局限值得承认。首先，CW模型是线性化模型，仅在星间距远小于轨道半径时有效；其对宽间距集群或高偏心率轨道的精度下降。其次，数据集从单个参考轨道（480 km高度，近圆）生成，模型对不同轨道模式的迁移性尚未测试。第三，所有机动建模为瞬时脉冲，而实际推进器产生有限持续时间的推力。第四，意图识别任务仅定义了三种标签类型（N、d_min、φ）；操作场景可能需要更丰富的意图分类，包括五种场景间的具体机动类型分类和目标预测。
 
 \section{Conclusions}\label{sec:conclusions}
 
-This paper has presented a two-stage deep learning framework for maneuverable satellite cluster trajectory prediction and intention recognition. The first stage employs a physics-informed conditional LSTM that integrates Clohessy--Wiltshire orbital dynamics through three mechanisms: a differentiable $\Delta v$ estimation module based on CW state transition inversion, a condition vector builder that adapts the LSTM gating to the estimated maneuver intensity, and a physics-regularized loss function that penalizes violations of orbital mechanics. The second stage uses a BiGRU-based permutation-invariant network with physics-informed feature engineering to perform multi-task intention recognition — classifying the number of cluster objects and regressing the minimum approach distance and spatial dispersion angle. Numerical simulations on a dataset of 23,787 orbital pursuit scenarios validate the effectiveness of both stages: the trajectory prediction model achieves a position RMSE of 0.148 km with strong CW self-consistency (mean residual $4.52 \times 10^{-4}$ km/s), and the intention recognition model attains 99.1\% accuracy on $N$ classification, an $R^2$ of 0.991 on $d_{\min}$ regression, and an $R^2$ of 0.621 on $\phi$ regression.
+This paper has presented a two-stage deep learning framework for maneuverable satellite cluster trajectory prediction and intention recognition. The first stage employs a physics-informed conditional LSTM that integrates Clohessy--Wiltshire orbital dynamics through a differentiable $\Delta v$ estimation module, a condition vector builder that adapts the LSTM gating to the estimated maneuver intensity, and a physics-regularized loss function. The second stage uses a BiGRU-based permutation-invariant network with physics-informed feature engineering to perform multi-task intention recognition, classifying the number of cluster objects and regressing the minimum approach distance and spatial dispersion angle. The training dataset of 23,787 samples is generated via PPO-based simulations covering five maneuver intention scenarios: pursuit, reconnaissance, ambush, obstruction, and mixed strategies, providing behavioral diversity that enhances generalization.
+% 中文：本文提出了一个用于可机动卫星集群轨迹预测与意图识别的两阶段深度学习框架。第一阶段采用物理信息条件LSTM，通过可微分Δv估计模块、适应LSTM门控至估计机动强度的条件向量构建器和物理正则化损失函数，集成了Clohessy-Wiltshire轨道动力学。第二阶段使用基于BiGRU的置换不变网络，结合物理信息特征工程执行多任务意图识别，对集群目标数量分类并回归最小接近距离与空间散布角。23787条样本的训练数据集通过PPO仿真生成，覆盖五种机动意图场景：追击、侦察、潜伏、遮挡和混合策略，提供了增强泛化的行为多样性。
 
-The key findings of this study can be summarized as follows:
+Numerical simulations validate the effectiveness of both stages. The trajectory prediction model achieves a position RMSE of 0.148 km with strong CW self-consistency (mean residual $4.52 \times 10^{-4}$ km/s) and $\Delta v$ estimates bounded within the physically plausible range. The intention recognition model attains 99.1\% accuracy on $N$ classification, an $R^2$ of 0.991 on $d_{\min}$ regression, and an $R^2$ of 0.621 on $\phi$ regression.
+% 中文：数值仿真验证了两个阶段的有效性。轨迹预测模型实现了位置RMSE 0.148 km，具有较强的CW自一致性（均值残差4.52e-4 km/s），Δv估计限制在物理合理范围内。意图识别模型在N分类上达到99.1%准确率，d_min回归R²=0.991，φ回归R²=0.621。
+
+The key findings of this study are summarized as follows:
+% 中文：本研究的主要发现总结如下：
 
 \begin{enumerate}
-\item \textbf{Physics injection is critical for sample efficiency.} On a moderate-size dataset (23,787 samples), both physics-informed loss terms (trajectory prediction) and physics-guided feature engineering (intention recognition) yield significant improvements over purely data-driven baselines. The ablation studies confirm that embedding domain knowledge through multiple complementary mechanisms — input conditioning, loss regularization, and feature construction — is more effective than any single mechanism alone.
+    \item \textbf{Physics injection is critical for sample efficiency.} On a moderate-size dataset (23,787 samples), both physics-informed loss terms (trajectory prediction) and physics-guided feature engineering (intention recognition) yield significant improvements over purely data-driven baselines. Ablation studies confirm that embedding domain knowledge through multiple complementary mechanisms --- input conditioning, loss regularization, and feature construction --- is more effective than any single mechanism alone.
+          % 中文：发现1：物理注入对样本效率至关重要。在中等规模数据集（23787样本）上，物理信息损失项（轨迹预测）和物理引导特征工程（意图识别）相比纯数据驱动基线均有显著改进。消融研究证实，通过多种互补机制——输入条件化、损失正则化和特征构建——嵌入领域知识比任何单一机制更有效。
 
-\item \textbf{Permutation-invariant architectures with explicit pairwise modeling are effective for multi-agent analysis.} The combination of a shared-weight per-target encoder, set attention aggregation, and a pairwise interaction module correctly handles variable numbers of targets while providing the relational features necessary for geometry-sensitive predictions such as the dispersion angle.
+    \item \textbf{Permutation-invariant architectures with explicit pairwise modeling are effective for multi-agent analysis.} The combination of a shared-weight per-target encoder, set attention aggregation, and a pairwise interaction module correctly handles variable numbers of targets while providing the relational features necessary for geometry-sensitive predictions such as the dispersion angle.
+          % 中文：发现2：具有显式成对建模的置换不变架构对多智能体分析有效。共享权重的每目标编码器、集合注意力聚合和成对交互模块的组合正确处理了可变数量的目标，同时提供了对散布角等几何敏感预测所必需的关系特征。
 
-\item \textbf{Trajectory prediction and intention recognition are synergistic tasks.} While treated as separate stages in this work, both tasks benefit from the same physical prior (CW dynamics) and share the same data source. Future work should explore tighter coupling, e.g., using the predicted trajectory as auxiliary input to the intention recognition module, or joint multi-task training of both stages.
-
+    \item \textbf{Multi-scenario training data enhances robustness.} The five distinct maneuver intention scenarios generated by different PPO reward structures produce a diverse training set that improves the models' ability to generalize across different operational regimes, compared to training on any single scenario alone.
+          % 中文：发现3：多场景训练数据增强了鲁棒性。由不同PPO奖励结构生成的五种不同机动意图场景产生了多样化的训练集，相比在任何单一场景上训练，提高了模型跨不同操作模式的泛化能力。
 \end{enumerate}
 
-Future research directions include: (1) extending the framework to eccentric orbits and non-Keplerian dynamics where the CW linearization no longer holds, e.g., by incorporating a differentiable numerical propagator; (2) generalizing to a broader taxonomy of maneuver types (e.g., evasion, interception, formation reconfiguration) beyond the $\Delta v$ magnitude characterization used in this work; (3) investigating few-shot or meta-learning approaches for rapid adaptation to novel orbital regimes with limited data; (4) exploring the use of the predicted trajectory as an additional input modality for intention recognition, potentially closing the loop between the two stages; and (5) validating the approach on real-world space surveillance data, where measurement noise, sparse observations, and uncertain maneuver timing introduce additional challenges not present in simulation.
+Future research directions include: (1) extending the framework to eccentric orbits and non-Keplerian dynamics where the CW linearization no longer holds, e.g., by incorporating a differentiable numerical propagator based on the Tschauner--Hempel equations; (2) generalizing to a broader taxonomy of maneuver types beyond the $\Delta v$ magnitude characterization, including explicit classification among the five intention scenarios studied in this work; (3) investigating few-shot or meta-learning approaches for rapid adaptation to novel orbital regimes with limited data; (4) exploring the use of the predicted trajectory as an additional input modality for intention recognition, potentially closing the loop between the two stages; and (5) validating the approach on real-world space surveillance data, where measurement noise, sparse observations, and uncertain maneuver timing introduce additional challenges not present in simulation.
+% 中文：未来研究方向包括：(1) 将框架扩展到CW线性化不再成立的偏心轨道和非开普勒动力学，例如结合基于Tschauner-Hempel方程的可微分数值传播器；(2) 推广到超越Δv幅度表征的更广泛机动类型分类，包括对本研究五种意图场景的显式分类；(3) 研究少样本或元学习方法，实现对新型轨道模式的快速适应；(4) 探索将预测轨迹作为意图识别的额外输入模态，可能实现两个阶段之间的闭环；(5) 在实际空间监视数据上验证该方法，其中测量噪声、稀疏观测和不确定的机动时机引入了仿真中不存在的额外挑战。
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
