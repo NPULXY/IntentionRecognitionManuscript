@@ -509,8 +509,8 @@ The model is trained using the AdamW optimizer \cite{loshchilov2019decoupled} wi
 \section{BiGRU-based intention recognition}\label{sec:intention}
 % 中文：基于BiGRU的意图识别
 
-\subsection{Design principle: physics-guided representation learning}
-% 中文：设计原则：物理引导的表示学习
+\subsection{Physics-guided representation learning}
+% 中文：物理引导的表示学习
 
 The intention recognition task maps a $T_{\text{total}}$-step trajectory of $N$ targets to a configuration label $\bm{y} = [N, d_{\min}, \phi]^\top$. The input to this stage is constructed by concatenating the observation window $\bm{X}_{\text{now}}$ with the predicted trajectory $\hat{\bm{X}}_{\text{pred}}$ produced by the trajectory prediction stage, i.e., $\mathcal{T} = [\bm{X}_{\text{now}}; \hat{\bm{X}}_{\text{pred}}] \in \mathbb{R}^{N \times T_{\text{total}} \times 6}$. Unlike trajectory prediction --- where the output is a dense spatial-temporal sequence --- intention recognition demands a compact, permutation-invariant representation that aggregates information across a variable number of targets and time steps into three semantically distinct scalar outputs. The proposed approach constructs physically meaningful features from the trajectory using the CW model and orbital mechanics, then learns a permutation-invariant architecture that respects the set structure of the input.
 % 中文：意图识别任务将N个目标的T_total步轨迹映射到构型标签y = [N, d_min, φ]^T。该阶段的输入由观测窗口X_now与轨迹预测阶段产生的预测轨迹\hat{X}_pred拼接构成，即T = [X_now; \hat{X}_pred] ∈ R^{N×T_total×6}。与轨迹预测（输出为密集时空序列）不同，意图识别需要紧凑的置换不变表示，将跨可变数量目标和时间步的信息聚合为三个语义不同的标量输出。所提出的方法使用CW模型和轨道力学从轨迹中构建具有物理意义的特征，然后学习尊重输入集合结构的置换不变架构。
@@ -540,7 +540,7 @@ The $d_{\text{phys}}$-channel per-target feature vector is defined as follows:
           % 中文：CW传播残差（位置范数）：对T_pred个未来步（T_obs+1至T_total），最后观测状态s_{T_obs}使用Φ(Δt)向前传播，残差的位置范数计算为|r_t^{actual} - r_t^{CW}|。前T_obs步（观测窗口）这些特征设为零。
     \item \textbf{CW propagation residual (velocity norm):} Same computation for the velocity norm.
           % 中文：CW传播残差（速度范数）：速度范数的相同计算。
-    \item \textbf{--10. Inter-target cosine angle statistics:} For each target $i$, the cosine of the angle between its position vector $\bm{r}_i$ and every other target's position vector $\bm{r}_j$ is computed: $\cos\theta_{ij} = (\bm{r}_i \cdot \bm{r}_j) / (|\bm{r}_i| |\bm{r}_j|)$. The minimum, maximum, and mean of these cosine values (over $j \neq i$) provide three channels that directly inform the $\phi$ prediction task.
+    \item[8--10.] \textbf{Inter-target cosine angle statistics:} For each target $i$, the cosine of the angle between its position vector $\bm{r}_i$ and every other target's position vector $\bm{r}_j$ is computed: $\cos\theta_{ij} = (\bm{r}_i \cdot \bm{r}_j) / (|\bm{r}_i| |\bm{r}_j|)$. The minimum, maximum, and mean of these cosine values (over $j \neq i$) provide three channels that directly inform the $\phi$ prediction task.
           % 中文：8-10. 目标间余弦角统计：对每个目标i，计算其位置矢量r_i与每个其他目标的位置矢量r_j之间的夹角余弦：cosθ_ij = (r_i·r_j)/(|r_i||r_j|)。这些余弦值（对j≠i）的最小值、最大值和均值提供三个直接为φ预测任务提供信息的通道。
 \end{enumerate}
 
@@ -695,40 +695,40 @@ The simulation and dataset parameters are summarized first. Table~\ref{tab:sim_p
     \begin{tabular}{@{}>{\raggedright\arraybackslash}p{\dimexpr0.55\linewidth-2\tabcolsep\relax}
         >{\raggedright\arraybackslash}p{\dimexpr0.45\linewidth-2\tabcolsep\relax}@{}}
         \toprule
-        \textbf{Parameter (Symbol)}                                                    & \textbf{Value}                                  \\
+        \textbf{Parameter (Symbol)}                                                    & \textbf{Value}                                      \\
         \midrule
-        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Orbital environment}}         \\
-        Orbital altitude $h_{\text{orb}}$                                              & 480 km                                          \\
-        Orbital radius $r = R_{\mathrm{E}} + h_{\text{orb}}$                           & 6851 km                                         \\
-        Earth gravitational parameter $\mu$                                            & $3.986 \times 10^{5}$ km$^3$/s$^2$              \\
+        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Orbital environment}}             \\
+        Orbital altitude $h_{\text{orb}}$                                              & 480 km                                              \\
+        Orbital radius $r = R_{\mathrm{E}} + h_{\text{orb}}$                           & 6851 km                                             \\
+        Earth gravitational parameter $\mu$                                            & $3.986 \times 10^{5}$ km$^3$/s$^2$                  \\
         \midrule
-        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{RL simulation}}               \\
-        Time step $\Delta t$                                                           & 1 s                                             \\
-        CW sub-steps per RL step $N_{\text{sub}}$                                      & 60                                              \\
-        Max velocity increment $\Delta v_{\max}$                                       & $3 \times 10^{-3}$ km/s (3 m/s)                 \\
-        Initial satellite distance $d_{\text{init}}$                                   & $[100, 120]$ km                                 \\
-        Observation spacecraft detection range $d_{\text{obs}}$                        & 100 km                                          \\
+        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{RL simulation}}                   \\
+        Time step $\Delta t$                                                           & 1 s                                                 \\
+        CW sub-steps per RL step $N_{\text{sub}}$                                      & 60                                                  \\
+        Max velocity increment $\Delta v_{\max}$                                       & $3 \times 10^{-3}$ km/s (3 m/s)                     \\
+        Initial satellite distance $d_{\text{init}}$                                   & $[100, 120]$ km                                     \\
+        Observation spacecraft detection range $d_{\text{obs}}$                        & 100 km                                              \\
         \midrule
-        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Scenario-specific distances}} \\
-        Capture success distance $d_{\text{cap}}$                                      & 5 km, reward $R_{\text{cap}} = 100$             \\
-        Boundary penalty distance $d_{\text{bnd}}$                                     & 200 km                                          \\
-        Detection range $[d_{\text{det}}^{\min}, d_{\text{det}}^{\max}]$               & $[10, 30]$ km                                   \\
-        Lurk holding range $[d_{\text{lurk}}^{\min}, d_{\text{lurk}}^{\max}]$          & $[30, 80]$ km                                   \\
+        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Scenario-specific distances}}     \\
+        Capture success distance $d_{\text{cap}}$                                      & 5 km, reward $R_{\text{cap}} = 100$                 \\
+        Boundary penalty distance $d_{\text{bnd}}$                                     & 200 km                                              \\
+        Detection range $[d_{\text{det}}^{\min}, d_{\text{det}}^{\max}]$               & $[10, 30]$ km                                       \\
+        Lurk holding range $[d_{\text{lurk}}^{\min}, d_{\text{lurk}}^{\max}]$          & $[30, 80]$ km                                       \\
         \midrule
         \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Behavioral intention thresholds}} \\
-        $d_1$ / $d_2$ / $d_3$ / $d_4$                                                & 5 / 20 / 35 / 50 km                             \\
-        Angular threshold $\phi_{\text{th}}$                                          & $2\pi/3$                                        \\
+        $d_1$ / $d_2$ / $d_3$ / $d_4$                                                  & 5 / 20 / 35 / 50 km                                 \\
+        Angular threshold $\phi_{\text{th}}$                                           & $2\pi/3$                                            \\
         \midrule
-        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Dataset construction}}        \\
-        Cluster size $N \in \{N_{\min}, \dots, N_{\max}\}$                             & $\{2, 3, 4\}$                                   \\
-        Total sequence length $T_{\text{total}}$ (steps)                               & 20                                              \\
-        Observation window $T_{\text{obs}}$ (steps)                                    & 10                                              \\
-        Prediction horizon $T_{\text{pred}}$ (steps)                                   & 10                                              \\
-        Padding time $T_{\text{pad}} = N_{\text{sub}} \cdot \Delta t$                  & 60 s                                            \\
-        Total samples $N_{\text{samples}}$                                             & 23,787                                          \\
-        Train / Val / Test split $(r_{\text{train}}, r_{\text{val}}, r_{\text{test}})$ & 70\% / 15\% / 15\%                              \\
-        Random seed $s$                                                                & 42                                              \\
-        Sample distribution: $N=2$ / $N=3$ / $N=4$                                     & 46\% / 31\% / 23\%                              \\
+        \multicolumn{2}{@{}>{\centering\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}@{}}{\textit{Dataset construction}}            \\
+        Cluster size $N \in \{N_{\min}, \dots, N_{\max}\}$                             & $\{2, 3, 4\}$                                       \\
+        Total sequence length $T_{\text{total}}$ (steps)                               & 20                                                  \\
+        Observation window $T_{\text{obs}}$ (steps)                                    & 10                                                  \\
+        Prediction horizon $T_{\text{pred}}$ (steps)                                   & 10                                                  \\
+        Padding time $T_{\text{pad}} = N_{\text{sub}} \cdot \Delta t$                  & 60 s                                                \\
+        Total samples $N_{\text{samples}}$                                             & 23,787                                              \\
+        Train / Val / Test split $(r_{\text{train}}, r_{\text{val}}, r_{\text{test}})$ & 70\% / 15\% / 15\%                                  \\
+        Random seed $s$                                                                & 42                                                  \\
+        Sample distribution: $N=2$ / $N=3$ / $N=4$                                     & 46\% / 31\% / 23\%                                  \\
         \bottomrule
     \end{tabular}
 \end{table}
